@@ -268,15 +268,28 @@ export function scheduleCallback(
   return newTask;
 }
 
-export function isTaskQueueEmpty(): boolean {
-  return taskQueue.length === 0;
-}
-
-export function getQueueCount(): number {
-  return taskQueue.length;
-}
-
-//ToBePublic but separated.
+/**
+ * Waits until the task queue is considered "idle" by repeatedly checking
+ * whether any tasks remain in the `taskQueue`. This is useful in unit tests
+ * to defer assertions or teardown logic until all microtasks have settled.
+ *
+ * The function ensures at least 5 microtask passes (or the given number of attempts,
+ * whichever is greater) before resolving, to give time for queued tasks to complete.
+ *
+ * If the queue is not empty, the `resolve` callback is added to a shared
+ * `idleResolvers` list to be triggered once the queue clears.
+ *
+ * @param attempts - The number of times to check for queue emptiness. Minimum is 5.
+ * @returns A Promise that resolves when the system appears to be idle.
+ *
+ * @example
+ * ```ts
+ * it('should wait until all microtasks are flushed', async () => {
+ *   await whenIdle();
+ *   expect(callbackSpy).toHaveBeenCalled();
+ * });
+ * ```
+ */
 export function whenIdle(attempts: number = 5): Promise<void> {
   return new Promise((resolve) => {
     let counter = 0;
@@ -389,9 +402,18 @@ export function getCurrentTask(): SchedulerTask | null {
   return currentTask
 }
 
-export function isCurrentTask(task: SchedulerTask): boolean {
-  return task === currentTask;
+export function isTaskQueueEmpty(): boolean {
+  return taskQueue.length === 0;
 }
+
+export function getQueueLength(): number {
+  return taskQueue.length;
+}
+
+export function getTaskAt(index: number): SchedulerTask {
+  return taskQueue[index];
+}
+
 
 let isMessageLoopRunning = false;
 let scheduledHostCallback: FlushWorkFn | null = null;

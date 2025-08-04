@@ -266,10 +266,10 @@ describe('Testing scheduleChangeDetection() function.', () => {
     });
   });
 
-  describe('Using detectChanges() and scheduleTask() next to each other, where detectChangesSync() is used callbacks body.', () => {
+  describe('Using detectChanges() and scheduleChangeDetection() next to each other, where detectChangesSync() is used callbacks body.', () => {
     Priorities.forEach((prio) => {
       describe(`Priority level = ${prio}`, () => {
-        it('Should coalesce when first scheduleTask() function was used.', async () => {
+        it('Should coalesce when first scheduleChangeDetection() function was used.', async () => {
           const viewRef = new FakeViewRef();
           let sync = false;
 
@@ -285,7 +285,7 @@ describe('Testing scheduleChangeDetection() function.', () => {
           expect(sync).toBeTrue()
         });
 
-        it('Should not coalesce when scheduleTask() was used after detectChanges().', async () => {
+        it('Should not coalesce when scheduleChangeDetection() was used after detectChanges().', async () => {
           const viewRef = new FakeViewRef();
           let sync = false
           detectChanges(viewRef, prio);
@@ -300,7 +300,7 @@ describe('Testing scheduleChangeDetection() function.', () => {
           expect(sync).toBeTrue();
         });
 
-        it('Should coalesce when scheduleTask() was used after detectChanges(), if cdRef was provided as a third argument.', async () => {
+        it('Should coalesce when scheduleChangeDetection() was used after detectChanges(), if cdRef was provided as a third argument.', async () => {
           const viewRef = new FakeViewRef();
           let sync = false
 

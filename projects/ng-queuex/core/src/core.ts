@@ -20,12 +20,13 @@ export {
   isConcurrentCleanTaskContext,
   isConcurrentDirtyTaskContext,
   onTaskExecuted,
+  whenIdle
 } from "./scheduler/scheduler";
 
 @Injectable({ providedIn: 'root' })
 class ZonelessIntegrator {
   private _appRef = inject(ApplicationRef);
-  private _pendingTasks = inject(PendingTasks);
+  private _pendingNgTasks = inject(PendingTasks);
   private _pendingNgTaskCleanup: (() => void) = null!;
   private _bootstrapCount = 0;
 
@@ -34,7 +35,7 @@ class ZonelessIntegrator {
   }
 
   public initialize(): void {
-    this._pendingNgTaskCleanup = this._pendingTasks.add();
+    this._pendingNgTaskCleanup = this._pendingNgTasks.add();
     setOnIdle(() => this._pendingNgTaskCleanup())
     const subscription = this._appRef.isStable.subscribe((value) => {
       if (value) {

@@ -1,5 +1,5 @@
 import { fakeAsync, flush } from "@angular/core/testing";
-import { onTaskExecuted, getQueueCount, isTaskQueueEmpty, scheduleCallback, setOnIdle, whenIdle } from "./scheduler";
+import { onTaskExecuted, getQueueLength, isTaskQueueEmpty, scheduleCallback, setOnIdle, whenIdle } from "./scheduler";
 import { Priority, SchedulerTask, TaskStatus } from "./scheduler_utils";
 import { describeAsyncAwait, describeFakeAsync, describeWithoutZone, doSomethingForSomeTime, doSomethingForTime, getRandomPositiveInteger, randomPrioritiesArray, randomPriority } from "./scheduler_test_utils";
 
@@ -9,6 +9,19 @@ function cancelTask(task: SchedulerTask) {
   task.callback = null;
   task.status = TaskStatus.Aborted;
 }
+
+console.log(typeof require.cache)
+
+/*
+
+
+Scheduled callback in task context with higher priority then next pending one should be executed earlier.
+
+Tasks in which execution will not reach the deadline will be executed synchronically right after each other.
+
+For Tasks where first will reach deadline will not be executed synchronically.
+
+*/
 
 describe('Test utilities functions', () => {
   it('Should be array if priorities', () => {
@@ -21,80 +34,418 @@ describe('Test utilities functions', () => {
   });
 });
 
+const enum ExecutionContextInfo {
+  CurrentTest = "Current test context",
+  ScheduledCallback = "Scheduled callback context",
+  ScheduledCallback1 = "Scheduled callback 1 context",
+  ScheduledCallback2 = "Scheduled callback 2 context",
+  BeforeExecute = "Before execute context",
+  BeforeExecuteTask1 = "Before execute for task 1 context",
+  BeforeExecuteTask2 = "Before execute for task 2 context",
+  OnExecuteListener1 = "OnExecute listener 1",
+  OnExecuteListener2 = "OnExecute listener 2",
+  OnExecuteListener1ForTask1 = "OnExecute listener 1 for task 1",
+  OnExecuteListener2ForTask1 = "OnExecute listener 2 for task 1",
+  OnExecuteListener1ForTask2 = "OnExecute listener 1 for task 2",
+  OnExecuteListener2ForTask2 = "OnExecute listener 1 for task 1",
+  InternalOnExecuteListener1 = "InternalOnExecute listener 1",
+  InternalOnExecuteListener1ForTask1 = "InternalOnExecute listener 1 for task 1",
+  InternalOnExecuteListener1ForTask2 = "InternalOnExecute listener 1 for task 2",
+  InternalOnExecuteListener2 = "INternalOnExecute listener 1",
+  InternalOnExecuteListener2ForTask1 = "INternalOnExecute listener 1 for task 1",
+  InternalOnExecuteListener2ForTask2 = "INternalOnExecute listener 1 for task 2",
+  Microtask = "Microtask context",
+}
+
 describe('Scheduler.', () => {
 
   describe('Scheduling one task.', () => {
-    Priorities.forEach((priorityLevel) => {
 
+    const expectation1 = 'Scheduled callback should be executed.';
+    const expectation2 = 'Should invoke beforeExecute hook right before task callback.';
+    const expectation3 = 'Should notify onExecute listeners right after task callback';
+    const expectation4 = 'Should notify internalOnExecute listeners right after notifying onExecute listeners.'
+
+    Priorities.forEach((priorityLevel) => {
       describe(`Priority level = ${Priority[priorityLevel]}`, () => {
 
         describeWithoutZone( () => {
-          it('Scheduled callback is executed.', (done) => {
+          it(expectation1, (done) => {
 
             const doneCb = () => {
               queueMicrotask(() => {
-                expect(info[0]).toEqual('Executing current context');
-                expect(info[1]).toEqual('Scheduled callback executed');
+
+                expect(info).toEqual([
+                  ExecutionContextInfo.CurrentTest,
+                  ExecutionContextInfo.ScheduledCallback
+                ]);
                 done();
               });
             }
 
             const info: string[] = [];
 
-            scheduleCallback(Priority.Normal, () => {
+            scheduleCallback(priorityLevel, () => {
               doSomethingForSomeTime();
-              info.push('Scheduled callback executed');
+              info.push(ExecutionContextInfo.ScheduledCallback);
               doneCb();
             });
 
-            info.push('Executing current context');
+            info.push(ExecutionContextInfo.CurrentTest);
             expect(info.length).toEqual(1);
 
           });
+
+          it(expectation2, (done) => {
+            const info: string[] = [];
+
+            const doneCb = () => queueMicrotask(() => {
+              expect(info).toEqual([
+                ExecutionContextInfo.CurrentTest,
+                ExecutionContextInfo.BeforeExecute,
+                ExecutionContextInfo.ScheduledCallback,
+                ExecutionContextInfo.Microtask
+              ]);
+              done();
+            });
+
+            const task = scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
+
+              doneCb()
+            });
+
+            task.beforeExecute = () => {
+              queueMicrotask(() => {
+                info.push(ExecutionContextInfo.Microtask);
+              })
+              info.push(ExecutionContextInfo.BeforeExecute);
+            }
+
+            info.push(ExecutionContextInfo.CurrentTest);
+
+            expect(getQueueLength()).toEqual(1);
+
+          });
+
+          it(expectation3, (done) => {
+            const info: string[] = [];
+            const doneCb = () => queueMicrotask(() => {
+              expect(info).toEqual([
+                ExecutionContextInfo.CurrentTest,
+                ExecutionContextInfo.BeforeExecute,
+                ExecutionContextInfo.ScheduledCallback,
+                ExecutionContextInfo.OnExecuteListener1,
+                ExecutionContextInfo.OnExecuteListener2,
+                ExecutionContextInfo.Microtask,
+              ]);
+              done();
+            });
+
+            const task = scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
+              doneCb();
+            });
+
+            task.beforeExecute = () => {
+              queueMicrotask(() => {
+                info.push(ExecutionContextInfo.Microtask);
+              })
+              info.push(ExecutionContextInfo.BeforeExecute);
+            }
+
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+
+            info.push(ExecutionContextInfo.CurrentTest);
+
+            expect(getQueueLength()).toEqual(1);
+          });
+
+          it(expectation4, (done) => {
+            const info: string[] = [];
+            const doneCb = () => queueMicrotask(() => {
+              expect(info).toEqual([
+                ExecutionContextInfo.CurrentTest,
+                ExecutionContextInfo.BeforeExecute,
+                ExecutionContextInfo.ScheduledCallback,
+                ExecutionContextInfo.OnExecuteListener1,
+                ExecutionContextInfo.OnExecuteListener2,
+                ExecutionContextInfo.InternalOnExecuteListener1,
+                ExecutionContextInfo.InternalOnExecuteListener2,
+                ExecutionContextInfo.Microtask,
+              ]);
+              done();
+            });
+
+            const task = scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
+              doneCb();
+            });
+
+            task.beforeExecute = () => {
+              queueMicrotask(() => {
+                info.push(ExecutionContextInfo.Microtask);
+              })
+              info.push(ExecutionContextInfo.BeforeExecute);
+            }
+
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+
+            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1));
+            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2));
+
+            info.push(ExecutionContextInfo.CurrentTest);
+
+            expect(getQueueLength()).toEqual(1);
+          });
+
         });
 
         describeFakeAsync(() => {
-          it('Scheduled callback is executed.', fakeAsync(() => {
+          it(expectation1, fakeAsync(() => {
 
             const info: string[] = [];
 
-            scheduleCallback(Priority.Normal, () => {
+            scheduleCallback(priorityLevel, () => {
               doSomethingForSomeTime();
-              info.push('Scheduled callback executed');
+              info.push(ExecutionContextInfo.ScheduledCallback);
             });
 
-            info.push('Executing current context');
+            info.push(ExecutionContextInfo.CurrentTest);
             expect(info.length).toEqual(1);
 
-            flush(200)
+            flush(20)
 
-            expect(info[0]).toEqual('Executing current context');
-            expect(info[1]).toEqual('Scheduled callback executed');
+            expect(info).toEqual([
+              ExecutionContextInfo.CurrentTest,
+              ExecutionContextInfo.ScheduledCallback
+            ]);
+          }));
+
+          it(expectation2, fakeAsync(() => {
+            const info: string[] = [];
+
+            const task = scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
+            });
+
+            task.beforeExecute = () => {
+              queueMicrotask(() => {
+                info.push(ExecutionContextInfo.Microtask);
+              })
+              info.push(ExecutionContextInfo.BeforeExecute);
+            }
+
+            info.push(ExecutionContextInfo.CurrentTest);
+
+            expect(getQueueLength()).toEqual(1);
+
+            flush(10);
+
+            expect(info).toEqual([
+              ExecutionContextInfo.CurrentTest,
+              ExecutionContextInfo.BeforeExecute,
+              ExecutionContextInfo.ScheduledCallback,
+              ExecutionContextInfo.Microtask
+            ]);
+          }));
+
+          it(expectation3, fakeAsync(() => {
+
+            const info: string[] = [];
+
+            const task = scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
+            });
+
+            task.beforeExecute = () => {
+              queueMicrotask(() => {
+                info.push(ExecutionContextInfo.Microtask);
+              })
+              info.push(ExecutionContextInfo.BeforeExecute);
+            }
+
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+
+            info.push(ExecutionContextInfo.CurrentTest);
+
+            expect(getQueueLength()).toEqual(1);
+
+            flush(20);
+
+            expect(info).toEqual([
+              ExecutionContextInfo.CurrentTest,
+              ExecutionContextInfo.BeforeExecute,
+              ExecutionContextInfo.ScheduledCallback,
+              ExecutionContextInfo.OnExecuteListener1,
+              ExecutionContextInfo.OnExecuteListener2,
+              ExecutionContextInfo.Microtask,
+            ]);
+          }));
+
+          it(expectation4, fakeAsync(() => {
+            const info: string[] = [];
+
+            const task = scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
+            });
+
+            task.beforeExecute = () => {
+              queueMicrotask(() => {
+                info.push(ExecutionContextInfo.Microtask);
+              })
+              info.push(ExecutionContextInfo.BeforeExecute);
+            }
+
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+
+            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1));
+            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2));
+
+            info.push(ExecutionContextInfo.CurrentTest);
+
+            expect(getQueueLength()).toEqual(1);
+            flush(20);
+
+            expect(info).toEqual([
+              ExecutionContextInfo.CurrentTest,
+              ExecutionContextInfo.BeforeExecute,
+              ExecutionContextInfo.ScheduledCallback,
+              ExecutionContextInfo.OnExecuteListener1,
+              ExecutionContextInfo.OnExecuteListener2,
+              ExecutionContextInfo.InternalOnExecuteListener1,
+              ExecutionContextInfo.InternalOnExecuteListener2,
+              ExecutionContextInfo.Microtask,
+            ]);
           }));
 
         });
-      });
 
-      describeAsyncAwait(() => {
-        it('Scheduled callback is executed.', async () => {
+        describeAsyncAwait(() => {
+          it(expectation1, async () => {
 
             const info: string[] = [];
 
-            scheduleCallback(Priority.Normal, () => {
-              info.push('Scheduled callback executed');
+            scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
             });
 
-            info.push('Executing current context');
+            info.push(ExecutionContextInfo.CurrentTest);
             expect(info.length).toEqual(1);
 
             await whenIdle();
 
-            expect(info[0]).toEqual('Executing current context');
-            expect(info[1]).toEqual('Scheduled callback executed');
+            expect(info).toEqual([
+              ExecutionContextInfo.CurrentTest,
+              ExecutionContextInfo.ScheduledCallback
+            ]);
           });
 
-      });
+          it(expectation2, async () => {
+            const info: string[] = [];
 
+            const task = scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
+            });
+
+            task.beforeExecute = () => {
+              queueMicrotask(() => {
+                info.push(ExecutionContextInfo.Microtask);
+              })
+              info.push(ExecutionContextInfo.BeforeExecute);
+            }
+
+            info.push(ExecutionContextInfo.CurrentTest);
+
+            expect(getQueueLength()).toEqual(1);
+
+            await whenIdle();
+
+            expect(info).toEqual([
+              ExecutionContextInfo.CurrentTest,
+              ExecutionContextInfo.BeforeExecute,
+              ExecutionContextInfo.ScheduledCallback,
+              ExecutionContextInfo.Microtask
+            ]);
+
+          });
+
+          it(expectation3, async () => {
+            const info: string[] = [];
+
+            const task = scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
+            });
+
+            task.beforeExecute = () => {
+              queueMicrotask(() => {
+                info.push(ExecutionContextInfo.Microtask);
+              })
+              info.push(ExecutionContextInfo.BeforeExecute);
+            }
+
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+
+            info.push(ExecutionContextInfo.CurrentTest);
+
+            expect(getQueueLength()).toEqual(1);
+
+            await whenIdle();
+
+            expect(info).toEqual([
+              ExecutionContextInfo.CurrentTest,
+              ExecutionContextInfo.BeforeExecute,
+              ExecutionContextInfo.ScheduledCallback,
+              ExecutionContextInfo.OnExecuteListener1,
+              ExecutionContextInfo.OnExecuteListener2,
+              ExecutionContextInfo.Microtask,
+            ]);
+          });
+
+          it(expectation4, async () => {
+            const info: string[] = [];
+
+            const task = scheduleCallback(priorityLevel, () => {
+              info.push(ExecutionContextInfo.ScheduledCallback);
+            });
+
+            task.beforeExecute = () => {
+              queueMicrotask(() => {
+                info.push(ExecutionContextInfo.Microtask);
+              })
+              info.push(ExecutionContextInfo.BeforeExecute);
+            }
+
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+
+            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1))
+            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2))
+
+            info.push(ExecutionContextInfo.CurrentTest);
+
+            expect(getQueueLength()).toEqual(1);
+
+            await whenIdle();
+
+            expect(info).toEqual([
+              ExecutionContextInfo.CurrentTest,
+              ExecutionContextInfo.BeforeExecute,
+              ExecutionContextInfo.ScheduledCallback,
+              ExecutionContextInfo.OnExecuteListener1,
+              ExecutionContextInfo.OnExecuteListener2,
+              ExecutionContextInfo.InternalOnExecuteListener1,
+              ExecutionContextInfo.InternalOnExecuteListener2,
+              ExecutionContextInfo.Microtask,
+            ]);
+          });
+        });
+      });
     });
   });
 
@@ -105,7 +456,7 @@ describe('Scheduler.', () => {
     }
   }
 
-  function checkTasksOrdering(tasks: SchedulerTask[], skipCheckingPrioLevels: boolean = false) {
+  function assertTasksOrdering(tasks: SchedulerTask[], skipCheckingPrioLevels: boolean = false) {
 
     if (!skipCheckingPrioLevels) {
       for (let i = 1; i < tasks.length; i++) {
@@ -128,23 +479,27 @@ describe('Scheduler.', () => {
 
   describe('Scheduling multiple tasks.', () => {
 
-    const expectation = 'Should execute callbacks in correct order.'
+    const expectation1 = 'Should execute callbacks in correct order.'
+    const expectation2 = 'Tasks in which execution will not reach the deadline should be executed synchronically right after each other.';
 
     beforeAll(() => {
       jasmine.DEFAULT_TIMEOUT_INTERVAL = 30_000;
-    })
+    });
     afterAll(() => {
       jasmine.DEFAULT_TIMEOUT_INTERVAL = 5_000;
-    })
+    });
+
 
     describeWithoutZone(() => {
-      it(expectation, (done) => {
+      it(expectation1, (done) => {
         const priorities = randomPrioritiesArray();
         const tasks: SchedulerTask[] = [];
 
         const doneCb = () => {
-          checkTasksOrdering(tasks);
-          queueMicrotask(() => done());
+          queueMicrotask(() => {
+            assertTasksOrdering(tasks);
+            done();
+          });
         }
 
         priorities.forEach((prio, index) => {
@@ -157,10 +512,11 @@ describe('Scheduler.', () => {
           });
         });
       });
+
     });
 
     describeFakeAsync(() => {
-      it(expectation, fakeAsync(() => {
+      it(expectation1, fakeAsync(() => {
         const priorities = randomPrioritiesArray();
         const tasks: SchedulerTask[] = [];
 
@@ -171,11 +527,82 @@ describe('Scheduler.', () => {
           });
         });
 
-        flush(200);
+        flush(20);
 
-        checkTasksOrdering(tasks);
+        assertTasksOrdering(tasks);
       }));
+
     });
+
+    describeAsyncAwait(() => {
+      it(expectation1, async () => {
+        const priorities = randomPrioritiesArray();
+        const tasks: SchedulerTask[] = [];
+
+        priorities.forEach((prio) => {
+          const task = scheduleCallback(prio, () => {
+            doSomethingForSomeTime()
+            tasks.push(task);
+          });
+        });
+
+        await whenIdle();
+
+        assertTasksOrdering(tasks);
+      });
+    });
+
+    Priorities.forEach((priorityLevel) => {
+
+        it(expectation2, async () => {
+          const info: string[] = [];
+          const task1 = scheduleCallback(priorityLevel, () => {
+            info.push(ExecutionContextInfo.ScheduledCallback1);
+          });
+          task1.beforeExecute = () => {
+            queueMicrotask(() => info.push(ExecutionContextInfo.Microtask));
+            info.push(ExecutionContextInfo.BeforeExecuteTask1)
+          }
+          task1.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener1ForTask1));
+          task1.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2ForTask1));
+          task1.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask1));
+          task1.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask1));
+
+          const task2 = scheduleCallback(priorityLevel, () => {
+            info.push(ExecutionContextInfo.ScheduledCallback2);
+          })
+          task2.beforeExecute = () => {
+            info.push(ExecutionContextInfo.BeforeExecuteTask2);
+          }
+          task2.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener1ForTask2));
+          task2.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2ForTask2));
+          task2.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask2));
+          task2.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask2));
+
+          info.push(ExecutionContextInfo.CurrentTest);
+
+          await whenIdle();
+
+          expect(info).toEqual([
+            ExecutionContextInfo.CurrentTest,
+            ExecutionContextInfo.BeforeExecuteTask1,
+            ExecutionContextInfo.ScheduledCallback1,
+            ExecutionContextInfo.OnExecuteListener1ForTask1,
+            ExecutionContextInfo.OnExecuteListener2ForTask1,
+            ExecutionContextInfo.InternalOnExecuteListener1ForTask1,
+            ExecutionContextInfo.InternalOnExecuteListener2ForTask1,
+            ExecutionContextInfo.BeforeExecuteTask2,
+            ExecutionContextInfo.ScheduledCallback2,
+            ExecutionContextInfo.OnExecuteListener1ForTask2,
+            ExecutionContextInfo.OnExecuteListener2ForTask2,
+            ExecutionContextInfo.InternalOnExecuteListener1ForTask2,
+            ExecutionContextInfo.InternalOnExecuteListener2ForTask2,
+            ExecutionContextInfo.Microtask
+          ])
+        });
+
+      });
+
   });
 
   describe('Scheduling few tasks and canceling some of them.', () => {
@@ -279,43 +706,34 @@ describe('Scheduler.', () => {
       Priorities.forEach((priority) => {
         describe(`Priority level = ${Priority[priority]}.`, () => {
           it(expectation, (done) => {
-            let scheduleCount = 0 // scheduleCallback(Prio, cb) invocation count
 
             const doneCb = () => {
-              expect(getQueueCount()).toEqual(1)
               queueMicrotask(() => {
-                expect(isTaskQueueEmpty()).toBeTrue;
+                expect(isTaskQueueEmpty()).toBeTrue();
                 done();
               })
             };
 
-            while (scheduleCount++ < 3) {
-              const isLast = scheduleCount === 3
+            for (let i = 0; i < 3; i++) {
               scheduleCallback(priority, () => {
                 doSomethingForTime(getRandomPositiveInteger(5, 15));
 
-                let _scheduleCount = 0
-                while(_scheduleCount++ < 3) {
-                  const _isLast = _scheduleCount === 3
+                for (let j = 0; j < 3; j++) {
                   scheduleCallback(priority, () => {
                     doSomethingForTime(getRandomPositiveInteger(5, 15));
 
-                    let __scheduleCount = 0
-                    while(__scheduleCount++ < 3) {
-                      const __isLast = __scheduleCount === 3
+                    for (let k = 0; k < 3; k++) {
                       scheduleCallback(priority, () => {
                         doSomethingForTime(getRandomPositiveInteger(5, 15));
-                        if (__isLast && _isLast && isLast) {
+
+                        if (i == 2 && j == 2 && k == 2) {
                           doneCb()
                         }
                       });
                     }
-
-                  });
+                  })
                 }
-
-
-              });
+              })
             }
           });
         });
@@ -353,7 +771,6 @@ describe('Scheduler.', () => {
             }
 
             flush(100)
-            expect(getQueueCount()).toEqual(0);
             expect(isTaskQueueEmpty()).toBeTrue();
           })));
         });

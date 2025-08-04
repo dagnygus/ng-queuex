@@ -23,16 +23,16 @@ export function randomPrioritiesArray(minLen: number = 80, maxLen: number = 150)
   return priorities
 }
 
-export function describeWithoutZone(cb: () => void) {
-  describe('Without zone.', cb);
+export function describeWithoutZone(specDefinitions: () => void) {
+  describe('Without zone.', specDefinitions);
 }
 
-export function describeFakeAsync(cb: () => void) {
-  describe('In fakeAsync zone.', cb);
+export function describeFakeAsync(specDefinitions: () => void) {
+  describe('In fakeAsync zone.', specDefinitions);
 }
 
-export function describeAsyncAwait(cb: () => void) {
-  describe('Using async/await', cb);
+export function describeAsyncAwait(specDefinitions: () => void) {
+  describe('Using async/await', specDefinitions);
 }
 
 export function doSomethingForSomeTime() {
@@ -55,4 +55,8 @@ export function getRandomPositiveInteger(min: number, max: number) {
   if (min < 0) { throw new Error('getRandomPositiveInteger(min, max): min < 0'); }
 
   return Math.round(min + (max - min) * Math.random());
+}
+
+export function describePriorityLevel(priorityLevel: Priority, specDefinitions: () => void): void {
+  describe(`Priority level = ${Priority[priorityLevel]}`, specDefinitions)
 }

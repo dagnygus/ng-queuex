@@ -31,7 +31,7 @@ const coalescingScopes = new WeakMap<object, SchedulerTask>();
 
 /**
  * @description
- * Schedules a task with default priority (```Priority.Normal```) what will trigger cdRef.detectChanges() method, unless it was schedules earle before
+ * Schedules a task with default priority (`Priority.Normal`) what will trigger cdRef.detectChanges() method, unless it was schedules earle before
  * with same or higher priority. Under the hood there is coalescing mechanism implement.
  *
  * Lest look at this example.
@@ -80,7 +80,7 @@ const coalescingScopes = new WeakMap<object, SchedulerTask>();
 export function detectChanges(cdRef: ChangeDetectorRef): VoidFunction;
 /**
  * @description
- * Schedules a task with default priority (```Priority.Normal```) what will trigger cdRef.detectChanges() method, unless it was schedules earle before
+ * Schedules a task with default priority (`Priority.Normal`) what will trigger cdRef.detectChanges() method, unless it was schedules earle before
  * with same or higher priority. Under the hood there is coalescing mechanism implement.
  *
  * Lest look at this example.
@@ -118,7 +118,7 @@ export function detectChanges(cdRef: ChangeDetectorRef): VoidFunction;
  *  }
  * ```
  * Change detection scheduled with higher priority will abort this one with lower.
- * @param cdRef A component ```ChangeDetectorRef``` or ```ViewRef``` of the embedded view.
+ * @param cdRef A component `ChangeDetectorRef` or `ViewRef` of the embedded view.
  * @param priority Concurrent task execution priority.
  * @returns abort task function.
  * @see {@link Priority}
@@ -192,8 +192,8 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
 
 /**
  * @description
- * Schedules a task with default priority (```Priority.Normal```) and with provided callback which will be executed. The main difference
- * from ```scheduleTask()``` is that it is involved internal coalescing mechanism. Consider to use ```detectChangesSync()``` function to
+ * Schedules a task with default priority (`Priority.Normal`) and with provided callback which will be executed. The main difference
+ * from `scheduleTask()` is that it is involved internal coalescing mechanism. Consider to use `detectChangesSync()` function to
  * improve coalescing. The example below illustrates how coalescing works.
  * ```ts
  *  private _cdRef = inject(ChangeDetectionRef);
@@ -216,7 +216,7 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
  *
  *  detectChanges(this._cdRer); // Task successfully scheduled, but will be aborted
  * ```
- * However if you provide higher priority to ```detectChanges()``` function, coalescing will failed and change detection will be triggered twice.
+ * However if you provide higher priority to `detectChanges()` function, coalescing will failed and change detection will be triggered twice.
  * ```ts
  *  //This task has default Priority.Normal.
  *  scheduleChangeDetection(() => {
@@ -235,7 +235,7 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
  *    detectChangesSync(this._cdRef); // This call will trigger change detection.
  *  });
  * ```
- * To improve coalescing for these unfavorable scenarios, provide ```cdRef``` to ```scheduleChangeDetection()``` function,
+ * To improve coalescing for these unfavorable scenarios, provide `cdRef` to `scheduleChangeDetection()` function,
  * as a third argument.
  * ```ts
  *  scheduleChangeDetection(() => {
@@ -244,12 +244,12 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
  *
  *  detectChanges(this._cdRef);
  * ```
- * Task in witch is involved coalescing system of change detection is called ```dirty task```. In contrast task created with
- * function ```scheduleTask()``` is called ```clean task```. ```Clean task``` can be aborted only by function returned by ```scheduleTask()```.
+ * Task in witch is involved coalescing system of change detection is called `dirty task`. In contrast task created with
+ * function `scheduleTask()` is called `clean task`. `Clean task` can be aborted only by function returned by `scheduleTask()`.
  *
  * @caution
- * There is nothing to prevent you to use multiple ```ChangeDetectionRef``` objects in callbacks body, but remember that internal coalescing
- * mechanism can abort dirty tasks for you. See description of ```detectChanges()``` function.
+ * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
+ * mechanism can abort dirty tasks for you. See description of `detectChanges()` function.
  *
  * @param callback Concurrent task callback.
  * @returns Abort task function.
@@ -260,8 +260,8 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
 export function scheduleChangeDetection(callback: VoidFunction): VoidFunction;
 /**
  * @description
- * Schedules a task with provided callback which will be executed. The main difference from ```scheduleTask()``` is that it is involved
- * internal coalescing mechanism. Consider to use ```detectChangesSync()``` function to improve coalescing. The example
+ * Schedules a task with provided callback which will be executed. The main difference from `scheduleTask()` is that it is involved
+ * internal coalescing mechanism. Consider to use `detectChangesSync()` function to improve coalescing. The example
  * below illustrates how coalescing works.
  * ```ts
  *  private _cdRef = inject(ChangeDetectionRef);
@@ -284,7 +284,7 @@ export function scheduleChangeDetection(callback: VoidFunction): VoidFunction;
  *
  *  detectChanges(this._cdRer); // Task successfully scheduled, but will be aborted
  * ```
- * However if you provide higher priority to ```detectChanges()``` function, coalescing will failed and change detection will be triggered twice.
+ * However if you provide higher priority to `detectChanges()` function, coalescing will failed and change detection will be triggered twice.
  * ```ts
  *  //This task has default Priority.Normal.
  *  scheduleChangeDetection(() => {
@@ -303,7 +303,7 @@ export function scheduleChangeDetection(callback: VoidFunction): VoidFunction;
  *    detectChangesSync(this._cdRef); // This call will trigger change detection.
  *  }, Priority.Normal);
  * ```
- * To improve coalescing for these unfavorable scenarios, provide ```cdRef``` to ```scheduleChangeDetection()``` function,
+ * To improve coalescing for these unfavorable scenarios, provide `cdRef` to `scheduleChangeDetection()` function,
  * as a third argument.
  * ```ts
  *  scheduleChangeDetection(() => {
@@ -312,12 +312,12 @@ export function scheduleChangeDetection(callback: VoidFunction): VoidFunction;
  *
  *  detectChanges(this._cdRef);
  * ```
- * Task in witch is involved coalescing system of change detection is called ```dirty task```. In contrast task created with
- * function ```scheduleTask()``` is called ```clean task```. ```Clean task``` can be aborted only by function returned by ```scheduleTask()```.
+ * Task in witch is involved coalescing system of change detection is called `dirty task`. In contrast task created with
+ * function `scheduleTask()` is called `clean task`. ```Clean task``` can be aborted only by function returned by `scheduleTask()`.
  *
  * @caution
- * There is nothing to prevent you to use multiple ```ChangeDetectionRef``` objects in callbacks body, but remember that internal coalescing
- * mechanism can abort tasks for you. See description of ```detectChanges()``` function.
+ * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
+ * mechanism can abort tasks for you. See description of `detectChanges()` function.
  *
  * @param callback Concurrent task callback.
  * @param priority Task priority.
@@ -329,8 +329,8 @@ export function scheduleChangeDetection(callback: VoidFunction): VoidFunction;
 export function scheduleChangeDetection(callback: VoidFunction, priority: Priority): VoidFunction;
 /**
  * @description
- * Schedules a task with provided callback which will be executed. The main difference from ```scheduleTask()``` is that it is involved
- * internal coalescing mechanism. Consider to use ```detectChangesSync()``` function to improve coalescing. The example
+ * Schedules a task with provided callback which will be executed. The main difference from `scheduleTask()` is that it is involved
+ * internal coalescing mechanism. Consider to use `detectChangesSync()` function to improve coalescing. The example
  * below illustrates how coalescing works.
  * ```ts
  *  private _cdRef = inject(ChangeDetectionRef);
@@ -343,7 +343,7 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  *    }, Priority.Normal, null);
  *  }
  * ```
- * As you can see, in concurrent task execution context you can trigger change detection once. With ```detectChanges()``` function
+ * As you can see, in concurrent task execution context you can trigger change detection once. With `detectChanges()` function
  * used side by side, there is a situation where coalescing will appear.
  * ```ts
  *  scheduleChangeDetection(() => {
@@ -353,7 +353,7 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  *
  *  detectChanges(this._cdRer); // Task successfully scheduled, but will be aborted
  * ```
- * However if you provide higher priority to ```detectChanges()``` function, coalescing will failed and change detection will be triggered twice.
+ * However if you provide higher priority to `detectChanges()` function, coalescing will failed and change detection will be triggered twice.
  * ```ts
  *  //This task has default Priority.Normal.
  *  scheduleChangeDetection(() => {
@@ -372,7 +372,7 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  *    detectChangesSync(this._cdRef); // This call will trigger change detection.
  *  }, Priority.Normal, null);
  * ```
- * To improve coalescing for these unfavorable scenarios, provide ```cdRef``` to ```scheduleChangeDetection()``` function,
+ * To improve coalescing for these unfavorable scenarios, provide `cdRef` to `scheduleChangeDetection()` function,
  * as a third argument.
  * ```ts
  *  scheduleChangeDetection(() => {
@@ -381,8 +381,8 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  *
  *  detectChanges(this._cdRef);
  * ```
- * Task in witch is involved coalescing system of change detection is called ```dirty task```. In contrast task created with
- * function ```scheduleTask()``` is called ```clean task```. ```Clean task``` can be aborted only by function returned by ```scheduleTask()```.
+ * Task in witch is involved coalescing system of change detection is called `dirty task`. In contrast task created with
+ * function `scheduleTask()` is called `clean task`. `Clean tas`` can be aborted only by function returned by `scheduleTask()`.
  *
  * @caution
  * There is nothing to prevent you to use multiple ```ChangeDetectionRef``` objects in callbacks body, but remember that internal coalescing
@@ -475,10 +475,10 @@ export function scheduleChangeDetection(
 }
 
 /**
- * Schedules a task with default priority (```Priority.Normal```) and with provided callback witch will be executed.
- * Task created with that function is called ```clean task```. That means there is not involved any coalescing system related to
- * change detection, and that task can be aborted only by function returned by ```scheduleTask()```. If you want to know more
- * about difference between ```clean task``` and ```dirty task``` , read a description of ```scheduleChangeDetection()``` function.
+ * Schedules a task with default priority (`Priority.Normal`) and with provided callback witch will be executed.
+ * Task created with that function is called `clean task`. That means there is not involved any coalescing system related to
+ * change detection, and that task can be aborted only by function returned by `scheduleTask()`. If you want to know more
+ * about difference between `clean task` and `dirty task` , read a description of `scheduleChangeDetection()` function.
  *
  * @param callback Concurrent task callback.
  * @returns Abort task function.
@@ -489,10 +489,10 @@ export function scheduleChangeDetection(
  */
 export function scheduleTask(callback: VoidFunction): VoidFunction;
 /**
- * Schedules a task with provided callback witch will be executed. Task created with that function is called ```clean task```.
+ * Schedules a task with provided callback witch will be executed. Task created with that function is called `clean task`.
  * That means there is not involved any coalescing system related to change detection, and that task can be aborted only by
- * function returned by ```scheduleTask()```. If you want to know more about difference between ```clean task``` and
- * ```dirty task``` , read a description of ```scheduleChangeDetection()``` function.
+ * function returned by `scheduleTask()`. If you want to know more about difference between `clean task` and
+ * `dirty task` , read a description of `scheduleChangeDetection()` function.
  *
  * @param callback Concurrent task callback.
  * @param priority Task priority.
@@ -519,10 +519,10 @@ export function scheduleTask(callback: VoidFunction, priority: Priority = Priori
 
 /**
  * @description
- * Tries to invoke ```cdRef.detectChanges()``` method synchronously, unless internal coalescing system will prevent this action.
- * To learn more, see descriptions of ```scheduleTask()``` and ```detectChanges()``` functions.
+ * Tries to invoke `cdRef.detectChanges()` method synchronously, unless internal coalescing system will prevent this action.
+ * To learn more, see descriptions of `scheduleChangeDetection()` and `detectChanges()` functions.
  *
- * @param cdRef a component ```ChangeDetectorRef``` or ```ViewRef``` of embedded view.
+ * @param cdRef a component `ChangeDetectorRef` or `ViewRef` of embedded view.
  * @returns true if succeeded, other wise it was coalesced with concurrent task.
  * @see {@link scheduleTask}
  * @see {@link detectChanges}
@@ -564,7 +564,7 @@ export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
 
     if (relatedTask.status === TaskStatus.Executing) {
       if (relatedTask.scopeToHandle === scope) {
-        // scheduleTask(...) with cdRef as third arg was used to schedule this task. We must consume cdRef now.
+        // scheduleChangeDetection(...) with cdRef as third arg was used to schedule this task. We must consume cdRef now.
         relatedTask.scopeToHandle = null;
         cdRef.detectChanges(); // Coalescing is handled by scheduleChangeDetection(...) function.
         return true;
