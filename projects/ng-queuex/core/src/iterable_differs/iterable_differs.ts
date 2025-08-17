@@ -1,5 +1,9 @@
-import { inject, IterableChangeRecord, NgIterable, StaticProvider, TrackByFunction } from "@angular/core";
+import { inject, Injectable, IterableChangeRecord, NgIterable, StaticProvider, TrackByFunction } from "@angular/core";
 import { DefaultQueuexIterableDifferFactory } from "./default_iterable_differ";
+
+export type PresentIterableChangeRecord<T> = IterableChangeRecord<T> & { readonly previousIndex: number; readonly currentIndex: number };
+export type RemovedIterableChangeRecord<T> = IterableChangeRecord<T> & { readonly previousIndex: number; readonly currentIndex: null };
+export type AddedIterableChangeRecord<T> = IterableChangeRecord<T> & { readonly previousIndex: null; readonly currentIndex: number };
 
 /**
  * A strategy for tracking changes over time to an iterable.
@@ -26,7 +30,7 @@ export interface QueuexIterableChanges<T> {
    * @param handler An object whats handle changes.
    * @see {@link IterableChangeRecord}
    */
-  provideChanges(handler: QueuexIterableChangeHandler<T>): void
+  applyOperations(handler: QueuexIterableChangeOperationHandler<T>): void
 
   /**
    * A current state collection length, reflecting items count.
@@ -37,29 +41,27 @@ export interface QueuexIterableChanges<T> {
 /**
  * A strategy for handling collection changes.
  */
-export interface QueuexIterableChangeHandler<T> {
+export interface QueuexIterableChangeOperationHandler<T> {
   /**
    * Handles a new added item.
    * @param record Added record.
-   * @param index Position where item should be inserted. Undefined if item should be appended.
    */
-  add(record: IterableChangeRecord<T>, index: number | undefined): void;
+  add(record: AddedIterableChangeRecord<T>): void;
 
   /**
    * Handles a removed item.
    * @param record Removed record
    * @param adjustedIndex Position from where item should be removed, adjusted to current changing state during iteration.
    */
-  remove(record: IterableChangeRecord<T>, adjustedIndex: number): void;
+  remove(record: RemovedIterableChangeRecord<T>, adjustedIndex: number): void;
 
   /**
    * Handles a moved item.
    * @param record Moved record.
    * @param adjustedPreviousIndex A previous position of item, adjusted to current changing state during iteration.
-   * @param currentIndex A current position of item, where should be placed.
    * @param changed True if identity has changed, otherwise false.
    */
-  move(record: IterableChangeRecord<T>, adjustedPreviousIndex: number, currentIndex: number, changed: boolean): void;
+  move(record: PresentIterableChangeRecord<T>, adjustedPreviousIndex: number, changed: boolean): void;
 
   /**
    * It is invoked for item where you should not do changes to target state during iteration. To illustrate that, lets
@@ -69,10 +71,9 @@ export interface QueuexIterableChangeHandler<T> {
    * During change providing , when on target array you remove second element, third one will already change position,
    * so there is no need to made that change. However if target state relies current item position, this hook can provide that handling.
    * @param record Unchanged record.
-   * @param index Current position of item
    * @param changed True if identity has changed, otherwise false.
    */
-  noop(record: IterableChangeRecord<T>, index: number, changed: boolean): void;
+  noop(record: PresentIterableChangeRecord<T>, changed: boolean): void;
 
   /**
    * This callback is called when iteration is finished.
@@ -86,16 +87,17 @@ export interface QueuexIterableDifferFactory {
   create<T>(trackByFn: TrackByFunction<T>): QueuexIterableDiffer<T>
 }
 
+@Injectable({ providedIn: 'root', useFactory: () => new QueuexIterableDiffers([new DefaultQueuexIterableDifferFactory]) })
 export class QueuexIterableDiffers {
 
   constructor(private _factories: QueuexIterableDifferFactory[]) {}
 
-  find(iterable: object): QueuexIterableDifferFactory {
+  find(iterable: any): QueuexIterableDifferFactory {
     const factory = this._factories.find((f) => f.supports(iterable));
     if (factory) {
       return factory;
     } else {
-      throw new Error(`Cannot find iterable change tracker for ${typeof iterable}!`);
+      throw new Error(`Cannot find a differ supporting object '${iterable}' of type '${getTypeName(iterable)}'!`);
     }
   }
 
@@ -119,11 +121,11 @@ export class QueuexIterableDiffers {
    * })
    * ```
    */
-  extend(factories: QueuexIterableDifferFactory[]): StaticProvider {
+  static extend(factories: QueuexIterableDifferFactory[]): StaticProvider {
     return {
       provide: QueuexIterableDiffers,
       useFactory: () => {
-        const parent = inject(QueuexIterableDiffers, { optional: true });
+        const parent = inject(QueuexIterableDiffers, { optional: true, skipSelf: true });
         // if parent is null, it means that we are in the root injector and we have just overridden
         // the default injection mechanism for QueuexIterableDiffers.
         return QueuexIterableDiffers._create(factories, parent || new QueuexIterableDiffers([new DefaultQueuexIterableDifferFactory()]))
@@ -137,4 +139,11 @@ export class QueuexIterableDiffers {
     }
     return new QueuexIterableDiffers(factories);
   }
+}
+
+function getTypeName(arg: any): string {
+  if (typeof arg === 'object' || typeof arg === 'function') {
+    return arg.constructor.name;
+  }
+  return typeof arg;
 }

@@ -10,7 +10,7 @@ import {
   ZoneTask,
   TaskStatus,
   noopFn,
-  taskCleanup
+  // taskCleanup
 } from './scheduler_utils';
 
 interface FlushWorkFn {
@@ -69,18 +69,22 @@ let isHostCallbackScheduled = false;
 
 function notifyTaskListenersAndCleanup(task: SchedulerTask) {
   try {
-    while (task.onExecutedListeners.length) {
+    while (task.onExecutedListeners && task.onExecutedListeners.length) {
       task.onExecutedListeners.shift()!();
     }
-    while (task.internalOnExecutedListeners.length) {
+    while (task.internalOnExecutedListeners && task.internalOnExecutedListeners.length) {
       task.internalOnExecutedListeners.shift()!();
     }
   } finally {
-    if (task.onExecutedListeners.length && task.internalOnExecutedListeners.length) {
+    if (
+      (task.onExecutedListeners && task.onExecutedListeners.length) ||
+      (task.internalOnExecutedListeners && task.internalOnExecutedListeners.length)
+    ) {
       notifyTaskListenersAndCleanup(task);
-    } else {
-      task.cleanup();
-    }
+    } /* else {
+      task.cleanup(); // or just task.scopeToHandle = null;
+       //Good reason for that will be a caching implementation;
+    } */
   }
 }
 
@@ -162,9 +166,12 @@ function workLoop(
           try {
             callback();
           } finally {
-            notifyTaskListenersAndCleanup(currentTask);
-            currentTask.status = TaskStatus.Executed;
-            currentTime = getCurrentTime();
+            try {
+              notifyTaskListenersAndCleanup(currentTask);
+            } finally {
+              currentTask.status = TaskStatus.Executed;
+              currentTime = getCurrentTime();
+            }
           }
         }
         if (currentTask === peek(taskQueue)) {
@@ -247,10 +254,11 @@ export function scheduleCallback(
     scopeToHandle: null,
     abort: noopFn,
     beforeExecute: noopFn,
-    cleanup: taskCleanup,
     isClean: true,
-    onExecutedListeners:[],
-    internalOnExecutedListeners: [],
+    onExecutedListeners: null,
+    internalOnExecutedListeners: null,
+    onAbort: noopFn,
+    // cleanup: taskCleanup <-- Maybe if there will be implemented caching, then there is good reason to cleanup after task was executed, setting scopeToHandle to null;
   };
 
   newTask.sortIndex = expirationTime;
@@ -316,15 +324,11 @@ export function whenIdle(attempts: number = 5): Promise<void> {
   });
 }
 
-export function setOnIdle(fn: Function | null): void {
-  fn ? onIdle = fn : onIdle = noopFn;
-}
-
 /**
  * Determines that the current stack frame is within concurrent task context.
  * @returns True if current stack frame is within concurrent task context.
  */
-export function isConcurrentTaskContext(): boolean {
+export function isInConcurrentTaskContext(): boolean {
   return currentTask !== null && currentTask.status === TaskStatus.Executing;
 }
 
@@ -332,9 +336,9 @@ export function isConcurrentTaskContext(): boolean {
  * Asserts that the current stack frame is within an concurrent task context.
  * @param message Error message when assertion failed!.
  */
-export function assertConcurrentTaskContext(message?: string): void {
-  if (isConcurrentTaskContext()) { return; }
-  message = message ?? 'assertConcurrentTaskContext(): assertion failed!';
+export function assertInConcurrentTaskContext(message?: string): void {
+  if (isInConcurrentTaskContext()) { return; }
+  message = message ?? 'assertInConcurrentTaskContext(): assertion failed!';
   throw new Error(message);
 }
 
@@ -342,7 +346,7 @@ export function assertConcurrentTaskContext(message?: string): void {
  * Determines that the current stack frame is within concurrent task context and that task is clean.
  * @returns True if current stack frame is within concurrent task context and that task is clean.
  */
-export function isConcurrentCleanTaskContext(): boolean {
+export function isInConcurrentCleanTaskContext(): boolean {
   return currentTask !== null && currentTask.status === TaskStatus.Executing && currentTask.isClean;
 }
 
@@ -350,9 +354,9 @@ export function isConcurrentCleanTaskContext(): boolean {
  * Asserts that the current stack frame is within an concurrent task context and that task is clean.
  * @param message Error message when assertion failed!.
  */
-export function assertConcurrentCleanTaskContext(message?: string): void {
-if (isConcurrentCleanTaskContext()) { return; }
-  message = message ?? 'assertConcurrentCleanTaskContext(): assertion failed!';
+export function assertInConcurrentCleanTaskContext(message?: string): void {
+if (isInConcurrentCleanTaskContext()) { return; }
+  message = message ?? 'assertInConcurrentCleanTaskContext(): assertion failed!';
   throw new Error(message);
 }
 
@@ -360,7 +364,7 @@ if (isConcurrentCleanTaskContext()) { return; }
  * Determines that the current stack frame is within concurrent task context and that task is dirty.
  * @returns True if current stack frame is within concurrent task context and that task is dirty.
  */
-export function isConcurrentDirtyTaskContext(): boolean {
+export function isInConcurrentDirtyTaskContext(): boolean {
   return currentTask !== null && currentTask.status === TaskStatus.Executing && !currentTask.isClean;
 }
 
@@ -368,9 +372,9 @@ export function isConcurrentDirtyTaskContext(): boolean {
  * Asserts that the current stack frame is within an concurrent task context and that task is dirty.
  * @param message Error message when assertion failed!.
  */
-export function assertConcurrentDirtyTaskContext(message?: string): void {
-  if (isConcurrentDirtyTaskContext()) { return; }
-  message = message ?? 'assertConcurrentDirtyTaskContext(): assertion failed!';
+export function assertInConcurrentDirtyTaskContext(message?: string): void {
+  if (isInConcurrentDirtyTaskContext()) { return; }
+  message = message ?? 'assertInConcurrentDirtyTaskContext(): assertion failed!';
   throw new Error(message);
 }
 
@@ -394,8 +398,8 @@ export function assertConcurrentDirtyTaskContext(message?: string): void {
  * @throws If called outside concurrent task context.
  */
 export function onTaskExecuted(listener: VoidFunction): void {
-  assertConcurrentTaskContext('onTaskExecuted(): Stack frame is not in concurrent task context');
-  currentTask!.onExecutedListeners.push(listener);
+  assertInConcurrentTaskContext('onTaskExecuted(): Stack frame is not in concurrent task context');
+  (currentTask!.onExecutedListeners ??= []).push(listener);
 }
 
 export function getCurrentTask(): SchedulerTask | null {
@@ -412,6 +416,10 @@ export function getQueueLength(): number {
 
 export function getTaskAt(index: number): SchedulerTask {
   return taskQueue[index];
+}
+
+export function setOnIdle(fn: Function | null): void {
+  fn ? onIdle = fn : onIdle = noopFn;
 }
 
 
@@ -577,15 +585,4 @@ function requestHostCallback(callback: FlushWorkFn) {
     isMessageLoopRunning = true;
     schedulePerformWorkUntilDeadline();
   }
-}
-
-// function requestHostTimeout(callback: (currentTime: number) => void, ms: number) {
-//   taskTimeoutID = setTimeout(() => {
-//     callback(getCurrentTime());
-//   }, ms) as any;
-// }
-
-function cancelHostTimeout() {
-  clearTimeout(taskTimeoutID);
-  taskTimeoutID = -1;
 }

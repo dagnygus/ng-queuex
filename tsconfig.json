@@ -20,6 +20,8 @@
     "target": "ES2022",
     "module": "preserve",
     "sourceMap": true,
+    "checkJs": true,
+    "allowJs": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -36,6 +38,8 @@
     {
       "path": "./projects/ng-queuex/core/tsconfig.spec.json"
     },
+    {
+      "path": "./projects/ng-queuex/tsconfig.test.json"
+    },
   ],
-
 }

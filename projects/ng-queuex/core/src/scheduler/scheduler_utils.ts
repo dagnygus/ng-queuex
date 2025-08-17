@@ -10,10 +10,12 @@ export interface SchedulerTask {
   scopeToHandle: object | null;
   abort: VoidFunction;
   beforeExecute: VoidFunction;
-  cleanup: VoidFunction;
+  // cleanup: VoidFunction;
   isClean: boolean;
-  onExecutedListeners: VoidFunction[];
-  internalOnExecutedListeners: VoidFunction[];
+  onExecutedListeners: VoidFunction[] | null;
+  internalOnExecutedListeners: VoidFunction[] | null;
+  onAbort: VoidFunction;
+  // cleanup: VoidFunction;
 }
 
 export interface ZoneMinApi {
@@ -150,6 +152,6 @@ export function coercePriority(priority: number): Priority {
 
 export const noopFn: VoidFunction = function() {}
 
-export function taskCleanup(this: SchedulerTask): void {
-  this.scopeToHandle = null;
-}
+// export function taskCleanup(this: SchedulerTask): void {
+//   this.scopeToHandle = null;
+// }

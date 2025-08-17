@@ -6,8 +6,8 @@
     "outDir": "../../../out-tsc/spec",
     "types": [
       "jasmine",
-      "node"
     ]
   },
-  "include": [ "src/**/*.ts", "src/public-api.ts" ]
+  "include": [ "src/**/*.ts", "public-api.ts", "index.ts" ],
+  "exclude": ["**/*.test.ts"]
 }

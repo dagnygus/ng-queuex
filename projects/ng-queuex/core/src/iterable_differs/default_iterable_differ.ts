@@ -1,5 +1,5 @@
 import { IterableChangeRecord, NgIterable, TrackByFunction } from "@angular/core";
-import { QueuexIterableChangeHandler, QueuexIterableChanges, QueuexIterableDiffer, QueuexIterableDifferFactory } from "./iterable_differs";
+import { QueuexIterableChangeOperationHandler, QueuexIterableChanges, QueuexIterableDiffer, QueuexIterableDifferFactory } from "./iterable_differs";
 
 const trackByIdentity = (_: number, item: any) => item;
 
@@ -49,8 +49,7 @@ export class DefaultQueuexIterableDiffer<T> implements QueuexIterableDiffer<T>, 
 
   constructor(private _trackByFn: TrackByFunction<T>) {}
 
-  provideChanges(handler: QueuexIterableChangeHandler<T>): void {
-    if (!this._isDirty()) { return; }
+  applyOperations(handler: QueuexIterableChangeOperationHandler<T>): void {
     let nextIt = this._itHead;
     let nextRemove = this._removalsHead;
     let addRemoveOffset = 0;
@@ -96,14 +95,14 @@ export class DefaultQueuexIterableDiffer<T> implements QueuexIterableDiffer<T>, 
 
       if (adjPreviousIndex !== currentIndex) {
         if (record.previousIndex == null) {
-          handler.add(record, currentIndex === null ? undefined : currentIndex);
+          handler.add(record as any);
         } else if (currentIndex == null) {
-          handler.remove(record, adjPreviousIndex);
+          handler.remove(record as any, adjPreviousIndex);
         } else if (adjPreviousIndex !== null) {
-          handler.move(record, adjPreviousIndex, currentIndex, record === this._identityChangesHead || record._prevIdentityChange !== null);
+          handler.move(record as any, adjPreviousIndex, record._isIdentityChange);
         }
       } else {
-        handler.noop(record, currentIndex, record === this._identityChangesHead || record._prevIdentityChange !== null);
+        handler.noop(record as any, record._isIdentityChange);
       }
     }
     handler.done();
@@ -142,7 +141,7 @@ export class DefaultQueuexIterableDiffer<T> implements QueuexIterableDiffer<T>, 
         } else {
           if (mayBeDirty) {
             // TODO(misko): can we limit this to duplicates only?
-            record = this._verifyReinsertion(record, item, itemTrackBy, index);
+            record = this._verifyReinsertion(record, itemTrackBy, index);
           }
           if (!Object.is(record.item, item)) this._addIdentityChange(record, item);
         }
@@ -159,7 +158,7 @@ export class DefaultQueuexIterableDiffer<T> implements QueuexIterableDiffer<T>, 
         } else {
           if (mayBeDirty) {
             // TODO(misko): can we limit this to duplicates only?
-            record = this._verifyReinsertion(record, item, itemTrackBy, index);
+            record = this._verifyReinsertion(record, itemTrackBy, index);
           }
           if (!Object.is(record.item, item)) this._addIdentityChange(record, item);
         }
@@ -199,7 +198,7 @@ export class DefaultQueuexIterableDiffer<T> implements QueuexIterableDiffer<T>, 
         record.previousIndex = record.currentIndex;
       }
       for (record = this._identityChangesHead; record !== null; record = record._nextIdentityChange) {
-        record._prevIdentityChange = null;
+        record._isIdentityChange = false;
       }
       this._movesHead = this._movesTail = null;
       this._removalsHead = this._removalsTail = null;
@@ -294,7 +293,7 @@ export class DefaultQueuexIterableDiffer<T> implements QueuexIterableDiffer<T>, 
    */
   private _verifyReinsertion(
     record: IterableChangeRecord_<T>,
-    item: T,
+    // item: T,
     itemTrackBy: any,
     index: number,
   ): IterableChangeRecord_<T> {
@@ -518,11 +517,10 @@ export class DefaultQueuexIterableDiffer<T> implements QueuexIterableDiffer<T>, 
 
   private _addIdentityChange(record: IterableChangeRecord_<T>, item: T) {
     record.item = item;
+    record._isIdentityChange = true
     if (this._identityChangesTail === null) {
       this._identityChangesTail = this._identityChangesHead = record;
-      record._prevIdentityChange = null;
     } else {
-      record._prevIdentityChange = this._identityChangesTail;
       this._identityChangesTail = this._identityChangesTail._nextIdentityChange = record;
     }
     return record;
@@ -664,16 +662,12 @@ class IterableChangeRecord_<T> implements IterableChangeRecord<T> {
   _nextRemoved: IterableChangeRecord_<T>|null = null;
   /** @internal */
   _nextAdded: IterableChangeRecord_<T>|null = null;
-  // /** @internal */
-  // _prevAdded: IterableChangeRecord_<V>|null = null;
   /** @internal */
   _nextMoved: IterableChangeRecord_<T>|null = null;
-  // /** @internal */
-  // _prevMoved: IterableChangeRecord_<V>|null = null;
   /** @internal */
   _nextIdentityChange: IterableChangeRecord_<T>|null = null;
   /** @internal */
-  _prevIdentityChange: IterableChangeRecord_<T>|null = null;
+  _isIdentityChange = false
 
 
   constructor(public item: T, public trackById: any) {}

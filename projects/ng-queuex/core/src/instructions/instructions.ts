@@ -1,33 +1,61 @@
 import type {
-  ViewRef,
-  EmbeddedViewRef,
-} from "@angular/core";
-import type {
-  assertConcurrentTaskContext,
-  assertConcurrentCleanTaskContext,
-  assertConcurrentDirtyTaskContext,
-  isConcurrentDirtyTaskContext
+  assertInConcurrentTaskContext,
+  assertInConcurrentCleanTaskContext,
+  assertInConcurrentDirtyTaskContext,
+  isInConcurrentDirtyTaskContext
 } from "../scheduler/scheduler";
-import { ChangeDetectorRef, inject } from "@angular/core";
+import type {
+  provideNgQueuexIntegration
+} from "../environment/environment";
+import {
+  ChangeDetectorRef,
+} from "@angular/core";
 import {
   coercePriority,
+  noopFn,
   Priority,
   SchedulerTask,
   TaskStatus,
-  noopFn
 } from "../scheduler/scheduler_utils";
 import {
   getCurrentTask,
-  isConcurrentCleanTaskContext,
-  isConcurrentTaskContext,
+  isInConcurrentCleanTaskContext,
+  isInConcurrentTaskContext,
   scheduleCallback
 } from "../scheduler/scheduler";
+import { Integrator } from "../environment/environment";
 
 declare const ngDevMode: boolean | undefined;
 
 type _ViewRef = ChangeDetectorRef & { _lView?: object };
 
+const INTEGRATION_NOT_PROVIDED_MESSAGE =
+  '"@ng-queuex/core" integration was not provided to Angular! ' +
+  'Use provideNgQueuexIntegration() function to in bootstrapApplication() function ' +
+  'to add crucial environment providers for integration.';
+
+const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowed!'
+
 const coalescingScopes = new WeakMap<object, SchedulerTask>();
+
+/**
+ * @description
+ * An interface describing task aborting function. Invoking this function without arguments will abort task. However if you provide a function, it will not abort task but instead it
+ * will set a callback what will run when task gets aborted. If there already is a callback, it will be overridden.
+ */
+export interface AbortTaskFunction {
+  /**
+   * @description
+   * Aborting task call.
+   */
+  (): void;
+
+  /**
+   * @description
+   * Sets a callback what will run when task gets aborted. If there already is a callback, it will be overridden.
+   */
+  (abortCallback: VoidFunction | null): void;
+}
 
 /**
  * @description
@@ -68,16 +96,27 @@ const coalescingScopes = new WeakMap<object, SchedulerTask>();
  *    detectChanges(this._cdRef, Priority.High);
  *  }
  * ```
- * Change detection scheduled with higher priority will abort this one with lower.
+ * Change detection scheduled with higher priority will abort this one with lower. Regardless of whatever the task gets aborted by you or by internal
+ * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * ```ts
+ *  const abortTask = detectChanges(this._cdRef);
  *
- * @param cdRef A component ```ChangeDetectorRef``` or ```ViewRef``` of the embedded view.
- * @returns abort task function.
+ *  abortTask(() => {...}) // abort callback is now set;
+ *  abortTask(() => {...}) // abort callback is overridden by new one;
+ * ```
+ *
+ * @param cdRef A component `ChangeDetectorRef` or `ViewRef` of the embedded view.
+ * @returns Abort task function if change detection was successfully scheduled. Null if change detection was coalesced.
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
  * @see {@link Priority}
  * @see {@link ChangeDetectorRef}
- * @see {@link ViewRef}
- * @see {@link EmbeddedViewRef}
+ * @see ViewRef from "@angular/core"
+ * @see EmbeddedViewRef from "@angular/core"
+ * @see {@link AbortTaskFunction}
+ * @see {@link provideNgQueuexIntegration}
  */
-export function detectChanges(cdRef: ChangeDetectorRef): VoidFunction;
+export function detectChanges(cdRef: ChangeDetectorRef): AbortTaskFunction | null;
 /**
  * @description
  * Schedules a task with default priority (`Priority.Normal`) what will trigger cdRef.detectChanges() method, unless it was schedules earle before
@@ -117,17 +156,36 @@ export function detectChanges(cdRef: ChangeDetectorRef): VoidFunction;
  *    detectChanges(this._cdRef, Priority.High);
  *  }
  * ```
- * Change detection scheduled with higher priority will abort this one with lower.
+ * Change detection scheduled with higher priority will abort this one with lower. Regardless of whatever the task gets aborted by you or by internal
+ * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * ```ts
+ *  const abortTask = detectChanges(this._cdRef);
+ *
+ *  abortTask(() => {...}) // abort callback is now set;
+ *  abortTask(() => {...}) // abort callback is overridden by new one;
+ * ```
+ *
  * @param cdRef A component `ChangeDetectorRef` or `ViewRef` of the embedded view.
  * @param priority Concurrent task execution priority.
- * @returns abort task function.
+ * @returns Abort task function if change detection was successfully scheduled. Null if change detection was coalesced.
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
  * @see {@link Priority}
  * @see {@link ChangeDetectorRef}
- * @see {@link ViewRef}
- * @see {@link EmbeddedViewRef}
+ * @see ViewRef from "@angular/core"
+ * @see EmbeddedViewRef from "@angular/core"
+ * @see {@link AbortTaskFunction}
+ * @see {@link provideNgQueuexIntegration}
  */
-export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority): VoidFunction;
-export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2): VoidFunction {
+export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority): AbortTaskFunction | null;
+export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2): AbortTaskFunction | null {
+
+  if (Integrator.instance === null) {
+    throw new Error('detectChanges(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+  }
+  if (Integrator.instance.isServer) {
+    throw new Error('detectChanges(): ' + SERVER_SIDE_MESSAGE);
+  }
 
   let scope: object = cdRef;
 
@@ -151,7 +209,7 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
       relatedTask.status === TaskStatus.Prepared ||
       relatedTask.status === TaskStatus.Executing
     ) {
-      return noopFn;
+      return null;
     }
 
     // At this place related task is pending.
@@ -171,16 +229,27 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
     task = null;
   };
 
+  task.internalOnExecutedListeners = [];
+
   task.internalOnExecutedListeners.push(function () {
     coalescingScopes.delete(scope)
   })
 
-  function abortTask(): void {
+  function abortTask(cb?: VoidFunction | null): void {
     if (task) {
-      task.callback = null;
-      task.status = TaskStatus.Aborted;
-      task = null;
-      coalescingScopes.delete(scope);
+      if (typeof cb === 'function') {
+        task.onAbort = cb;
+      } else if (cb === null) {
+        task.onAbort = noopFn;
+      } else {
+        task.callback = null;
+        task.status = TaskStatus.Aborted;
+        const onAbort = task.onAbort;
+        task = null;
+        onAbort();
+        coalescingScopes.delete(scope);
+      }
+
     }
   }
 
@@ -249,15 +318,31 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
  *
  * @caution
  * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
- * mechanism can abort dirty tasks for you. See description of `detectChanges()` function.
+ * mechanism can abort dirty tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
+ * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
+ * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * ```ts
+ *  const abortTask = detectChanges(this._cdRef);
+ *
+ *  abortTask(() => {...}) // abort callback is now set;
+ *  abortTask(() => {...}) // abort callback is overridden by new one;
+ * ```
  *
  * @param callback Concurrent task callback.
  * @returns Abort task function.
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
  * @see {@link Priority}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
+ * @see {@link assertInConcurrentTaskContext}
+ * @see {@link assertInConcurrentDirtyTaskContext}
+ * @see {@link isInConcurrentTaskContext}
+ * @see {@link isInConcurrentDirtyTaskContext}
+ * @see {@link AbortTaskFunction}
+ * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleChangeDetection(callback: VoidFunction): VoidFunction;
+export function scheduleChangeDetection(callback: VoidFunction): AbortTaskFunction;
 /**
  * @description
  * Schedules a task with provided callback which will be executed. The main difference from `scheduleTask()` is that it is involved
@@ -313,20 +398,208 @@ export function scheduleChangeDetection(callback: VoidFunction): VoidFunction;
  *  detectChanges(this._cdRef);
  * ```
  * Task in witch is involved coalescing system of change detection is called `dirty task`. In contrast task created with
- * function `scheduleTask()` is called `clean task`. ```Clean task``` can be aborted only by function returned by `scheduleTask()`.
+ * function `scheduleTask()` is called `clean task`. `Clean task` can be aborted only by function returned by `scheduleTask()`.
  *
  * @caution
  * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
- * mechanism can abort tasks for you. See description of `detectChanges()` function.
+ * mechanism can abort tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
+ * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
+ * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * ```ts
+ *  const abortTask = scheduleChangeDetection(...);
+ *
+ *  abortTask(() => {...}) // abort callback is now set;
+ *  abortTask(() => {...}) // abort callback is overridden by new one;
+ * ```
  *
  * @param callback Concurrent task callback.
  * @param priority Task priority.
  * @returns Abort task function.
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
  * @see {@link Priority}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
+ * @see {@link assertInConcurrentTaskContext}
+ * @see {@link assertInConcurrentDirtyTaskContext}
+ * @see {@link isInConcurrentTaskContext}
+ * @see {@link isInConcurrentDirtyTaskContext}
+ * @see {@link AbortTaskFunction}
+ * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleChangeDetection(callback: VoidFunction, priority: Priority): VoidFunction;
+export function scheduleChangeDetection(callback: VoidFunction, priority: Priority): AbortTaskFunction;
+/**
+ * @description
+ * Schedules a task with provided callback which will be executed. The main difference from `scheduleTask()` is that it is involved
+ * internal coalescing mechanism. Consider to use `detectChangesSync()` function to improve coalescing. The example
+ * below illustrates how coalescing works.
+ * ```ts
+ *  private _cdRef = inject(ChangeDetectionRef);
+ *
+ *  public onButtonClick(): void {
+ *    scheduleChangeDetection(() => {
+ *      detectChangesSync(this._cdRef); //This line will trigger change detection. returns true.
+ *      detectChangesSync(this._cdRef); //This line not trigger change detection. returns false.
+ *      detectChangesSync(this._cdRef); //This line not trigger change detection. returns false.
+ *    }, Priority.Normal, null);
+ *  }
+ * ```
+ * As you can see, in concurrent task execution context you can trigger change detection once. With ```detectChanges()``` function
+ * used side by side, there is a situation where coalescing will appear.
+ * ```ts
+ *  scheduleChangeDetection(() => {
+ *    // This call will abort task created bellow, because that task doesn't have a higher priority
+ *    detectChangesSync(this._cdRef);
+ *  }, Priority.Normal, null);
+ *
+ *  detectChanges(this._cdRer); // Task successfully scheduled, but will be aborted
+ * ```
+ * However if you provide higher priority to `detectChanges()` function, coalescing will failed and change detection will be triggered twice.
+ * ```ts
+ *  //This task has default Priority.Normal.
+ *  scheduleChangeDetection(() => {
+ *    detectChangesSync(this._cdRef); // This call will trigger change detection.
+ *  }, Priority.Normal, null);
+ *
+ *  // Task successfully scheduled and will be execute earlier then task from above.
+ *  detectChanges(this._cdRer, Priority.High);
+ * ```
+ * For same priorities, coalescing will also failed if you change execution order.
+ * ```ts
+ *  //Task successfully scheduled and will be executed earlier then task below.
+ *  detectChanges(this._cdRer);
+ *
+ *  scheduleChangeDetection(() => {
+ *    detectChangesSync(this._cdRef); // This call will trigger change detection.
+ *  }, Priority.Normal, null);
+ * ```
+ * To improve coalescing for these unfavorable scenarios, provide `cdRef` to `scheduleChangeDetection()` function,
+ * as a third argument.
+ * ```ts
+ *  scheduleChangeDetection(() => {
+ *    detectChangesSync(this._cdRef);
+ *  }, Priority.Normal, this._cdRef);
+ *
+ *  detectChanges(this._cdRef);
+ * ```
+ * Task in witch is involved coalescing system of change detection is called `dirty task`. In contrast task created with
+ * function `scheduleTask()` is called `clean task`. `Clean task` can be aborted only by function returned by `scheduleTask()`.
+ *
+ * @caution
+ * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
+ * mechanism can abort tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
+ * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
+ * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * ```ts
+ *  const abortTask = scheduleChangeDetection(...);
+ *
+ *  abortTask(() => {...}) // abort callback is now set;
+ *  abortTask(() => {...}) // abort callback is overridden by new one;
+ * ```
+ *
+ * @param callback Concurrent task callback.
+ * @param priority Task priority.
+ * @returns Abort task function.
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
+ * @see {@link Priority}
+ * @see {@link detectChangesSync}
+ * @see {@link detectChanges}
+ * @see {@link assertInConcurrentTaskContext}
+ * @see {@link assertInConcurrentDirtyTaskContext}
+ * @see {@link isInConcurrentTaskContext}
+ * @see {@link isInConcurrentDirtyTaskContext}
+ * @see {@link AbortTaskFunction}
+ * @see {@link provideNgQueuexIntegration}
+ */
+export function scheduleChangeDetection(callback: VoidFunction, priority: Priority, cdRef: null): AbortTaskFunction;
+/**
+ * @description
+ * Schedules a task with provided callback which will be executed. The main difference from `scheduleTask()` is that it is involved
+ * internal coalescing mechanism. Consider to use `detectChangesSync()` function to improve coalescing. The example
+ * below illustrates how coalescing works.
+ * ```ts
+ *  private _cdRef = inject(ChangeDetectionRef);
+ *
+ *  public onButtonClick(): void {
+ *    scheduleChangeDetection(() => {
+ *      detectChangesSync(this._cdRef); //This line will trigger change detection. returns true.
+ *      detectChangesSync(this._cdRef); //This line not trigger change detection. returns false.
+ *      detectChangesSync(this._cdRef); //This line not trigger change detection. returns false.
+ *    }, Priority.Normal);
+ *  }
+ * ```
+ * As you can see, in concurrent task execution context you can trigger change detection once. With `detectChanges()` function
+ * used side by side, there is a situation where coalescing will appear.
+ * ```ts
+ *  scheduleChangeDetection(() => {
+ *    // This call will abort task created bellow, because that task doesn't have a higher priority
+ *    detectChangesSync(this._cdRef);
+ *  }, Priority.Normal);
+ *
+ *  detectChanges(this._cdRer); // Task successfully scheduled, but will be aborted
+ * ```
+ * However if you provide higher priority to `detectChanges()` function, coalescing will failed and change detection will be triggered twice.
+ * ```ts
+ *  //This task has default Priority.Normal.
+ *  scheduleChangeDetection(() => {
+ *    detectChangesSync(this._cdRef); // This call will trigger change detection.
+ *  }, Priority.Normal);
+ *
+ *  // Task successfully scheduled and will be execute earlier then task from above.
+ *  detectChanges(this._cdRer, Priority.High);
+ * ```
+ * For same priorities, coalescing will also failed if you change execution order.
+ * ```ts
+ *  //Task successfully scheduled and will be executed earlier then task below.
+ *  detectChanges(this._cdRer);
+ *
+ *  scheduleChangeDetection(() => {
+ *    detectChangesSync(this._cdRef); // This call will trigger change detection.
+ *  }, Priority.Normal);
+ * ```
+ * To improve coalescing for these unfavorable scenarios, provide `cdRef` to `scheduleChangeDetection()` function,
+ * as a third argument.
+ * ```ts
+ *  scheduleChangeDetection(() => {
+ *    detectChangesSync(this._cdRef);
+ *  }, Priority.Normal, this._cdRef);
+ *
+ *  detectChanges(this._cdRef);
+ * ```
+ * Task in witch is involved coalescing system of change detection is called `dirty task`. In contrast task created with
+ * function `scheduleTask()` is called `clean task`. `Clean tas`` can be aborted only by function returned by `scheduleTask()`.
+ *
+ * @caution
+ * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
+ * mechanism can abort tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
+ * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
+ * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * ```ts
+ *  const abortTask = scheduleChangeDetection(...);
+ *
+ *  abortTask(() => {...}) // abort callback is now set;
+ *  abortTask(() => {...}) // abort callback is overridden by new one;
+ * ```
+ *
+ * @param callback Concurrent task callback.
+ * @param priority Task priority.
+ * @param cdRef A object of type `ChangeDetectorRef` what will be potentially consumed in callbacks body or null.
+ * @returns Abort task function if task was successfully scheduled. Null if change detection was coalesced.
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
+ * @see {@link ChangeDetectorRef}
+ * @see {@link Priority}
+ * @see {@link detectChangesSync}
+ * @see {@link detectChanges}
+ * @see {@link assertInConcurrentTaskContext}
+ * @see {@link assertInConcurrentDirtyTaskContext}
+ * @see {@link isInConcurrentTaskContext}
+ * @see {@link isInConcurrentDirtyTaskContext}
+ * @see {@link AbortTaskFunction}
+ * @see {@link provideNgQueuexIntegration}
+ */
+export function scheduleChangeDetection(callback: VoidFunction, priority: Priority, cdRef: ChangeDetectorRef): AbortTaskFunction | null;
 /**
  * @description
  * Schedules a task with provided callback which will be executed. The main difference from `scheduleTask()` is that it is involved
@@ -385,24 +658,47 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * function `scheduleTask()` is called `clean task`. `Clean tas`` can be aborted only by function returned by `scheduleTask()`.
  *
  * @caution
- * There is nothing to prevent you to use multiple ```ChangeDetectionRef``` objects in callbacks body, but remember that internal coalescing
- * mechanism can abort tasks for you. See description of ```detectChanges()``` function.
+ * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
+ * mechanism can abort tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
+ * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
+ * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * ```ts
+ *  const abortTask = scheduleChangeDetection(...);
+ *
+ *  abortTask(() => {...}) // abort callback is now set;
+ *  abortTask(() => {...}) // abort callback is overridden by new one;
+ * ```
  *
  * @param callback Concurrent task callback.
  * @param priority Task priority.
- * @param cdRef A object of type ```ChangeDetectorRef``` what will be potentially consumed in callbacks body or null.
- * @returns Abort task function.
+ * @param cdRef A object of type `ChangeDetectorRef` what will be potentially consumed in callbacks body or null.
+ * @returns Abort task function if task was successfully scheduled. Null if change detection was coalesced.
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
  * @see {@link ChangeDetectorRef}
  * @see {@link Priority}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
+ * @see {@link assertInConcurrentTaskContext}
+ * @see {@link assertInConcurrentDirtyTaskContext}
+ * @see {@link isInConcurrentTaskContext}
+ * @see {@link isInConcurrentDirtyTaskContext}
+ * @see {@link AbortTaskFunction}
+ * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleChangeDetection(callback: VoidFunction, priority: Priority, cdRef: ChangeDetectorRef | null): VoidFunction;
+export function scheduleChangeDetection(callback: VoidFunction, priority: Priority, cdRef: ChangeDetectorRef | null): AbortTaskFunction | null;
 export function scheduleChangeDetection(
   callback: VoidFunction,
   priority: Priority = Priority.Normal,
   cdRef: ChangeDetectorRef | null = null,
-): VoidFunction {
+): AbortTaskFunction | null {
+
+  if (Integrator.instance === null) {
+    throw new Error('scheduleChangeDetection(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+  }
+  if (Integrator.instance.isServer) {
+    throw new Error('scheduleChangeDetection(): ' + SERVER_SIDE_MESSAGE);
+  }
 
   let scope: object | null = cdRef;
 
@@ -430,7 +726,7 @@ export function scheduleChangeDetection(
         relatedTask.status === TaskStatus.Prepared ||
         relatedTask.status === TaskStatus.Executing
       ) {
-        return noopFn;
+        return null;
       }
 
       //We need to abort this task because it has lower priority.
@@ -447,7 +743,12 @@ export function scheduleChangeDetection(
     task.scopeToHandle = scope;
   }
 
-  task.beforeExecute = function() { task = null; }
+  task.beforeExecute = function() {
+    task!.onAbort = noopFn;
+    task = null;
+  }
+
+  task.internalOnExecutedListeners = [];
 
   task.internalOnExecutedListeners.push(function() {
     if (scope) {
@@ -457,15 +758,24 @@ export function scheduleChangeDetection(
 
 
 
-  function abortTask() {
+  function abortTask(cb?: VoidFunction | null) {
     if (task) {
-      task.callback = null;
-      task.status = TaskStatus.Aborted;
-      task.scopeToHandle = null;
-      task = null;
-      if (scope) {
-        coalescingScopes.delete(scope);
+      if (typeof cb === 'function') {
+        task.onAbort = cb;
+      } else if (cb === null) {
+        task.onAbort = noopFn;
+      } else {
+        task.callback = null;
+        task.status = TaskStatus.Aborted;
+        // task.scopeToHandle = null; // When scheduler will have implement caching, then we can uncomment that line.
+        const onAbort = task.onAbort;
+        task = null;
+        onAbort();
+        if (scope) {
+          coalescingScopes.delete(scope);
+        }
       }
+
     }
   }
 
@@ -482,12 +792,15 @@ export function scheduleChangeDetection(
  *
  * @param callback Concurrent task callback.
  * @returns Abort task function.
- * @see {@link assertConcurrentTaskContext}
- * @see {@link assertConcurrentCleanTaskContext}
- * @see {@link isConcurrentTaskContext}
- * @see {@link isConcurrentCleanTaskContext}
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
+ * @see {@link assertInConcurrentTaskContext}
+ * @see {@link assertInConcurrentCleanTaskContext}
+ * @see {@link isInConcurrentTaskContext}
+ * @see {@link isInConcurrentCleanTaskContext}
+ * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleTask(callback: VoidFunction): VoidFunction;
+export function scheduleTask(callback: VoidFunction): AbortTaskFunction;
 /**
  * Schedules a task with provided callback witch will be executed. Task created with that function is called `clean task`.
  * That means there is not involved any coalescing system related to change detection, and that task can be aborted only by
@@ -497,22 +810,42 @@ export function scheduleTask(callback: VoidFunction): VoidFunction;
  * @param callback Concurrent task callback.
  * @param priority Task priority.
  * @returns Abort task function.
- *  * @see {@link assertConcurrentTaskContext}
- * @see {@link assertConcurrentCleanTaskContext}
- * @see {@link isConcurrentTaskContext}
- * @see {@link isConcurrentCleanTaskContext}
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
+ * @see {@link assertInConcurrentTaskContext}
+ * @see {@link assertInConcurrentCleanTaskContext}
+ * @see {@link isInConcurrentTaskContext}
+ * @see {@link isInConcurrentCleanTaskContext}
+ * @see {@link AbortTaskFunction}
+ * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleTask(callback: VoidFunction, priority: Priority): VoidFunction;
-export function scheduleTask(callback: VoidFunction, priority: Priority = Priority.Normal): VoidFunction {
+export function scheduleTask(callback: VoidFunction, priority: Priority): AbortTaskFunction;
+export function scheduleTask(callback: VoidFunction, priority: Priority = Priority.Normal): AbortTaskFunction {
+
+  if (Integrator.instance === null) {
+    throw new Error('scheduleTask(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+  }
+  if (Integrator.instance.isServer) {
+    throw new Error('scheduleTask(): ' + SERVER_SIDE_MESSAGE);
+  }
 
   let task: SchedulerTask | null = scheduleCallback(coercePriority(priority), callback);
 
   task.beforeExecute = function() { task = null; }
 
-  return function() {
+  return function(cb?: VoidFunction | null) {
     if (task) {
-      task.callback = null;
-      task.status = TaskStatus.Aborted
+      if (typeof cb === 'function') {
+        task.onAbort = cb;
+      } else if (cb === null) {
+        task.onAbort = noopFn;
+      } else {
+        task.callback = null;
+        task.status = TaskStatus.Aborted;
+        const onAbort = task.onAbort;
+        task = null;
+        onAbort();
+      }
     }
   };
 }
@@ -524,15 +857,25 @@ export function scheduleTask(callback: VoidFunction, priority: Priority = Priori
  *
  * @param cdRef a component `ChangeDetectorRef` or `ViewRef` of embedded view.
  * @returns true if succeeded, other wise it was coalesced with concurrent task.
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
  * @see {@link scheduleTask}
  * @see {@link detectChanges}
  * @see {@link ChangeDetectorRef}
- * @see {@link ViewRef}
- * @see {@link EmbeddedViewRef}
+ * @see ViewRef from "@angular/core"
+ * @see EmbeddedViewRef from "@angular/core"
+ * @see {@link provideNgQueuexIntegration}
  */
 export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
 
-  if (isConcurrentCleanTaskContext()) {
+  if (Integrator.instance === null) {
+    throw new Error('detectChangesSync(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+  }
+  if (Integrator.instance.isServer) {
+    throw new Error('detectChangesSync(): This function usage on server is not allowed!');
+  }
+
+  if (isInConcurrentCleanTaskContext()) {
     cdRef.detectChanges();
     return true;
   }
@@ -575,12 +918,12 @@ export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
 
     //At this place related task is pending. If there is prepared task already or executing right now,
     //we need abort related task and trigger cdRef.detectChanges(). if not, then nothing;
-    if (isConcurrentTaskContext()) {
+    if (isInConcurrentTaskContext()) {
       relatedTask.abort();
-      const currentTask = getCurrentTask()!
+      const currentTask = getCurrentTask()!;
       coalescingScopes.set(scope, currentTask);
       cdRef.detectChanges();
-      currentTask.internalOnExecutedListeners.push(function() {
+      (currentTask.internalOnExecutedListeners ??= []).push(function() {
         coalescingScopes.delete(scope);
       });
       return true;
@@ -589,11 +932,11 @@ export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
     }
   } else {
     // At that place we know that this cdRef was not scheduled at all.
-    if (isConcurrentTaskContext()) {
+    if (isInConcurrentTaskContext()) {
       const currentTask = getCurrentTask()!;
       coalescingScopes.set(scope, currentTask);
       cdRef.detectChanges();
-      currentTask.internalOnExecutedListeners.push(function() {
+      (currentTask.internalOnExecutedListeners ??= []).push(function() {
         coalescingScopes.delete(scope);
       });
     } else {

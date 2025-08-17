@@ -74,13 +74,13 @@ function iterableDifferToString<T>(iterableChanges: QueuexIterableChanges<T>): s
   const identityChanges: string[] = [];
   const noops: string[] = [];
 
-  iterableChanges.provideChanges({
+  iterableChanges.applyOperations({
     add(record) {
       const icrStr = icrAsString(record);
       collection.push(icrStr);
       additions.push(icrStr);
     },
-    move(record, _1, _2, changed) {
+    move(record, _, changed) {
       const icrStr = icrAsString(record);
       collection.push(icrStr);
       moves.push(icrStr);
@@ -92,7 +92,7 @@ function iterableDifferToString<T>(iterableChanges: QueuexIterableChanges<T>): s
       const icrStr = icrAsString(record);
       removals.push(icrStr);
     },
-    noop(record, _, changed) {
+    noop(record, changed) {
       const icrStr = icrAsString(record);
       collection.push(icrStr);
       noops.push(icrStr);
@@ -445,19 +445,18 @@ describe('A default QueuexIterableDiffer.', () => {
   function operationsFrom(changes: QueuexIterableChanges<any>): string[] {
     const operations: string[] = [];
 
-    changes.provideChanges({
-      add(record, index) {
-        index = typeof index === 'undefined' ? record.currentIndex! : index
-        operations.push(`INSERT ${stringify(record.item)}[void->${index}]`);
+    changes.applyOperations({
+      add(record) {
+        operations.push(`INSERT ${stringify(record.item)}[void->${record.currentIndex}]`);
       },
-      move(record, adjPrevIndex, currentIndex) {
-        operations.push(`MOVE ${stringify(record.item)}[${adjPrevIndex}->${currentIndex}]`);
+      move(record, adjPrevIndex) {
+        operations.push(`MOVE ${stringify(record.item)}[${adjPrevIndex}->${record.currentIndex}]`);
       },
       remove(record, adjustedIndex) {
         operations.push(`REMOVE ${stringify(record.item)}[${adjustedIndex}->void]`)
       },
-      noop(record, index) {
-        operations.push(`NOOP ${stringify(record.item)}[at ${index}]`)
+      noop(record) {
+        operations.push(`NOOP ${stringify(record.item)}[at ${record.currentIndex}]`)
       },
       done() {
         operations.push('DONE');
@@ -612,6 +611,139 @@ describe('A default QueuexIterableDiffer.', () => {
       'DONE'
     ])
   });
+
+  it('Should previous index to be equal current index and be of type number if there are no changes', () => {
+    const list = [0, 1, 2, 3, 4, 5, 6];
+    let noopsCount = 0;
+    differ.diff(list);
+    differ.diff(list);
+
+    differ.applyOperations({
+      add() {},
+      remove() {},
+      move() {},
+      noop(record) {
+        expect(record.currentIndex).toBe(record.previousIndex);
+        expect(typeof record.previousIndex).toBe('number');
+        noopsCount++;
+      },
+      done() {}
+    })
+
+    expect(noopsCount).toBe(7);
+  });
+
+  it('Should previous and current index be type number after move.', () => {
+    const list1 = [0, 1, 2, 3, 4, 5, 6];
+    const list2 = [0, 1, 2, 6, 3, 4, 5];
+    let noopsCount = 0;
+    let moveCount = 0;
+    differ.diff(list1);
+    differ.diff(list2);
+
+    differ.applyOperations({
+      add() {},
+      remove() {},
+      move(record) {
+        expect(typeof record.previousIndex).toBe('number');
+        expect(typeof record.currentIndex).toBe('number');
+        moveCount++;
+      },
+      noop(record) {
+        expect(typeof record.previousIndex).toBe('number');
+        expect(typeof record.currentIndex).toBe('number');
+        noopsCount++;
+      },
+      done() {}
+    })
+
+    expect(noopsCount).toBe(6);
+    expect(moveCount).toBe(1);
+  });
+
+  it('Should previous index be of type number and current to be null for removed item', () => {
+    const list1 = [0, 1, 2, 3, 4, 5, 6];
+    const list2 = [0, 2, 3, 4, 5];
+    let noopsCount = 0;
+    let removeCount = 0;
+    differ.diff(list1);
+    differ.diff(list2);
+
+    differ.applyOperations({
+      add() {},
+      remove(record) {
+        expect(typeof record.previousIndex).toBe('number');
+        expect(record.currentIndex).toBeNull();
+        removeCount++;
+      },
+      move() {},
+      noop(record) {
+        expect(typeof record.previousIndex).toBe('number');
+        expect(typeof record.currentIndex).toBe('number');
+        noopsCount++;
+      },
+      done() {}
+    })
+
+    expect(noopsCount).toBe(5);
+    expect(removeCount).toBe(2);
+  });
+
+  it('Should previous index to be null and current index to be of type number for inserted item (not appended!)', () => {
+    const list1 = [0, 1, 2, 3, 4, 5, 6];
+    const list2 = [0, 1, 2, 3, 7, 4, 5, 6];
+    let noopsCount = 0;
+    let additionsCount = 0;
+    differ.diff(list1);
+    differ.diff(list2);
+
+     differ.applyOperations({
+      add(record) {
+        expect(record.previousIndex).toBeNull();
+        expect(typeof record.currentIndex).toBe('number');
+        additionsCount++;
+      },
+      remove() {},
+      move() {},
+      noop(record) {
+        expect(typeof record.previousIndex).toBe('number');
+        expect(typeof record.currentIndex).toBe('number');
+        noopsCount++;
+      },
+      done() {}
+    })
+
+    expect(noopsCount).toBe(7);
+    expect(additionsCount).toBe(1);
+  });
+
+  it('Should Should previous index to be null and current index to be of type number for appended item', () => {
+    const list1 = [0, 1, 2, 3, 4, 5, 6];
+    const list2 = [0, 1, 2, 3, 4, 5, 6, 7];
+    let noopsCount = 0;
+    let additionsCount = 0;
+    differ.diff(list1);
+    differ.diff(list2);
+
+     differ.applyOperations({
+      add(record) {
+        expect(record.previousIndex).toBeNull();
+        expect(typeof record.currentIndex).toBe('number');
+        additionsCount++;
+      },
+      remove() {},
+      move() {},
+      noop(record) {
+        expect(typeof record.previousIndex).toBe('number');
+        expect(typeof record.currentIndex).toBe('number');
+        noopsCount++;
+      },
+      done() {}
+    })
+
+    expect(noopsCount).toBe(7);
+    expect(additionsCount).toBe(1);
+  })
 
   it('Should trigger nothing when the list is completely full of replaced items that are tracked by the index', () => {
     differ = new DefaultQueuexIterableDiffer((index) => index);
