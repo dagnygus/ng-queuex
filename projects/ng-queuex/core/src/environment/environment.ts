@@ -143,7 +143,7 @@ export function provideNgQueuexIntegration(): EnvironmentProviders {
  * ```ts
  *  TestBed.configureTestingModule({
  *    providers: [provideNgQueuexIntegration()]
- *    }).runInInjectionContext(() => {
+ *  }).runInInjectionContext(() => {
  *    completeIntegrationForTest();
  *  });
  * ```
