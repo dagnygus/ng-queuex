@@ -74,7 +74,7 @@ describe('Scheduler.', () => {
             const doneCb = () => {
               queueMicrotask(() => {
 
-                expect(info).toEqual([
+                expect(log).toEqual([
                   ExecutionContextInfo.CurrentTest,
                   ExecutionContextInfo.ScheduledCallback
                 ]);
@@ -82,16 +82,16 @@ describe('Scheduler.', () => {
               });
             }
 
-            const info: string[] = [];
+            const log: string[] = [];
 
             scheduleCallback(priorityLevel, () => {
               doSomethingForSomeTime();
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
               doneCb();
             });
 
-            info.push(ExecutionContextInfo.CurrentTest);
-            expect(info.length).toEqual(1);
+            log.push(ExecutionContextInfo.CurrentTest);
+            expect(log.length).toEqual(1);
 
           });
 
@@ -128,9 +128,9 @@ describe('Scheduler.', () => {
           });
 
           it(expectation3, (done) => {
-            const info: string[] = [];
+            const log: string[] = [];
             const doneCb = () => queueMicrotask(() => {
-              expect(info).toEqual([
+              expect(log).toEqual([
                 ExecutionContextInfo.CurrentTest,
                 ExecutionContextInfo.BeforeExecute,
                 ExecutionContextInfo.ScheduledCallback,
@@ -142,21 +142,21 @@ describe('Scheduler.', () => {
             });
 
             const task = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
               doneCb();
             });
 
             task.beforeExecute = () => {
               queueMicrotask(() => {
-                info.push(ExecutionContextInfo.Microtask);
+                log.push(ExecutionContextInfo.Microtask);
               })
-              info.push(ExecutionContextInfo.BeforeExecute);
+              log.push(ExecutionContextInfo.BeforeExecute);
             }
 
-            (task.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
-            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+            (task.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2));
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             expect(getQueueLength()).toEqual(1);
           });
@@ -198,9 +198,9 @@ describe('Scheduler.', () => {
 
 
           it(expectation5, (done) => {
-            const info: string[] = [];
+            const log: string[] = [];
             const doneCb = () => queueMicrotask(() => {
-              expect(info).toEqual([
+              expect(log).toEqual([
                 ExecutionContextInfo.CurrentTest,
                 ExecutionContextInfo.BeforeExecute,
                 ExecutionContextInfo.ScheduledCallback,
@@ -214,24 +214,24 @@ describe('Scheduler.', () => {
             });
 
             const task = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
               doneCb();
             });
 
             task.beforeExecute = () => {
               queueMicrotask(() => {
-                info.push(ExecutionContextInfo.Microtask);
+                log.push(ExecutionContextInfo.Microtask);
               })
-              info.push(ExecutionContextInfo.BeforeExecute);
+              log.push(ExecutionContextInfo.BeforeExecute);
             }
 
-            (task.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
-            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+            (task.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2));
 
-            (task.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1));
-            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2));
+            (task.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1));
+            task.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2));
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             expect(getQueueLength()).toEqual(1);
           });
@@ -241,45 +241,45 @@ describe('Scheduler.', () => {
         describeFakeAsync(() => {
           it(expectation1, fakeAsync(() => {
 
-            const info: string[] = [];
+            const log: string[] = [];
 
             scheduleCallback(priorityLevel, () => {
               doSomethingForSomeTime();
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
             });
 
-            info.push(ExecutionContextInfo.CurrentTest);
-            expect(info.length).toEqual(1);
+            log.push(ExecutionContextInfo.CurrentTest);
+            expect(log.length).toEqual(1);
 
             flush(20)
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.ScheduledCallback
             ]);
           }));
 
           it(expectation2, fakeAsync(() => {
-            const info: string[] = [];
+            const log: string[] = [];
 
             const task = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
             });
 
             task.beforeExecute = () => {
               queueMicrotask(() => {
-                info.push(ExecutionContextInfo.Microtask);
+                log.push(ExecutionContextInfo.Microtask);
               })
-              info.push(ExecutionContextInfo.BeforeExecute);
+              log.push(ExecutionContextInfo.BeforeExecute);
             }
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             expect(getQueueLength()).toEqual(1);
 
             flush(10);
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.BeforeExecute,
               ExecutionContextInfo.ScheduledCallback,
@@ -355,31 +355,31 @@ describe('Scheduler.', () => {
           }));
 
           it(expectation5, fakeAsync(() => {
-            const info: string[] = [];
+            const log: string[] = [];
 
             const task = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
             });
 
             task.beforeExecute = () => {
               queueMicrotask(() => {
-                info.push(ExecutionContextInfo.Microtask);
+                log.push(ExecutionContextInfo.Microtask);
               })
-              info.push(ExecutionContextInfo.BeforeExecute);
+              log.push(ExecutionContextInfo.BeforeExecute);
             }
 
-            (task.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
-            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+            (task.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2));
 
-            (task.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1));
-            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2));
+            (task.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1));
+            task.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2));
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             expect(getQueueLength()).toEqual(1);
             flush(20);
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.BeforeExecute,
               ExecutionContextInfo.ScheduledCallback,
@@ -396,44 +396,44 @@ describe('Scheduler.', () => {
         describeAsyncAwait(() => {
           it(expectation1, async () => {
 
-            const info: string[] = [];
+            const log: string[] = [];
 
             scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
             });
 
-            info.push(ExecutionContextInfo.CurrentTest);
-            expect(info.length).toEqual(1);
+            log.push(ExecutionContextInfo.CurrentTest);
+            expect(log.length).toEqual(1);
 
             await whenIdle();
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.ScheduledCallback
             ]);
           });
 
           it(expectation2, async () => {
-            const info: string[] = [];
+            const log: string[] = [];
 
             const task = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
             });
 
             task.beforeExecute = () => {
               queueMicrotask(() => {
-                info.push(ExecutionContextInfo.Microtask);
+                log.push(ExecutionContextInfo.Microtask);
               })
-              info.push(ExecutionContextInfo.BeforeExecute);
+              log.push(ExecutionContextInfo.BeforeExecute);
             }
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             expect(getQueueLength()).toEqual(1);
 
             await whenIdle();
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.BeforeExecute,
               ExecutionContextInfo.ScheduledCallback,
@@ -443,29 +443,29 @@ describe('Scheduler.', () => {
           });
 
           it(expectation3, async () => {
-            const info: string[] = [];
+            const log: string[] = [];
 
             const task = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
             });
 
             task.beforeExecute = () => {
               queueMicrotask(() => {
-                info.push(ExecutionContextInfo.Microtask);
+                log.push(ExecutionContextInfo.Microtask);
               })
-              info.push(ExecutionContextInfo.BeforeExecute);
+              log.push(ExecutionContextInfo.BeforeExecute);
             }
 
-            (task.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
-            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+            (task.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2));
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             expect(getQueueLength()).toEqual(1);
 
             await whenIdle();
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.BeforeExecute,
               ExecutionContextInfo.ScheduledCallback,
@@ -476,30 +476,30 @@ describe('Scheduler.', () => {
           });
 
           it(expectation4, async () => {
-            const info: string[] = [];
+            const log: string[] = [];
 
             const task = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
             });
 
             task.beforeExecute = () => {
               queueMicrotask(() => {
-                info.push(ExecutionContextInfo.Microtask);
+                log.push(ExecutionContextInfo.Microtask);
               })
-              info.push(ExecutionContextInfo.BeforeExecute);
+              log.push(ExecutionContextInfo.BeforeExecute);
             }
 
 
-            (task.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1))
-            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2))
+            (task.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1))
+            task.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2))
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             expect(getQueueLength()).toEqual(1);
 
             await whenIdle();
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.BeforeExecute,
               ExecutionContextInfo.ScheduledCallback,
@@ -510,32 +510,32 @@ describe('Scheduler.', () => {
           });
 
           it(expectation5, async () => {
-            const info: string[] = [];
+            const log: string[] = [];
 
             const task = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback);
+              log.push(ExecutionContextInfo.ScheduledCallback);
             });
 
             task.beforeExecute = () => {
               queueMicrotask(() => {
-                info.push(ExecutionContextInfo.Microtask);
+                log.push(ExecutionContextInfo.Microtask);
               })
-              info.push(ExecutionContextInfo.BeforeExecute);
+              log.push(ExecutionContextInfo.BeforeExecute);
             }
 
-            (task.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1));
-            task.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2));
+            (task.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1));
+            task.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2));
 
-            (task.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1))
-            task.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2))
+            (task.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1))
+            task.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2))
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             expect(getQueueLength()).toEqual(1);
 
             await whenIdle();
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.BeforeExecute,
               ExecutionContextInfo.ScheduledCallback,
@@ -715,7 +715,7 @@ describe('Scheduler.', () => {
 
           it(expectation3, (done) => {
             const doneCb = () => queueMicrotask(() => {
-              expect(info).toEqual([
+              expect(log).toEqual([
                 ExecutionContextInfo.CurrentTest,
                 ExecutionContextInfo.BeforeExecuteTask1,
                 ExecutionContextInfo.ScheduledCallback1,
@@ -734,32 +734,32 @@ describe('Scheduler.', () => {
               done();
             });
 
-            const info: string[] = [];
+            const log: string[] = [];
             const task1 = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback1);
+              log.push(ExecutionContextInfo.ScheduledCallback1);
             });
             task1.beforeExecute = () => {
-              queueMicrotask(() => info.push(ExecutionContextInfo.Microtask));
-              info.push(ExecutionContextInfo.BeforeExecuteTask1)
+              queueMicrotask(() => log.push(ExecutionContextInfo.Microtask));
+              log.push(ExecutionContextInfo.BeforeExecuteTask1)
             }
-            (task1.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1ForTask1));
-            task1.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2ForTask1));
-            (task1.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask1));
-            task1.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask1));
+            (task1.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1ForTask1));
+            task1.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2ForTask1));
+            (task1.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask1));
+            task1.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask1));
 
             const task2 = scheduleCallback(priorityLevel, () => {
               doneCb();
-              info.push(ExecutionContextInfo.ScheduledCallback2);
+              log.push(ExecutionContextInfo.ScheduledCallback2);
             })
             task2.beforeExecute = () => {
-              info.push(ExecutionContextInfo.BeforeExecuteTask2);
+              log.push(ExecutionContextInfo.BeforeExecuteTask2);
             }
-            (task2.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1ForTask2));
-            task2.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2ForTask2));
-            (task2.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask2));
-            task2.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask2));
+            (task2.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1ForTask2));
+            task2.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2ForTask2));
+            (task2.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask2));
+            task2.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask2));
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
           })
 
         });
@@ -767,35 +767,35 @@ describe('Scheduler.', () => {
         describeFakeAsync(() => {
 
           it(expectation3, fakeAsync(() => {
-            const info: string[] = [];
+            const log: string[] = [];
             const task1 = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback1);
+              log.push(ExecutionContextInfo.ScheduledCallback1);
             });
             task1.beforeExecute = () => {
-              queueMicrotask(() => info.push(ExecutionContextInfo.Microtask));
-              info.push(ExecutionContextInfo.BeforeExecuteTask1)
+              queueMicrotask(() => log.push(ExecutionContextInfo.Microtask));
+              log.push(ExecutionContextInfo.BeforeExecuteTask1)
             }
-            (task1.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1ForTask1));
-            task1.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2ForTask1));
-            (task1.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask1));
-            task1.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask1));
+            (task1.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1ForTask1));
+            task1.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2ForTask1));
+            (task1.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask1));
+            task1.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask1));
 
             const task2 = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback2);
+              log.push(ExecutionContextInfo.ScheduledCallback2);
             })
             task2.beforeExecute = () => {
-              info.push(ExecutionContextInfo.BeforeExecuteTask2);
+              log.push(ExecutionContextInfo.BeforeExecuteTask2);
             }
-            (task2.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1ForTask2));
-            task2.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2ForTask2));
-            (task2.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask2));
-            task2.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask2));
+            (task2.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1ForTask2));
+            task2.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2ForTask2));
+            (task2.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask2));
+            task2.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask2));
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             flush(20);
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.BeforeExecuteTask1,
               ExecutionContextInfo.ScheduledCallback1,
@@ -819,35 +819,35 @@ describe('Scheduler.', () => {
         describeAsyncAwait(() => {
 
           it(expectation3, async () => {
-            const info: string[] = [];
+            const log: string[] = [];
             const task1 = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback1);
+              log.push(ExecutionContextInfo.ScheduledCallback1);
             });
             task1.beforeExecute = () => {
-              queueMicrotask(() => info.push(ExecutionContextInfo.Microtask));
-              info.push(ExecutionContextInfo.BeforeExecuteTask1)
+              queueMicrotask(() => log.push(ExecutionContextInfo.Microtask));
+              log.push(ExecutionContextInfo.BeforeExecuteTask1)
             }
-            (task1.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1ForTask1));
-            task1.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2ForTask1));
-            (task1.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask1));
-            task1.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask1));
+            (task1.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1ForTask1));
+            task1.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2ForTask1));
+            (task1.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask1));
+            task1.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask1));
 
             const task2 = scheduleCallback(priorityLevel, () => {
-              info.push(ExecutionContextInfo.ScheduledCallback2);
+              log.push(ExecutionContextInfo.ScheduledCallback2);
             })
             task2.beforeExecute = () => {
-              info.push(ExecutionContextInfo.BeforeExecuteTask2);
+              log.push(ExecutionContextInfo.BeforeExecuteTask2);
             }
-            (task2.onExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.OnExecuteListener1ForTask2));
-            task2.onExecutedListeners.push(() => info.push(ExecutionContextInfo.OnExecuteListener2ForTask2));
-            (task2.internalOnExecutedListeners ??= []).push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask2));
-            task2.internalOnExecutedListeners.push(() => info.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask2));
+            (task2.onExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.OnExecuteListener1ForTask2));
+            task2.onExecutedListeners.push(() => log.push(ExecutionContextInfo.OnExecuteListener2ForTask2));
+            (task2.internalOnExecutedListeners ??= []).push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener1ForTask2));
+            task2.internalOnExecutedListeners.push(() => log.push(ExecutionContextInfo.InternalOnExecuteListener2ForTask2));
 
-            info.push(ExecutionContextInfo.CurrentTest);
+            log.push(ExecutionContextInfo.CurrentTest);
 
             await whenIdle();
 
-            expect(info).toEqual([
+            expect(log).toEqual([
               ExecutionContextInfo.CurrentTest,
               ExecutionContextInfo.BeforeExecuteTask1,
               ExecutionContextInfo.ScheduledCallback1,
@@ -978,9 +978,9 @@ describe('Scheduler.', () => {
           describeWithoutZone(() => {
 
             it(expectation, (done) => {
-              const info: string[] = [];
+              const log: string[] = [];
               const doneCb = () => queueMicrotask(() => {
-                expect(info).toEqual([
+                expect(log).toEqual([
                   TaskContext.Task1,
                   TaskContext.Task3,
                   TaskContext.Task2
@@ -991,15 +991,15 @@ describe('Scheduler.', () => {
               scheduleCallback(priorityLevel, () => {
 
                 scheduleCallback(priorityLevel - 1, () => {
-                  info.push(TaskContext.Task3);
+                  log.push(TaskContext.Task3);
                   doneCb();
                 })
 
-                info.push(TaskContext.Task1);
+                log.push(TaskContext.Task1);
               })
 
               scheduleCallback(priorityLevel, () => {
-                info.push(TaskContext.Task2);
+                log.push(TaskContext.Task2);
               });
 
             });
@@ -1009,25 +1009,25 @@ describe('Scheduler.', () => {
           describeFakeAsync(() => {
 
             it(expectation, fakeAsync(() => {
-              const info: string[] = [];
+              const log: string[] = [];
 
               scheduleCallback(priorityLevel, () => {
 
                 scheduleCallback(priorityLevel - 1, () => {
-                  info.push(TaskContext.Task3);
+                  log.push(TaskContext.Task3);
                 })
 
-                info.push(TaskContext.Task1);
+                log.push(TaskContext.Task1);
               })
 
               scheduleCallback(priorityLevel, () => {
-                info.push(TaskContext.Task2);
+                log.push(TaskContext.Task2);
               });
 
               flush();
 
 
-              expect(info).toEqual([
+              expect(log).toEqual([
                 TaskContext.Task1,
                 TaskContext.Task3,
                 TaskContext.Task2
@@ -1039,25 +1039,25 @@ describe('Scheduler.', () => {
           describeAsyncAwait(async () => {
 
             it(expectation, async () => {
-              const info: string[] = [];
+              const log: string[] = [];
 
               scheduleCallback(priorityLevel, () => {
 
                 scheduleCallback(priorityLevel - 1, () => {
-                  info.push(TaskContext.Task3);
+                  log.push(TaskContext.Task3);
                 })
 
-                info.push(TaskContext.Task1);
+                log.push(TaskContext.Task1);
               })
 
               scheduleCallback(priorityLevel, () => {
-                info.push(TaskContext.Task2);
+                log.push(TaskContext.Task2);
               });
 
               await whenIdle();
 
 
-              expect(info).toEqual([
+              expect(log).toEqual([
                 TaskContext.Task1,
                 TaskContext.Task3,
                 TaskContext.Task2
@@ -1080,9 +1080,9 @@ describe('Scheduler.', () => {
           describeWithoutZone(() => {
 
             it(expectation, (done) => {
-              const info: string[] = [];
+              const log: string[] = [];
               const doneCb = () => queueMicrotask(() => {
-                expect(info).toEqual([
+                expect(log).toEqual([
                   TaskContext.Task1,
                   TaskContext.Task3,
                   TaskContext.Task2
@@ -1093,15 +1093,15 @@ describe('Scheduler.', () => {
               scheduleCallback(priorityLevel, () => {
 
                 scheduleCallback(priorityLevel, () => {
-                  info.push(TaskContext.Task3);
+                  log.push(TaskContext.Task3);
                   doneCb();
                 })
 
-                info.push(TaskContext.Task1);
+                log.push(TaskContext.Task1);
               })
 
               scheduleCallback(priorityLevel + 1, () => {
-                info.push(TaskContext.Task2);
+                log.push(TaskContext.Task2);
               });
 
             });
@@ -1111,25 +1111,25 @@ describe('Scheduler.', () => {
           describeFakeAsync(() => {
 
             it(expectation, fakeAsync(() => {
-              const info: string[] = [];
+              const log: string[] = [];
 
               scheduleCallback(priorityLevel, () => {
 
                 scheduleCallback(priorityLevel, () => {
-                  info.push(TaskContext.Task3);
+                  log.push(TaskContext.Task3);
                 })
 
-                info.push(TaskContext.Task1);
+                log.push(TaskContext.Task1);
               })
 
               scheduleCallback(priorityLevel + 1, () => {
-                info.push(TaskContext.Task2);
+                log.push(TaskContext.Task2);
               });
 
               flush();
 
 
-              expect(info).toEqual([
+              expect(log).toEqual([
                 TaskContext.Task1,
                 TaskContext.Task3,
                 TaskContext.Task2
@@ -1141,25 +1141,25 @@ describe('Scheduler.', () => {
           describeAsyncAwait(async () => {
 
             it(expectation, async () => {
-              const info: string[] = [];
+              const log: string[] = [];
 
               scheduleCallback(priorityLevel, () => {
 
                 scheduleCallback(priorityLevel, () => {
-                  info.push(TaskContext.Task3);
+                  log.push(TaskContext.Task3);
                 })
 
-                info.push(TaskContext.Task1);
+                log.push(TaskContext.Task1);
               })
 
               scheduleCallback(priorityLevel + 1, () => {
-                info.push(TaskContext.Task2);
+                log.push(TaskContext.Task2);
               });
 
               await whenIdle();
 
 
-              expect(info).toEqual([
+              expect(log).toEqual([
                 TaskContext.Task1,
                 TaskContext.Task3,
                 TaskContext.Task2
@@ -1182,9 +1182,9 @@ describe('Scheduler.', () => {
           describeWithoutZone(() => {
 
             it(expectation, (done) => {
-              const info: string[] = [];
+              const log: string[] = [];
               const doneCb = () => queueMicrotask(() => {
-                expect(info).toEqual([
+                expect(log).toEqual([
                   TaskContext.Task1,
                   TaskContext.Task2,
                   TaskContext.Task3,
@@ -1195,38 +1195,38 @@ describe('Scheduler.', () => {
               scheduleCallback(priorityLevel, () => {
 
                 scheduleCallback(priorityLevel, () => {
-                  info.push(TaskContext.Task3);
+                  log.push(TaskContext.Task3);
                   doneCb();
                 })
 
-                info.push(TaskContext.Task1);
+                log.push(TaskContext.Task1);
               })
 
               scheduleCallback(priorityLevel, () => {
-                info.push(TaskContext.Task2);
+                log.push(TaskContext.Task2);
               });
 
             });
 
             describeFakeAsync(() => {
               it(expectation, fakeAsync(() => {
-                const info: string[] = [];
+                const log: string[] = [];
                 scheduleCallback(priorityLevel, () => {
 
                   scheduleCallback(priorityLevel, () => {
-                    info.push(TaskContext.Task3);
+                    log.push(TaskContext.Task3);
                   })
 
-                  info.push(TaskContext.Task1);
+                  log.push(TaskContext.Task1);
                 })
 
                 scheduleCallback(priorityLevel, () => {
-                  info.push(TaskContext.Task2);
+                  log.push(TaskContext.Task2);
                 });
 
                 flush(10);
 
-                expect(info).toEqual([
+                expect(log).toEqual([
                   TaskContext.Task1,
                   TaskContext.Task2,
                   TaskContext.Task3,
@@ -1238,23 +1238,23 @@ describe('Scheduler.', () => {
             describeAsyncAwait(() => {
 
               it(expectation, async () => {
-                const info: string[] = [];
+                const log: string[] = [];
                 scheduleCallback(priorityLevel, () => {
 
                   scheduleCallback(priorityLevel, () => {
-                    info.push(TaskContext.Task3);
+                    log.push(TaskContext.Task3);
                   })
 
-                  info.push(TaskContext.Task1);
+                  log.push(TaskContext.Task1);
                 })
 
                 scheduleCallback(priorityLevel, () => {
-                  info.push(TaskContext.Task2);
+                  log.push(TaskContext.Task2);
                 });
 
                 await whenIdle();
 
-                expect(info).toEqual([
+                expect(log).toEqual([
                   TaskContext.Task1,
                   TaskContext.Task2,
                   TaskContext.Task3,
@@ -1394,7 +1394,7 @@ describe('Scheduler.', () => {
 
   describe('Adding extra work during task execution.', () => {
 
-    const expectedTaskExecutionInfo = [
+    const expectedTaskExecutedLod = [
 
       'First callback runs.',
       'First added work to first cb run.',
@@ -1424,11 +1424,11 @@ describe('Scheduler.', () => {
 
         describeWithoutZone(() => {
           it(expectation, (done) => {
-            const taskExecutionInfo: string[] = [];
+            const taskExecutionLog: string[] = [];
             const doneCb = () => queueMicrotask(() => {
-              expect(taskExecutionInfo.length).toEqual(expectedTaskExecutionInfo.length);
-              for (let i = 0; i < taskExecutionInfo.length; i++) {
-                expect(taskExecutionInfo[i]).toEqual(expectedTaskExecutionInfo[i]);
+              expect(taskExecutionLog.length).toEqual(expectedTaskExecutedLod.length);
+              for (let i = 0; i < taskExecutionLog.length; i++) {
+                expect(taskExecutionLog[i]).toEqual(expectedTaskExecutedLod[i]);
               }
               done();
             });
@@ -1438,63 +1438,63 @@ describe('Scheduler.', () => {
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Third added work to first cb run.');
+                  taskExecutionLog.push('Third added work to first cb run.');
                 });
 
-                taskExecutionInfo.push('First added work to first cb run.');
+                taskExecutionLog.push('First added work to first cb run.');
               });
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Fourth added work to first cb run.');
+                  taskExecutionLog.push('Fourth added work to first cb run.');
                 });
 
-                taskExecutionInfo.push('Second added work to first cb run.');
+                taskExecutionLog.push('Second added work to first cb run.');
               });
 
-              taskExecutionInfo.push('First callback runs.');
+              taskExecutionLog.push('First callback runs.');
             });
 
             scheduleCallback(prio, () => {
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Third added work to second cb run.');
+                  taskExecutionLog.push('Third added work to second cb run.');
                 });
 
-                taskExecutionInfo.push('First added work to second cb run.');
+                taskExecutionLog.push('First added work to second cb run.');
               });
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Fourth added work to second cb run.');
+                  taskExecutionLog.push('Fourth added work to second cb run.');
                 });
 
-                taskExecutionInfo.push('Second added work to second cb run.');
+                taskExecutionLog.push('Second added work to second cb run.');
               });
 
-              taskExecutionInfo.push('Second callback runs.');
+              taskExecutionLog.push('Second callback runs.');
             });
 
             scheduleCallback(prio, () => {
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Third added work to third cb run.');
+                  taskExecutionLog.push('Third added work to third cb run.');
                 });
 
-                taskExecutionInfo.push('First added work to third cb run.');
+                taskExecutionLog.push('First added work to third cb run.');
               });
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Fourth added work to third cb run.');
+                  taskExecutionLog.push('Fourth added work to third cb run.');
                 });
 
-                taskExecutionInfo.push('Second added work to third cb run.');
+                taskExecutionLog.push('Second added work to third cb run.');
               });
 
-              taskExecutionInfo.push('Third callback runs.');
+              taskExecutionLog.push('Third callback runs.');
 
               doneCb();
             });
@@ -1503,154 +1503,154 @@ describe('Scheduler.', () => {
 
         describeFakeAsync(() => {
           it(expectation, fakeAsync(() => {
-            const taskExecutionInfo: string[] = [];
+            const taskExecutionLog: string[] = [];
 
             scheduleCallback(prio, () => {
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Third added work to first cb run.');
+                  taskExecutionLog.push('Third added work to first cb run.');
                 });
 
-                taskExecutionInfo.push('First added work to first cb run.');
+                taskExecutionLog.push('First added work to first cb run.');
               });
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Fourth added work to first cb run.');
+                  taskExecutionLog.push('Fourth added work to first cb run.');
                 });
 
-                taskExecutionInfo.push('Second added work to first cb run.');
+                taskExecutionLog.push('Second added work to first cb run.');
               });
 
-              taskExecutionInfo.push('First callback runs.');
+              taskExecutionLog.push('First callback runs.');
             });
 
             scheduleCallback(prio, () => {
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Third added work to second cb run.');
+                  taskExecutionLog.push('Third added work to second cb run.');
                 });
 
-                taskExecutionInfo.push('First added work to second cb run.');
+                taskExecutionLog.push('First added work to second cb run.');
               });
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Fourth added work to second cb run.');
+                  taskExecutionLog.push('Fourth added work to second cb run.');
                 });
 
-                taskExecutionInfo.push('Second added work to second cb run.');
+                taskExecutionLog.push('Second added work to second cb run.');
               });
 
-              taskExecutionInfo.push('Second callback runs.');
+              taskExecutionLog.push('Second callback runs.');
             });
 
             scheduleCallback(prio, () => {
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Third added work to third cb run.');
+                  taskExecutionLog.push('Third added work to third cb run.');
                 });
 
-                taskExecutionInfo.push('First added work to third cb run.');
+                taskExecutionLog.push('First added work to third cb run.');
               });
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Fourth added work to third cb run.');
+                  taskExecutionLog.push('Fourth added work to third cb run.');
                 });
 
-                taskExecutionInfo.push('Second added work to third cb run.');
+                taskExecutionLog.push('Second added work to third cb run.');
               });
 
-              taskExecutionInfo.push('Third callback runs.');
+              taskExecutionLog.push('Third callback runs.');
 
             });
 
             flush(100);
 
-            expect(taskExecutionInfo.length).toEqual(expectedTaskExecutionInfo.length);
-            for (let i = 0; i < taskExecutionInfo.length; i++) {
-              expect(taskExecutionInfo[i]).toEqual(expectedTaskExecutionInfo[i]);
+            expect(taskExecutionLog.length).toEqual(expectedTaskExecutedLod.length);
+            for (let i = 0; i < taskExecutionLog.length; i++) {
+              expect(taskExecutionLog[i]).toEqual(expectedTaskExecutedLod[i]);
             }
           }));
         });
 
         describeAsyncAwait(() => {
           it(expectation, async () => {
-            const taskExecutionInfo: string[] = [];
+            const taskExecutionLog: string[] = [];
 
             scheduleCallback(prio, () => {
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Third added work to first cb run.');
+                  taskExecutionLog.push('Third added work to first cb run.');
                 });
 
-                taskExecutionInfo.push('First added work to first cb run.');
+                taskExecutionLog.push('First added work to first cb run.');
               });
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Fourth added work to first cb run.');
+                  taskExecutionLog.push('Fourth added work to first cb run.');
                 });
 
-                taskExecutionInfo.push('Second added work to first cb run.');
+                taskExecutionLog.push('Second added work to first cb run.');
               });
 
-              taskExecutionInfo.push('First callback runs.');
+              taskExecutionLog.push('First callback runs.');
             });
 
             scheduleCallback(prio, () => {
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Third added work to second cb run.');
+                  taskExecutionLog.push('Third added work to second cb run.');
                 });
 
-                taskExecutionInfo.push('First added work to second cb run.');
+                taskExecutionLog.push('First added work to second cb run.');
               });
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Fourth added work to second cb run.');
+                  taskExecutionLog.push('Fourth added work to second cb run.');
                 });
 
-                taskExecutionInfo.push('Second added work to second cb run.');
+                taskExecutionLog.push('Second added work to second cb run.');
               });
 
-              taskExecutionInfo.push('Second callback runs.');
+              taskExecutionLog.push('Second callback runs.');
             });
 
             scheduleCallback(prio, () => {
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Third added work to third cb run.');
+                  taskExecutionLog.push('Third added work to third cb run.');
                 });
 
-                taskExecutionInfo.push('First added work to third cb run.');
+                taskExecutionLog.push('First added work to third cb run.');
               });
 
               onTaskExecuted(() => {
                 onTaskExecuted(() => {
-                  taskExecutionInfo.push('Fourth added work to third cb run.');
+                  taskExecutionLog.push('Fourth added work to third cb run.');
                 });
 
-                taskExecutionInfo.push('Second added work to third cb run.');
+                taskExecutionLog.push('Second added work to third cb run.');
               });
 
-              taskExecutionInfo.push('Third callback runs.');
+              taskExecutionLog.push('Third callback runs.');
 
             });
 
             await whenIdle();
 
-            expect(taskExecutionInfo.length).toEqual(expectedTaskExecutionInfo.length);
-            for (let i = 0; i < taskExecutionInfo.length; i++) {
-              expect(taskExecutionInfo[i]).toEqual(expectedTaskExecutionInfo[i]);
+            expect(taskExecutionLog.length).toEqual(expectedTaskExecutedLod.length);
+            for (let i = 0; i < taskExecutionLog.length; i++) {
+              expect(taskExecutionLog[i]).toEqual(expectedTaskExecutedLod[i]);
             }
           });
         });

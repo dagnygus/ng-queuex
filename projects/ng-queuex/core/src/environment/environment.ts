@@ -1,35 +1,78 @@
+import type { Subscription } from "rxjs"
 import type { scheduleTask, scheduleChangeDetection, detectChanges, detectChangesSync } from "../instructions/instructions"
 import { isPlatformServer } from "@angular/common";
-import { APP_BOOTSTRAP_LISTENER, ApplicationRef, assertInInjectionContext, ComponentRef, EnvironmentProviders, inject, Injectable, Injector, makeEnvironmentProviders, OnDestroy, PendingTasks, PLATFORM_ID, provideAppInitializer, provideEnvironmentInitializer, reflectComponentType, runInInjectionContext } from "@angular/core";
+import {
+  APP_BOOTSTRAP_LISTENER,
+  ApplicationRef,
+  assertInInjectionContext,
+  ComponentRef,
+  EnvironmentInjector,
+  EnvironmentProviders,
+  inject,
+  Injectable,
+  Injector,
+  makeEnvironmentProviders,
+  NgModuleRef,
+  OnDestroy,
+  PendingTasks,
+  PLATFORM_ID,
+  provideEnvironmentInitializer,
+  reflectComponentType,
+} from "@angular/core";
 import { isTaskQueueEmpty, setOnIdle } from "../scheduler/scheduler";
 import { TestBed } from "@angular/core/testing";
 
-declare const jasmine: unknown;
-declare const jest: unknown;
 declare const ngDevMode: boolean | undefined;
+declare const jest: any;
+declare const jasmine: any;
 
-const commonMessage =
-  '"@ng-queuex/core" is design for projects with standalone angular application where there ' +
-  'is only one ApplicationRef instance and with one root bootstrapped component. ' +
-  'Integration can not be provided in lazy loaded module but only at application root level ' +
-  'and at root injection context of environment injector. Use bootstrapApplication() ' +
-  'function with a standalone component.';
+function isInJestTestRunner(): boolean {
+  return typeof jest !== undefined && typeof jest === 'object' && jest !== null;
+}
+
+function isInJasmineTestRunner(): boolean {
+  return typeof jasmine !== undefined && typeof jasmine === 'object' && jasmine !== null;
+}
+
+export const USAGE_EXAMPLE_IN_UNIT_TESTS =
+  'beforeEach(() => {\n' +
+  ' TestBed.configureTestingModule({\n' +
+  '   providers: [\n' +
+  '     provideNgQueuexIntegration()\n' +
+  '   ]\n' +
+  ' }).runInInjectionContext(() => {\n' +
+  '   completeIntegrationForTest();\n' +
+  ' });\n'
+  '});\n' +
+  'afterEach(() => {\n' +
+  ' TestBed.resetTestingModule(); //Dispose integration between tests\n' +
+  '});'
+
+const COMMON_MESSAGE =
+'"@ng-queuex/core" is design for projects with standalone angular application where there ' +
+'is only one ApplicationRef instance and with one root bootstrapped component. ' +
+'Integration can not be provided in lazy loaded module but only at application root level ' +
+'and at root injection context of environment injector. Use bootstrapApplication() ' +
+'function with a standalone component. In case of unit tests you need to provide integration ' +
+'to test module and call function completeINtegrationForTest() in TestBed injection context ' +
+'just like example shows: \n\n' + USAGE_EXAMPLE_IN_UNIT_TESTS;
 
 
 @Injectable({ providedIn: 'root' })
 export class Integrator implements OnDestroy {
   public appRef = inject(ApplicationRef);
   public pendingNgTasks = inject(PendingTasks);
-  public pendingNgTaskCleanup: (() => void) = null!;
+  public pendingNgTaskCleanup: (() => void) | null = null;
   public bootstrapCount = 0;
   public uncompleted = true;
   public isServer = isPlatformServer(inject(PLATFORM_ID));
+  public subscription: Subscription | null = null;
   public static instance: Integrator | null = null;
 
   constructor() {
     if (Integrator.instance) {
       throw new Error(
-        'provideNgQueuexIntegration(): Integration already provided! ' + commonMessage
+        'provideNgQueuexIntegration(): Integration already provided! ' + COMMON_MESSAGE
       )
     }
     Integrator.instance = this;
@@ -38,34 +81,47 @@ export class Integrator implements OnDestroy {
   public assertInRoot(): void {
     if (this.appRef.injector === inject(Injector)) { return; }
     throw new Error(
-      'provideNgQueuexIntegration(): Integration provided not at root level! ' + commonMessage
+      'provideNgQueuexIntegration(): Integration provided not at root level! ' + COMMON_MESSAGE
     );
   }
 
+  public assertProject(): void {
+    if (inject(NgModuleRef).instance === null) { return; }
+    throw new Error(
+      'provideNgQueuexIntegration(): Non-standalone application detected. ' +
+      'This library only supports Angular applications bootstrapped with standalone APIs. ' +
+      'It seems that your application is still using the traditional NgModule-based ' +
+      'bootstrap (e.g. platformBrowserDynamic().bootstrapModule(AppModule)).'
+    )
+  }
+
   public integrateWithAngular(): void {
-    this.pendingNgTaskCleanup = this.pendingNgTasks.add();
-    setOnIdle(() => this.pendingNgTaskCleanup());
-    const subscription = this.appRef.isStable.subscribe((value) => {
+    const pendingNgTaskCleanup = this.pendingNgTaskCleanup = this.pendingNgTasks.add();
+    setOnIdle(() => {
+      pendingNgTaskCleanup();
+      this.pendingNgTaskCleanup = null;
+    });
+    const subscription = this.subscription = this.appRef.isStable.subscribe((value) => {
       if (value) {
         setOnIdle(null);
         subscription.unsubscribe();
+        this.subscription = null
       }
     });
     this.uncompleted = false;
   }
 
   public onBootstrap(cmpRef: ComponentRef<unknown>): void {
-    if (++this.bootstrapCount > 1) {
+    if (this.bootstrapCount >= 1) {
       throw new Error(
-        'provideNgQueuexIntegration(): Multiple components were bootstrapped, which is not allowed! ' + commonMessage
+      'provideNgQueuexIntegration(): Multiple components were bootstrapped, which is not allowed! ' + COMMON_MESSAGE
       );
     }
-
     if (typeof ngDevMode === 'undefined' || ngDevMode) {
-      if(!reflectComponentType(cmpRef.componentType)?.isStandalone) {
+      if(!reflectComponentType(cmpRef.componentType)!.isStandalone) {
         throw new Error(
           'provideNgQueuexIntegration(): Application bootstrap with NgModule is not supported! '+
-          'Use a standalone component instead.' + commonMessage
+          'Use a standalone component instead.' + COMMON_MESSAGE
         )
       }
     }
@@ -74,13 +130,16 @@ export class Integrator implements OnDestroy {
       // During bootstrap there was not scheduled any concurrent task.
       // That means that internal onIdle hook will not be invoke, so we need to cleanup
       // angular pending task manually. That will stabilize application and do rest of the cleanup.
-      this.pendingNgTaskCleanup();
+      this.pendingNgTaskCleanup?.()
     }
 
   }
 
   ngOnDestroy(): void {
+    this.pendingNgTaskCleanup?.();
+    this.subscription?.unsubscribe();
     Integrator.instance = null;
+    setOnIdle(null);
   }
 }
 
@@ -119,7 +178,8 @@ export function provideNgQueuexIntegration(): EnvironmentProviders {
     provideEnvironmentInitializer(() => {
       const integrator = inject(Integrator);
       integrator.assertInRoot();
-      if ((typeof jasmine === 'object' && jasmine !== null) || (typeof jest === 'object' && jest !== null)) { return; }
+      if (isInJasmineTestRunner() || isInJestTestRunner()) { return; }
+      integrator.assertProject();
       integrator.integrateWithAngular();
     }),
     {
@@ -141,10 +201,15 @@ export function provideNgQueuexIntegration(): EnvironmentProviders {
  *
  * Usage example:
  * ```ts
- *  TestBed.configureTestingModule({
- *    providers: [provideNgQueuexIntegration()]
- *  }).runInInjectionContext(() => {
- *    completeIntegrationForTest();
+ *  beforeEach(() => {
+ *    TestBed.configureTestingModule({
+ *      providers: [provideNgQueuexIntegration()]
+ *    }).runInInjectionContext(() => {
+ *      completeIntegrationForTest();
+ *    });
+ *  });
+ *  afterEach(() => {
+ *    TestBed.resetTestingModule() //To dispose integration between tests.
  *  });
  * ```
  * @see {@link provideNgQueuexIntegration}
@@ -155,30 +220,16 @@ export function completeIntegrationForTest(): void {
   if (Integrator.instance === null) {
     throw new Error(
       'completeIntegrationForTest(): Integration not provided! To complete integration "@ng-queuex/core" integration for test, ' +
-      'provide integration to test module:\n\n' +
-      'TestBed.configureTestingModule({\n' +
-      ' providers: [\n' +
-      '   provideNgQueuexIntegration()\n' +
-      ' ]\n' +
-      '}).runInInjectionContext(() => {\n' +
-      ' completeIntegrationForTest();\n' +
-      '});'
+      'provide integration to test module:\n\n' + USAGE_EXAMPLE_IN_UNIT_TESTS
     )
   }
 
-  const testBedInjector = TestBed.inject(Injector);
+  const testBedInjector = TestBed.inject(EnvironmentInjector);
 
   if ((testBedInjector !== inject(Injector)) || Integrator.instance.appRef.injector !== testBedInjector) {
     throw new Error(
-      'completeIntegrationForTest(): Incorrect function usage. This function Can be used only in TestBed injection context.' +
-      'The correct usage of this function is illustrated in the following example:\n\n' +
-      'TestBed.configureTestingModule({\n' +
-      ' providers: [\n' +
-      '   provideNgQueuexIntegration()\n' +
-      ' ]\n' +
-      '}).runInInjectionContext(() => {\n' +
-      ' completeIntegrationForTest();\n' +
-      '});'
+      'completeIntegrationForTest(): Incorrect function usage. This function can be used only in TestBed injection context.' +
+      'The correct usage of this function is illustrated in the following example:\n\n' + USAGE_EXAMPLE_IN_UNIT_TESTS
     )
   }
 
@@ -199,5 +250,5 @@ export function completeIntegrationForTest(): void {
 export function assertNgQueuexIntegrated(message?: string): void {
   if (Integrator.instance) { return; }
   message = message ?? 'assertNgQueuexIntegrationProvided(): assertion failed';
-  throw new Error(message)
+  throw new Error(message);
 }

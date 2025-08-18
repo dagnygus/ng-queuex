@@ -18,6 +18,7 @@ interface FlushWorkFn {
 }
 
 declare const ngDevMode: boolean | undefined;
+declare const Zone: ZoneType | undefined
 
 const global = ɵglobal as typeof globalThis & { Zone?: ZoneType, setImmediate(cb: Function): number };
 
@@ -541,7 +542,7 @@ if (typeof global.setImmediate === 'function') {
   const channel = new  global.MessageChannel();
   const port = channel.port2;
 
-  if (typeof global.Zone === 'undefined') {
+  if (typeof Zone === 'undefined') {
 
     channel.port1.onmessage = performWorkUntilDeadline;
     schedulePerformWorkUntilDeadline = function () {
@@ -551,7 +552,6 @@ if (typeof global.setImmediate === 'function') {
   } else {
 
     let zoneTask: ZoneTask = null!
-    const Zone = global.Zone;
     const noopFn = () => {};
     const schedulerFn = (task: ZoneTask) => {
       zoneTask = task;

@@ -4,7 +4,7 @@ import { noopFn, Priority, SchedulerTask, TaskStatus } from "../scheduler/schedu
 import { getCurrentTask, whenIdle, getTaskAt, isTaskQueueEmpty, getQueueLength } from "../scheduler/scheduler";
 import { describePriorityLevel, doSomethingForSomeTime, randomPrioritiesArray, randomPriority } from "../scheduler/scheduler_test_utils";
 import { TestBed } from "@angular/core/testing";
-import { Integrator } from "../environment/environment";
+import { completeIntegrationForTest, Integrator } from "../environment/environment";
 
 class FakeViewRef implements ChangeDetectorRef {
 
@@ -72,12 +72,16 @@ describe('Testing scheduleTask function.', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideNgQueuexIntegration()],
+    }).runInInjectionContext(() => {
+      completeIntegrationForTest();
     })
-    TestBed.runInInjectionContext(() => {});
   });
 
   afterEach(() => {
     TestBed.resetTestingModule();
+    if (Integrator.instance) {
+      throw new Error('Integrator not disposed!');
+    }
   });
 
   it('Should invoke callbacks in correct order.', async () => {
@@ -166,8 +170,9 @@ describe('Testing scheduleChangeDetection() function.', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideNgQueuexIntegration()],
+    }).runInInjectionContext(() => {
+      completeIntegrationForTest();
     })
-    TestBed.runInInjectionContext(() => {});
   });
 
   afterEach(() => {
@@ -483,8 +488,9 @@ describe('Testing detectChanges() function', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideNgQueuexIntegration()],
-    })
-    TestBed.runInInjectionContext(() => {});
+    }).runInInjectionContext(() => {
+      completeIntegrationForTest();
+    });
   });
 
   afterEach(() => {
@@ -567,8 +573,9 @@ describe('Testing abort callback.', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideNgQueuexIntegration()],
-    })
-    TestBed.runInInjectionContext(() => {});
+    }).runInInjectionContext(() => {
+      completeIntegrationForTest();
+    });
   });
 
   afterEach(() => {
@@ -874,11 +881,29 @@ describe('Testing abort callback.', () => {
 describe('Testing error throwing', () => {
 
   const INTEGRATION_NOT_PROVIDED_MESSAGE =
-  '"@ng-queuex/core" integration was not provided to Angular! ' +
-  'Use provideNgQueuexIntegration() function to in bootstrapApplication() function ' +
-  'to add crucial environment providers for integration.';
+    '"@ng-queuex/core" integration was not provided to Angular! ' +
+    'Use provideNgQueuexIntegration() function to in bootstrapApplication() function ' +
+    'to add crucial environment providers for integration.';
 
-const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowed!'
+  const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowed!'
+
+  const USAGE_EXAMPLE =
+    'beforeEach(() => {\n' +
+    ' TestBed.configureTestingModule({\n' +
+    '   providers: [\n' +
+    '     provideNgQueuexIntegration()\n' +
+    '   ]\n' +
+    ' }).runInInjectionContext(() => {\n' +
+    '   completeIntegrationForTest();\n' +
+    ' });\n'
+    '});\n\n' +
+    'afterEach(() => {\n' +
+    ' TestBed.resetTestingModule(); //Dispose integration between test\n' +
+    '});';
+
+  const INTEGRATION_NOT_COMPLETED_MESSAGE =
+    '"@ng-queuex/core" integration for tests is not competed. To make sure that integration is finalized ' +
+    'use \'completeIntegrationForTest()\' function inside TestBed injection context as the example below shows:\n\n' + USAGE_EXAMPLE;
 
   describe('Not provided integration.', () => {
 
@@ -887,8 +912,9 @@ const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowe
     beforeEach(() => {
       TestBed.configureTestingModule({
         providers: [provideNgQueuexIntegration()],
-      })
-      TestBed.runInInjectionContext(noopFn);
+      }).runInInjectionContext(() => {
+        completeIntegrationForTest();
+      });
 
       integrator = Integrator.instance;
       Integrator.instance = null;
@@ -933,8 +959,9 @@ const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowe
     beforeEach(() => {
       TestBed.configureTestingModule({
         providers: [provideNgQueuexIntegration()],
+      }).runInInjectionContext(() => {
+        completeIntegrationForTest();
       });
-      TestBed.runInInjectionContext(noopFn);
       Integrator.instance!.isServer = true;
     });
 
@@ -942,22 +969,22 @@ const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowe
       Integrator.instance!.isServer = false;
       TestBed.resetTestingModule();
       if (Integrator.instance) {
-        throw new Error('Integrator not disposed!')
+        throw new Error('Integrator not disposed!');
       }
     });
 
     Priorities.forEach((priorityLevel) => {
       describePriorityLevel(priorityLevel, () => {
 
-        it('scheduleTask() should throw error if integration was not provided.', () => {
+        it('scheduleTask() should throw error if it runs in server environment.', () => {
           expect(() => scheduleTask(noopFn, priorityLevel)).toThrowError('scheduleTask(): ' + SERVER_SIDE_MESSAGE);
         });
 
-        it('scheduleChangeDetection() should throw error if integration was not provided.', () => {
+        it('scheduleChangeDetection() should throw error if it runs in server environment.', () => {
           expect(() => scheduleChangeDetection(noopFn, priorityLevel)).toThrowError('scheduleChangeDetection(): ' + SERVER_SIDE_MESSAGE);
         });
 
-        it('detectChanges() should throw error if integration was not provided.', () => {
+        it('detectChanges() should throw error if it runs in server environment.', () => {
           const viewRef = new FakeViewRef()
           expect(() => detectChanges(viewRef, priorityLevel)).toThrowError('detectChanges(): ' + SERVER_SIDE_MESSAGE);
         });
@@ -965,11 +992,50 @@ const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowe
       });
     });
 
-    it('detectChangesSync() should throw error if integration was not provided.', () => {
+    it('detectChangesSync() should throw error if it runs in server environment.', () => {
         const viewRef = new FakeViewRef()
         expect(() => detectChangesSync(viewRef)).toThrowError('detectChangesSync(): This function usage on server is not allowed!');
     });
 
+  });
+
+  describe('Integration not completed for unit tests.', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        providers: [provideNgQueuexIntegration()],
+      }).runInInjectionContext(() => {
+        completeIntegrationForTest();
+      });
+      Integrator.instance!.uncompleted = true;
+    });
+
+    afterEach(() => {
+      Integrator.instance!.uncompleted = false;
+      TestBed.resetTestingModule();
+      if (Integrator.instance) {
+        throw new Error('Integrator not disposed!');
+      }
+    });
+
+    Priorities.forEach((priorityLevel) => {
+      it('scheduleTask() should throw error if integration is not completed for unit tests.', () => {
+          expect(() => scheduleTask(noopFn, priorityLevel)).toThrowError('scheduleTask(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE);
+        });
+
+      it('scheduleChangeDetection() should throw error if integration is not completed for unit tests.', () => {
+        expect(() => scheduleChangeDetection(noopFn, priorityLevel)).toThrowError('scheduleChangeDetection(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE);
+      });
+
+      it('detectChanges() should throw error if integration is not completed for unit tests.', () => {
+        const viewRef = new FakeViewRef()
+        expect(() => detectChanges(viewRef, priorityLevel)).toThrowError('detectChanges(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE);
+      });
+    });
+
+    it('detectChangesSync() should throw error if is not completed for unit tests.', () => {
+        const viewRef = new FakeViewRef()
+        expect(() => detectChangesSync(viewRef)).toThrowError('detectChangesSync(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE);
+    });
   });
 
 });

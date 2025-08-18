@@ -23,7 +23,7 @@ import {
   isInConcurrentTaskContext,
   scheduleCallback
 } from "../scheduler/scheduler";
-import { Integrator } from "../environment/environment";
+import { Integrator, USAGE_EXAMPLE_IN_UNIT_TESTS } from "../environment/environment";
 
 declare const ngDevMode: boolean | undefined;
 
@@ -35,6 +35,9 @@ const INTEGRATION_NOT_PROVIDED_MESSAGE =
   'to add crucial environment providers for integration.';
 
 const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowed!'
+const INTEGRATION_NOT_COMPLETED_MESSAGE =
+  '"@ng-queuex/core" integration for tests is not competed. To make sure that integration is finalized ' +
+  'use \'completeIntegrationForTest()\' function inside TestBed injection context as the example below shows:\n\n' + USAGE_EXAMPLE_IN_UNIT_TESTS
 
 const coalescingScopes = new WeakMap<object, SchedulerTask>();
 
@@ -109,6 +112,7 @@ export interface AbortTaskFunction {
  * @returns Abort task function if change detection was successfully scheduled. Null if change detection was coalesced.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
  * @see {@link ChangeDetectorRef}
  * @see ViewRef from "@angular/core"
@@ -170,6 +174,7 @@ export function detectChanges(cdRef: ChangeDetectorRef): AbortTaskFunction | nul
  * @returns Abort task function if change detection was successfully scheduled. Null if change detection was coalesced.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
  * @see {@link ChangeDetectorRef}
  * @see ViewRef from "@angular/core"
@@ -180,11 +185,16 @@ export function detectChanges(cdRef: ChangeDetectorRef): AbortTaskFunction | nul
 export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority): AbortTaskFunction | null;
 export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2): AbortTaskFunction | null {
 
-  if (Integrator.instance === null) {
-    throw new Error('detectChanges(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
-  }
-  if (Integrator.instance.isServer) {
-    throw new Error('detectChanges(): ' + SERVER_SIDE_MESSAGE);
+  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (Integrator.instance === null) {
+      throw new Error('detectChanges(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+    }
+    if (Integrator.instance.isServer) {
+      throw new Error('detectChanges(): ' + SERVER_SIDE_MESSAGE);
+    }
+    if (Integrator.instance.uncompleted) {
+      throw new Error('detectChanges(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE)
+    }
   }
 
   let scope: object = cdRef;
@@ -332,6 +342,7 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
  * @returns Abort task function.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
@@ -417,6 +428,7 @@ export function scheduleChangeDetection(callback: VoidFunction): AbortTaskFuncti
  * @returns Abort task function.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
@@ -502,6 +514,7 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * @returns Abort task function.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
@@ -588,6 +601,7 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * @returns Abort task function if task was successfully scheduled. Null if change detection was coalesced.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link ChangeDetectorRef}
  * @see {@link Priority}
  * @see {@link detectChangesSync}
@@ -675,6 +689,7 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * @returns Abort task function if task was successfully scheduled. Null if change detection was coalesced.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link ChangeDetectorRef}
  * @see {@link Priority}
  * @see {@link detectChangesSync}
@@ -693,11 +708,16 @@ export function scheduleChangeDetection(
   cdRef: ChangeDetectorRef | null = null,
 ): AbortTaskFunction | null {
 
-  if (Integrator.instance === null) {
-    throw new Error('scheduleChangeDetection(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
-  }
-  if (Integrator.instance.isServer) {
-    throw new Error('scheduleChangeDetection(): ' + SERVER_SIDE_MESSAGE);
+  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (Integrator.instance === null) {
+      throw new Error('scheduleChangeDetection(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+    }
+    if (Integrator.instance.isServer) {
+      throw new Error('scheduleChangeDetection(): ' + SERVER_SIDE_MESSAGE);
+    }
+    if (Integrator.instance.uncompleted) {
+      throw new Error('scheduleChangeDetection(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE)
+    }
   }
 
   let scope: object | null = cdRef;
@@ -794,6 +814,7 @@ export function scheduleChangeDetection(
  * @returns Abort task function.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link assertInConcurrentTaskContext}
  * @see {@link assertInConcurrentCleanTaskContext}
  * @see {@link isInConcurrentTaskContext}
@@ -812,6 +833,7 @@ export function scheduleTask(callback: VoidFunction): AbortTaskFunction;
  * @returns Abort task function.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link assertInConcurrentTaskContext}
  * @see {@link assertInConcurrentCleanTaskContext}
  * @see {@link isInConcurrentTaskContext}
@@ -822,11 +844,16 @@ export function scheduleTask(callback: VoidFunction): AbortTaskFunction;
 export function scheduleTask(callback: VoidFunction, priority: Priority): AbortTaskFunction;
 export function scheduleTask(callback: VoidFunction, priority: Priority = Priority.Normal): AbortTaskFunction {
 
-  if (Integrator.instance === null) {
-    throw new Error('scheduleTask(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
-  }
-  if (Integrator.instance.isServer) {
-    throw new Error('scheduleTask(): ' + SERVER_SIDE_MESSAGE);
+  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (Integrator.instance === null) {
+      throw new Error('scheduleTask(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+    }
+    if (Integrator.instance.isServer) {
+      throw new Error('scheduleTask(): ' + SERVER_SIDE_MESSAGE);
+    }
+    if (Integrator.instance.uncompleted) {
+      throw new Error('scheduleTask(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE)
+    }
   }
 
   let task: SchedulerTask | null = scheduleCallback(coercePriority(priority), callback);
@@ -859,6 +886,7 @@ export function scheduleTask(callback: VoidFunction, priority: Priority = Priori
  * @returns true if succeeded, other wise it was coalesced with concurrent task.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  * @see {@link scheduleTask}
  * @see {@link detectChanges}
  * @see {@link ChangeDetectorRef}
@@ -868,11 +896,16 @@ export function scheduleTask(callback: VoidFunction, priority: Priority = Priori
  */
 export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
 
-  if (Integrator.instance === null) {
-    throw new Error('detectChangesSync(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
-  }
-  if (Integrator.instance.isServer) {
-    throw new Error('detectChangesSync(): This function usage on server is not allowed!');
+  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (Integrator.instance === null) {
+      throw new Error('detectChangesSync(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+    }
+    if (Integrator.instance.isServer) {
+      throw new Error('detectChangesSync(): This function usage on server is not allowed!');
+    }
+    if (Integrator.instance.uncompleted) {
+      throw new Error('detectChangesSync(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE)
+    }
   }
 
   if (isInConcurrentCleanTaskContext()) {
