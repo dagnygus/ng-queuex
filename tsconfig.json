@@ -6,6 +6,9 @@
     "paths": {
       "@ng-queuex/core": [
         "./dist/ng-queuex/core"
+      ],
+      "@ng-queuex/template": [
+        "./dist/ng-queuex/template"
       ]
     },
     "strict": true,
@@ -41,5 +44,11 @@
     {
       "path": "./projects/ng-queuex/tsconfig.test.json"
     },
+    {
+      "path": "./projects/ng-queuex/template/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ng-queuex/template/tsconfig.spec.json"
+    }
   ],
 }

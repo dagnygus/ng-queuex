@@ -80,6 +80,24 @@ export type PriorityInput = PriorityLevel | PriorityName;
  *    Lowest = 5
  *  ```
  */
+export const enum AbstractPriority {
+  Highest = 1,
+  High = 2,
+  Normal = 3,
+  Low = 4,
+  Lowest = 5
+}
+
+/**
+ *  Concurrent task priority.
+ *  ```
+ *    Highest = 1
+ *    High = 2
+ *    Normal = 3 (Mostly a default one)
+ *    Low = 4
+ *    Lowest = 5
+ *  ```
+ */
 export enum Priority {
   Highest = 1,
   High = 2,

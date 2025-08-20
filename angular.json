@@ -33,6 +33,36 @@
           }
         }
       }
+    },
+    "@ng-queuex/template": {
+      "projectType": "library",
+      "root": "projects/ng-queuex/template",
+      "sourceRoot": "projects/ng-queuex/template/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ng-queuex/template/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ng-queuex/template/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/ng-queuex/template/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   }
 }

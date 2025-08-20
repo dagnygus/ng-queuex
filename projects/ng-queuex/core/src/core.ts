@@ -17,7 +17,8 @@ export {
 export type {
   PriorityName,
   PriorityLevel,
-  PriorityInput
+  PriorityInput,
+  AbstractPriority
 } from "./scheduler/scheduler_utils";
 export {
   Priority,
