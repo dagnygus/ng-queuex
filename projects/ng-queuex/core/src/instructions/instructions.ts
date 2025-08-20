@@ -203,13 +203,7 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel 
     }
   }
 
-  let scope: object = cdRef;
-
-  if (typeof (cdRef as _ViewRef)._lView === 'object') {
-    scope = (cdRef as _ViewRef)._lView!
-  }
-
-  const relatedTask = coalescingScopes.get(scope);
+  const relatedTask = coalescingScopes.get(cdRef);
 
   if (relatedTask) {
     if (typeof ngDevMode === 'undefined' || ngDevMode) {
@@ -239,7 +233,7 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel 
 
   task.isClean = false;
 
-  coalescingScopes.set(scope, task);
+  coalescingScopes.set(cdRef, task);
 
   task.beforeExecute = function() {
     task = null;
@@ -248,7 +242,7 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel 
   task.internalOnExecutedListeners = [];
 
   task.internalOnExecutedListeners.push(function () {
-    coalescingScopes.delete(scope)
+    coalescingScopes.delete(cdRef)
   })
 
   function abortTask(cb?: VoidFunction | null): void {
@@ -263,7 +257,7 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel 
         const onAbort = task.onAbort;
         task = null;
         onAbort();
-        coalescingScopes.delete(scope);
+        coalescingScopes.delete(cdRef);
       }
 
     }
@@ -736,16 +730,8 @@ export function scheduleChangeDetection(
     }
   }
 
-  let scope: object | null = cdRef;
-
   if (cdRef) {
-    if (typeof (cdRef as _ViewRef)._lView === 'object') {
-      scope = (cdRef as _ViewRef)._lView!
-    }
-  }
-
-  if (scope) {
-    const relatedTask = coalescingScopes.get(scope);
+    const relatedTask = coalescingScopes.get(cdRef);
 
     if (relatedTask) {
       if (typeof ngDevMode === 'undefined' || ngDevMode) {
@@ -774,9 +760,9 @@ export function scheduleChangeDetection(
 
   task.isClean = false;
 
-  if (scope) {
-    coalescingScopes.set(scope, task)
-    task.scopeToHandle = scope;
+  if (cdRef) {
+    coalescingScopes.set(cdRef, task)
+    task.scopeToHandle = cdRef;
   }
 
   task.beforeExecute = function() {
@@ -787,8 +773,8 @@ export function scheduleChangeDetection(
   task.internalOnExecutedListeners = [];
 
   task.internalOnExecutedListeners.push(function() {
-    if (scope) {
-      coalescingScopes.delete(scope);
+    if (cdRef) {
+      coalescingScopes.delete(cdRef);
     }
   });
 
@@ -807,8 +793,8 @@ export function scheduleChangeDetection(
         const onAbort = task.onAbort;
         task = null;
         onAbort();
-        if (scope) {
-          coalescingScopes.delete(scope);
+        if (cdRef) {
+          coalescingScopes.delete(cdRef);
         }
       }
 
@@ -932,13 +918,7 @@ export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
     return true;
   }
 
-  let scope: object = cdRef;
-
-  if (typeof (cdRef as _ViewRef)._lView === 'object') {
-    scope = (cdRef as _ViewRef)._lView!
-  }
-
-  const relatedTask = coalescingScopes.get(scope);
+  const relatedTask = coalescingScopes.get(cdRef);
   if (relatedTask) {
 
     //Internal Errors
@@ -958,7 +938,7 @@ export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
     if (relatedTask.status === TaskStatus.Prepared) { return false; }
 
     if (relatedTask.status === TaskStatus.Executing) {
-      if (relatedTask.scopeToHandle === scope) {
+      if (relatedTask.scopeToHandle === cdRef) {
         // scheduleChangeDetection(...) with cdRef as third arg was used to schedule this task. We must consume cdRef now.
         relatedTask.scopeToHandle = null;
         cdRef.detectChanges(); // Coalescing is handled by scheduleChangeDetection(...) function.
@@ -973,10 +953,10 @@ export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
     if (isInConcurrentTaskContext()) {
       relatedTask.abort();
       const currentTask = getCurrentTask()!;
-      coalescingScopes.set(scope, currentTask);
+      coalescingScopes.set(cdRef, currentTask);
       cdRef.detectChanges();
       (currentTask.internalOnExecutedListeners ??= []).push(function() {
-        coalescingScopes.delete(scope);
+        coalescingScopes.delete(cdRef);
       });
       return true;
     } else {
@@ -986,10 +966,10 @@ export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
     // At that place we know that this cdRef was not scheduled at all.
     if (isInConcurrentTaskContext()) {
       const currentTask = getCurrentTask()!;
-      coalescingScopes.set(scope, currentTask);
+      coalescingScopes.set(cdRef, currentTask);
       cdRef.detectChanges();
       (currentTask.internalOnExecutedListeners ??= []).push(function() {
-        coalescingScopes.delete(scope);
+        coalescingScopes.delete(cdRef);
       });
     } else {
       cdRef.detectChanges();
