@@ -16,6 +16,8 @@ import {
   Priority,
   SchedulerTask,
   TaskStatus,
+  PriorityLevel,
+  PriorityName
 } from "../scheduler/scheduler_utils";
 import {
   getCurrentTask,
@@ -114,6 +116,8 @@ export interface AbortTaskFunction {
  * @throws `Error` if is server environment.
  * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
  * @see {@link ChangeDetectorRef}
  * @see ViewRef from "@angular/core"
  * @see EmbeddedViewRef from "@angular/core"
@@ -176,14 +180,16 @@ export function detectChanges(cdRef: ChangeDetectorRef): AbortTaskFunction | nul
  * @throws `Error` if is server environment.
  * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
  * @see {@link ChangeDetectorRef}
  * @see ViewRef from "@angular/core"
  * @see EmbeddedViewRef from "@angular/core"
  * @see {@link AbortTaskFunction}
  * @see {@link provideNgQueuexIntegration}
  */
-export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority): AbortTaskFunction | null;
-export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2): AbortTaskFunction | null {
+export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel): AbortTaskFunction | null;
+export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel = 3 /* Priority.Normal */): AbortTaskFunction | null {
 
   if (typeof ngDevMode === 'undefined' || ngDevMode) {
     if (Integrator.instance === null) {
@@ -344,6 +350,8 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: Priority = 2):
  * @throws `Error` if is server environment.
  * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
  * @see {@link assertInConcurrentTaskContext}
@@ -430,6 +438,8 @@ export function scheduleChangeDetection(callback: VoidFunction): AbortTaskFuncti
  * @throws `Error` if is server environment.
  * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
  * @see {@link assertInConcurrentTaskContext}
@@ -439,7 +449,7 @@ export function scheduleChangeDetection(callback: VoidFunction): AbortTaskFuncti
  * @see {@link AbortTaskFunction}
  * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleChangeDetection(callback: VoidFunction, priority: Priority): AbortTaskFunction;
+export function scheduleChangeDetection(callback: VoidFunction, priority: PriorityLevel): AbortTaskFunction;
 /**
  * @description
  * Schedules a task with provided callback which will be executed. The main difference from `scheduleTask()` is that it is involved
@@ -516,6 +526,8 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * @throws `Error` if is server environment.
  * @throws `Error` if integration for unit test is not completed.
  * @see {@link Priority}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
  * @see {@link assertInConcurrentTaskContext}
@@ -525,7 +537,7 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * @see {@link AbortTaskFunction}
  * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleChangeDetection(callback: VoidFunction, priority: Priority, cdRef: null): AbortTaskFunction;
+export function scheduleChangeDetection(callback: VoidFunction, priority: PriorityLevel, cdRef: null): AbortTaskFunction;
 /**
  * @description
  * Schedules a task with provided callback which will be executed. The main difference from `scheduleTask()` is that it is involved
@@ -604,6 +616,8 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * @throws `Error` if integration for unit test is not completed.
  * @see {@link ChangeDetectorRef}
  * @see {@link Priority}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
  * @see {@link assertInConcurrentTaskContext}
@@ -613,7 +627,7 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * @see {@link AbortTaskFunction}
  * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleChangeDetection(callback: VoidFunction, priority: Priority, cdRef: ChangeDetectorRef): AbortTaskFunction | null;
+export function scheduleChangeDetection(callback: VoidFunction, priority: PriorityLevel, cdRef: ChangeDetectorRef): AbortTaskFunction | null;
 /**
  * @description
  * Schedules a task with provided callback which will be executed. The main difference from `scheduleTask()` is that it is involved
@@ -692,6 +706,8 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * @throws `Error` if integration for unit test is not completed.
  * @see {@link ChangeDetectorRef}
  * @see {@link Priority}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
  * @see {@link detectChangesSync}
  * @see {@link detectChanges}
  * @see {@link assertInConcurrentTaskContext}
@@ -701,10 +717,10 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * @see {@link AbortTaskFunction}
  * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleChangeDetection(callback: VoidFunction, priority: Priority, cdRef: ChangeDetectorRef | null): AbortTaskFunction | null;
+export function scheduleChangeDetection(callback: VoidFunction, priority: PriorityLevel, cdRef: ChangeDetectorRef | null): AbortTaskFunction | null;
 export function scheduleChangeDetection(
   callback: VoidFunction,
-  priority: Priority = Priority.Normal,
+  priority: PriorityLevel = 3, //Priority.Normal
   cdRef: ChangeDetectorRef | null = null,
 ): AbortTaskFunction | null {
 
@@ -834,6 +850,9 @@ export function scheduleTask(callback: VoidFunction): AbortTaskFunction;
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
  * @throws `Error` if integration for unit test is not completed.
+ * @see {@link Priority}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
  * @see {@link assertInConcurrentTaskContext}
  * @see {@link assertInConcurrentCleanTaskContext}
  * @see {@link isInConcurrentTaskContext}
@@ -841,8 +860,8 @@ export function scheduleTask(callback: VoidFunction): AbortTaskFunction;
  * @see {@link AbortTaskFunction}
  * @see {@link provideNgQueuexIntegration}
  */
-export function scheduleTask(callback: VoidFunction, priority: Priority): AbortTaskFunction;
-export function scheduleTask(callback: VoidFunction, priority: Priority = Priority.Normal): AbortTaskFunction {
+export function scheduleTask(callback: VoidFunction, priority: PriorityLevel): AbortTaskFunction;
+export function scheduleTask(callback: VoidFunction, priority: Priority = 3 /* Priority.Normal */): AbortTaskFunction {
 
   if (typeof ngDevMode === 'undefined' || ngDevMode) {
     if (Integrator.instance === null) {

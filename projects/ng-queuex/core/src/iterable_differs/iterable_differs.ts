@@ -1,7 +1,7 @@
 import { inject, Injectable, IterableChangeRecord, NgIterable, StaticProvider, TrackByFunction } from "@angular/core";
 import { DefaultQueuexIterableDifferFactory } from "./default_iterable_differ";
 
-export type PresentIterableChangeRecord<T> = IterableChangeRecord<T> & { readonly previousIndex: number; readonly currentIndex: number };
+export type StillPresentIterableChangeRecord<T> = IterableChangeRecord<T> & { readonly previousIndex: number; readonly currentIndex: number };
 export type RemovedIterableChangeRecord<T> = IterableChangeRecord<T> & { readonly previousIndex: number; readonly currentIndex: null };
 export type AddedIterableChangeRecord<T> = IterableChangeRecord<T> & { readonly previousIndex: null; readonly currentIndex: number };
 
@@ -61,7 +61,7 @@ export interface QueuexIterableChangeOperationHandler<T> {
    * @param adjustedPreviousIndex A previous position of item, adjusted to current changing state during iteration.
    * @param changed True if identity has changed, otherwise false.
    */
-  move(record: PresentIterableChangeRecord<T>, adjustedPreviousIndex: number, changed: boolean): void;
+  move(record: StillPresentIterableChangeRecord<T>, adjustedPreviousIndex: number, changed: boolean): void;
 
   /**
    * It is invoked for item where you should not do changes to target state during iteration. To illustrate that, lets
@@ -73,7 +73,7 @@ export interface QueuexIterableChangeOperationHandler<T> {
    * @param record Unchanged record.
    * @param changed True if identity has changed, otherwise false.
    */
-  noop(record: PresentIterableChangeRecord<T>, changed: boolean): void;
+  noop(record: StillPresentIterableChangeRecord<T>, changed: boolean): void;
 
   /**
    * This callback is called when iteration is finished.
@@ -141,7 +141,7 @@ export class QueuexIterableDiffers {
   }
 }
 
-function getTypeName(arg: any): string {
+export function getTypeName(arg: any): string {
   if (typeof arg === 'object' || typeof arg === 'function') {
     return arg.constructor.name;
   }

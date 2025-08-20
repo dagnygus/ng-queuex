@@ -1,5 +1,5 @@
 import { IterableChangeRecord, NgIterable, TrackByFunction } from "@angular/core";
-import { QueuexIterableChangeOperationHandler, QueuexIterableChanges, QueuexIterableDiffer, QueuexIterableDifferFactory } from "./iterable_differs";
+import { getTypeName, QueuexIterableChangeOperationHandler, QueuexIterableChanges, QueuexIterableDiffer, QueuexIterableDifferFactory } from "./iterable_differs";
 
 const trackByIdentity = (_: number, item: any) => item;
 
@@ -111,7 +111,7 @@ export class DefaultQueuexIterableDiffer<T> implements QueuexIterableDiffer<T>, 
   diff(collection: NgIterable<T> | null | undefined): QueuexIterableChanges<T> | null {
     if (collection == null) collection = [];
     if (!isListLikeIterable(collection)) {
-      throw new Error(`Error trying to diff '${JSON.stringify(collection)}'. Only arrays and iterables are allowed`,);
+      throw new Error(`Error trying to diff '${collection}' of type '${getTypeName(collection)}'. Only arrays and iterables are allowed.`);
     }
 
     if (this._check(collection)) {

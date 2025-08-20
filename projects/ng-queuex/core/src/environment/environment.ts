@@ -26,14 +26,6 @@ declare const ngDevMode: boolean | undefined;
 declare const jest: any;
 declare const jasmine: any;
 
-function isInJestTestRunner(): boolean {
-  return typeof jest !== undefined && typeof jest === 'object' && jest !== null;
-}
-
-function isInJasmineTestRunner(): boolean {
-  return typeof jasmine !== undefined && typeof jasmine === 'object' && jasmine !== null;
-}
-
 export const USAGE_EXAMPLE_IN_UNIT_TESTS =
   'beforeEach(() => {\n' +
   ' TestBed.configureTestingModule({\n' +
@@ -178,7 +170,7 @@ export function provideNgQueuexIntegration(): EnvironmentProviders {
     provideEnvironmentInitializer(() => {
       const integrator = inject(Integrator);
       integrator.assertInRoot();
-      if (isInJasmineTestRunner() || isInJestTestRunner()) { return; }
+      if ((typeof jasmine === 'object' && jasmine !== null) || (typeof jest === 'object' && jest !== null)) { return; }
       integrator.assertProject();
       integrator.integrateWithAngular();
     }),

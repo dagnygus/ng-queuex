@@ -84,6 +84,17 @@ describe('Testing scheduleTask function.', () => {
     }
   });
 
+  it('Should default priority be normal.', async () => {
+    let defaultPriority = -1;
+
+    scheduleTask(() => {
+      defaultPriority = getCurrentTask()!.priorityLevel;
+    })
+
+    await whenIdle();
+    expect(defaultPriority).toBe(Priority.Normal);
+  })
+
   it('Should invoke callbacks in correct order.', async () => {
     const shuffledPriorities = shuffleArray(Priorities);
     let executedPriorities: Priority[] = [];
@@ -181,6 +192,13 @@ describe('Testing scheduleChangeDetection() function.', () => {
       throw new Error('Integrator not disposed!')
     }
   });
+
+  it('Should default priority be normal', async () => {
+    let defaultPriority = -1;
+    scheduleChangeDetection(() => defaultPriority = getCurrentTask()!.priorityLevel);
+    await whenIdle();
+    expect(defaultPriority).toBe(Priority.Normal);
+  })
 
   it('Should invoke callbacks in correct order.', async () => {
     const shuffledPriorities = shuffleArray(Priorities);
@@ -500,6 +518,13 @@ describe('Testing detectChanges() function', () => {
     }
   });
 
+  it('Default priority should be normal.', async () => {
+    const viewRef = new FakeViewRef();
+    detectChanges(viewRef);
+    await whenIdle();
+    expect(viewRef.lastTaskPriority).toBe(Priority.Normal);
+  })
+
   Priorities.forEach((prio => {
     it('Should coalesce change detection.', async () => {
       const viewRef = new FakeViewRef();
@@ -540,7 +565,7 @@ describe('Testing detectChanges() function', () => {
 
       aborters.push(detectChanges(viewRef, prio)); //Dismissed
       expect(abortCbInvoked).toBeFalse();
-      aborters.push((detectChanges(viewRef, prio - 1))); //This call should schedule cdRef.detectChanges invocation and abort first call.
+      aborters.push((detectChanges(viewRef, prio - 1  as any))); //This call should schedule cdRef.detectChanges invocation and abort first call.
       expect(abortCbInvoked).toBeTrue();
       aborters.push(detectChanges(viewRef, prio)); //Dismissed
       aborters.push(detectChanges(viewRef, prio)); //Dismissed
@@ -714,7 +739,7 @@ describe('Testing abort callback.', () => {
 
             expect(abortCbInvoked).toBeFalse();
 
-            const abortTask2 = detectChanges(viewRef, priorityLevel - 1);
+            const abortTask2 = detectChanges(viewRef, priorityLevel - 1  as any);
 
             expect(abortCbInvoked).toBeTrue();
             expect(typeof abortTask2).toBe('function');
@@ -732,7 +757,7 @@ describe('Testing abort callback.', () => {
 
             expect(abortCbInvoked).toBeFalse();
 
-            const abortTask2 = detectChanges(viewRef, priorityLevel - 1);
+            const abortTask2 = detectChanges(viewRef, priorityLevel - 1  as any);
 
             expect(abortCbInvoked).toBeFalse();
             expect(typeof abortTask2).toBe('function');
@@ -758,7 +783,7 @@ describe('Testing abort callback.', () => {
 
             expect(abortCbInvoked).toBeFalse();
 
-            const abortTask2 = scheduleChangeDetection(() => {}, priorityLevel - 1, viewRef);
+            const abortTask2 = scheduleChangeDetection(() => {}, priorityLevel - 1 as any, viewRef);
 
             expect(abortCbInvoked).toBeTrue();
             expect(typeof abortTask2).toBe('function');
@@ -776,7 +801,7 @@ describe('Testing abort callback.', () => {
 
             expect(abortCbInvoked).toBeFalse();
 
-            const abortTask2 = scheduleChangeDetection(() => {}, priorityLevel - 1, viewRef);
+            const abortTask2 = scheduleChangeDetection(() => {}, priorityLevel - 1 as any, viewRef);
 
             expect(abortCbInvoked).toBeFalse();
             expect(typeof abortTask2).toBe('function');
@@ -802,7 +827,7 @@ describe('Testing abort callback.', () => {
 
             expect(abortCbInvoked).toBeFalse();
 
-            const abortTask2 = detectChanges(viewRef, priorityLevel - 1);
+            const abortTask2 = detectChanges(viewRef, priorityLevel - 1  as any);
 
             expect(abortCbInvoked).toBeTrue();
             expect(typeof abortTask2).toBe('function');
@@ -820,7 +845,7 @@ describe('Testing abort callback.', () => {
 
             expect(abortCbInvoked).toBeFalse();
 
-            const abortTask2 = detectChanges(viewRef, priorityLevel - 1);
+            const abortTask2 = detectChanges(viewRef, priorityLevel - 1 as any);
 
             expect(abortCbInvoked).toBeFalse();
             expect(typeof abortTask2).toBe('function');
@@ -846,7 +871,7 @@ describe('Testing abort callback.', () => {
 
             expect(abortCbInvoked).toBeFalse();
 
-            const abortTask2 = scheduleChangeDetection(() => {}, priorityLevel - 1, viewRef);
+            const abortTask2 = scheduleChangeDetection(() => {}, priorityLevel - 1 as any, viewRef);
 
             expect(abortCbInvoked).toBeTrue();
             expect(typeof abortTask2).toBe('function');
@@ -864,7 +889,7 @@ describe('Testing abort callback.', () => {
 
             expect(abortCbInvoked).toBeFalse();
 
-            const abortTask2 = scheduleChangeDetection(() => {}, priorityLevel - 1, viewRef);
+            const abortTask2 = scheduleChangeDetection(() => {}, priorityLevel - 1 as any, viewRef);
 
             expect(abortCbInvoked).toBeFalse();
             expect(typeof abortTask2).toBe('function');

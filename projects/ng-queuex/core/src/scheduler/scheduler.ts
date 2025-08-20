@@ -19,6 +19,8 @@ interface FlushWorkFn {
 
 declare const ngDevMode: boolean | undefined;
 declare const Zone: ZoneType | undefined
+declare const jasmine: object | undefined;
+declare const jest: object | undefined;
 
 const global = ɵglobal as typeof globalThis & { Zone?: ZoneType, setImmediate(cb: Function): number };
 
@@ -290,6 +292,7 @@ export function scheduleCallback(
  *
  * @param attempts - The number of times to check for queue emptiness. Minimum is 5.
  * @returns A Promise that resolves when the system appears to be idle.
+ * @throws Error if supported test runner was not detected (jasmine/jest).
  *
  * @example
  * ```ts
@@ -300,13 +303,18 @@ export function scheduleCallback(
  * ```
  */
 export function whenIdle(attempts: number = 5): Promise<void> {
+
+  if (typeof jasmine === 'undefined' && typeof jest === 'undefined') {
+    throw new Error('whenIdle(): Supported test runner not detected! This function can by used in supported test frameworks (jasmine/jest).')
+  }
+
   return new Promise((resolve) => {
     let counter = 0;
     attempts = Math.max(5, Math.round(attempts));
 
     const addToQueueOrResolve = () => {
       queueMicrotask(() => {
-        if (counter === attempts) {
+        if (counter >= attempts) {
         resolve();
         return;
       }
@@ -426,7 +434,6 @@ export function setOnIdle(fn: Function | null): void {
 
 let isMessageLoopRunning = false;
 let scheduledHostCallback: FlushWorkFn | null = null;
-let taskTimeoutID = -1;
 
 // Scheduler periodically yields in case there is other work on the main
 // thread, like user events. By default, it yields multiple times per frame.
@@ -452,28 +459,28 @@ function shouldYieldToHost() {
   return true;
 }
 
-export function forceFrameRate(fps: number) {
-  if (fps < 0 || fps > 125) {
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
-      console.error(
-        'forceFrameRate takes a positive int between 0 and 125, ' +
-          'forcing frame rates higher than 125 fps is not supported',
-      );
-    }
-    return;
-  }
-  if (fps > 0) {
-    yieldInterval = Math.floor(1000 / fps);
-  } else {
-    // reset the framerate
-    yieldInterval = 5;
-  }
-  // be aware of browser housekeeping work (~6ms per frame)
-  // according to https://developers.google.com/web/fundamentals/performance/rendering
-  yieldInterval = Math.max(5, yieldInterval - 6);
-}
+// export function forceFrameRate(fps: number) {
+//   if (fps < 0 || fps > 125) {
+//     if (typeof ngDevMode === 'undefined' || ngDevMode) {
+//       console.error(
+//         'forceFrameRate takes a positive int between 0 and 125, ' +
+//           'forcing frame rates higher than 125 fps is not supported',
+//       );
+//     }
+//     return;
+//   }
+//   if (fps > 0) {
+//     yieldInterval = Math.floor(1000 / fps);
+//   } else {
+//     // reset the framerate
+//     yieldInterval = 5;
+//   }
+//   // be aware of browser housekeeping work (~6ms per frame)
+//   // according to https://developers.google.com/web/fundamentals/performance/rendering
+//   yieldInterval = Math.max(5, yieldInterval - 6);
+// }
 //<MyCode>
-forceFrameRate(60);
+// forceFrameRate(60);
 //</MyCode>
 const performWorkUntilDeadline = function() {
   if (scheduledHostCallback !== null) {

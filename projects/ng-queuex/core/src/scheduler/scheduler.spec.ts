@@ -1,3 +1,4 @@
+import { ɵglobal } from "@angular/core"
 import { fakeAsync, flush } from "@angular/core/testing";
 import { onTaskExecuted, getQueueLength, isTaskQueueEmpty, scheduleCallback, setOnIdle, whenIdle } from "./scheduler";
 import { Priority, SchedulerTask, TaskStatus } from "./scheduler_utils";
@@ -1697,12 +1698,20 @@ describe('testing whenIdle() function.', () => {
 
         expect(isTaskQueueEmpty()).toBeFalse();
         await whenIdle();
+        expect(isTaskQueueEmpty()).toBeTrue();
       }
 
       expect(isTaskQueueEmpty()).toBeTrue();
       await whenIdle();
       expect(isTaskQueueEmpty()).toBeTrue();
   });
+
+  it('Should throw error if test runner was not detected.', () => {
+    const _jasmine = ɵglobal.jasmine;
+    ɵglobal.jasmine = undefined;
+    expect(() => whenIdle()).toThrowError('whenIdle(): Supported test runner not detected! This function can by used in supported test frameworks (jasmine/jest).');
+    ɵglobal.jasmine = _jasmine;
+  })
 });
 
 describe('Testing onIdle() callback.', () => {

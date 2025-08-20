@@ -689,6 +689,34 @@ describe('A default QueuexIterableDiffer.', () => {
     expect(removeCount).toBe(2);
   });
 
+  it('Should previous index be of type number and current to be null for removed item from end off the list.', () => {
+    const list1 = [0, 1, 2, 3, 4, 5, 6];
+    const list2 = [0, 1, 2, 3, 4, 5];
+    let noopsCount = 0;
+    let removeCount = 0;
+    differ.diff(list1);
+    differ.diff(list2);
+
+    differ.applyOperations({
+      add() {},
+      remove(record) {
+        expect(typeof record.previousIndex).toBe('number');
+        expect(record.currentIndex).toBeNull();
+        removeCount++;
+      },
+      move() {},
+      noop(record) {
+        expect(typeof record.previousIndex).toBe('number');
+        expect(typeof record.currentIndex).toBe('number');
+        noopsCount++;
+      },
+      done() {}
+    })
+
+    expect(noopsCount).toBe(6);
+    expect(removeCount).toBe(1);
+  });
+
   it('Should previous index to be null and current index to be of type number for inserted item (not appended!)', () => {
     const list1 = [0, 1, 2, 3, 4, 5, 6];
     const list2 = [0, 1, 2, 3, 7, 4, 5, 6];
@@ -790,7 +818,7 @@ describe('A default QueuexIterableDiffer.', () => {
     });
 
     it('Should throw when given invalid collection!', () => {
-      expect(() => differ.diff('invalid')).toThrowError('Error trying to diff \'"invalid"\'. Only arrays and iterables are allowed');
+      expect(() => differ.diff('invalid')).toThrowError('Error trying to diff \'invalid\' of type \'string\'. Only arrays and iterables are allowed.');
     });
 
   });
