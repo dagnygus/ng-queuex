@@ -20,11 +20,14 @@ import {
   reflectComponentType,
 } from "@angular/core";
 import { isTaskQueueEmpty, setOnIdle } from "../scheduler/scheduler";
+import type { ZoneType } from "../scheduler/scheduler_utils";
 import { TestBed } from "@angular/core/testing";
+import { ɵglobal } from "@angular/core";
 
 declare const ngDevMode: boolean | undefined;
 declare const jest: any;
 declare const jasmine: any;
+declare const Zone: ZoneType | undefined;
 
 export const USAGE_EXAMPLE_IN_UNIT_TESTS =
   'beforeEach(() => {\n' +
@@ -57,6 +60,7 @@ export class Integrator implements OnDestroy {
   public pendingNgTaskCleanup: (() => void) | null = null;
   public bootstrapCount = 0;
   public uncompleted = true;
+  public testEnv = false;
   public isServer = isPlatformServer(inject(PLATFORM_ID));
   public subscription: Subscription | null = null;
   public static instance: Integrator | null = null;
@@ -88,16 +92,15 @@ export class Integrator implements OnDestroy {
   }
 
   public integrateWithAngular(): void {
-    const pendingNgTaskCleanup = this.pendingNgTaskCleanup = this.pendingNgTasks.add();
+    this.pendingNgTaskCleanup = this.pendingNgTasks.add();
     setOnIdle(() => {
-      pendingNgTaskCleanup();
+      this.pendingNgTaskCleanup?.();
       this.pendingNgTaskCleanup = null;
     });
     const subscription = this.subscription = this.appRef.isStable.subscribe((value) => {
       if (value) {
         setOnIdle(null);
         subscription.unsubscribe();
-        this.subscription = null
       }
     });
     this.uncompleted = false;
@@ -119,17 +122,26 @@ export class Integrator implements OnDestroy {
     }
 
     if (++this.bootstrapCount >= this.appRef.components.length && isTaskQueueEmpty()) {
-      // During bootstrap there was not scheduled any concurrent task.
-      // That means that internal onIdle hook will not be invoke, so we need to cleanup
-      // angular pending task manually. That will stabilize application and do rest of the cleanup.
-      this.pendingNgTaskCleanup?.()
+      let scheduleMicrotask: (cb: VoidFunction) => void = typeof Zone === 'object' ?
+        ɵglobal[Zone.__symbol__('queueMicrotask')] :
+        queueMicrotask;
+
+      scheduleMicrotask(() => {
+        // During bootstrap there was not scheduled any concurrent task.
+        // That means that internal onIdle hook will not be invoke, so we need to cleanup
+        // angular pending task manually. That will stabilize application and do rest of the cleanup.
+        this.pendingNgTaskCleanup?.()
+      });
+
     }
 
   }
 
   ngOnDestroy(): void {
     this.pendingNgTaskCleanup?.();
+    this.pendingNgTaskCleanup = null;
     this.subscription?.unsubscribe();
+    this.subscription = null;
     Integrator.instance = null;
     setOnIdle(null);
   }
@@ -227,7 +239,9 @@ export function completeIntegrationForTest(): void {
 
   if (Integrator.instance.uncompleted) {
     Integrator.instance.uncompleted = false;
+    Integrator.instance.testEnv = true;
   } else {
+    if (Integrator.instance.testEnv) { return; }
     throw new Error('completeIntegrationForTest(): This function must be called within a test runner (Jasmine/Jest). No test framework detected.')
   }
 }

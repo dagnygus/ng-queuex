@@ -43,6 +43,7 @@ export interface ZoneTask {
 export interface ZoneType {
   current: Zone;
   root: Zone;
+  __symbol__(name: string): string;
 }
 
 export const enum TaskStatus {
