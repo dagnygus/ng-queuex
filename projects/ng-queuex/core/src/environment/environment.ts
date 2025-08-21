@@ -20,14 +20,12 @@ import {
   reflectComponentType,
 } from "@angular/core";
 import { isTaskQueueEmpty, setOnIdle } from "../scheduler/scheduler";
-import type { ZoneType } from "../scheduler/scheduler_utils";
 import { TestBed } from "@angular/core/testing";
 import { ɵglobal } from "@angular/core";
 
 declare const ngDevMode: boolean | undefined;
 declare const jest: any;
 declare const jasmine: any;
-declare const Zone: ZoneType | undefined;
 
 export const USAGE_EXAMPLE_IN_UNIT_TESTS =
   'beforeEach(() => {\n' +
@@ -122,17 +120,10 @@ export class Integrator implements OnDestroy {
     }
 
     if (++this.bootstrapCount >= this.appRef.components.length && isTaskQueueEmpty()) {
-      let scheduleMicrotask: (cb: VoidFunction) => void = typeof Zone === 'object' ?
-        ɵglobal[Zone.__symbol__('queueMicrotask')] :
-        queueMicrotask;
-
-      scheduleMicrotask(() => {
         // During bootstrap there was not scheduled any concurrent task.
         // That means that internal onIdle hook will not be invoke, so we need to cleanup
         // angular pending task manually. That will stabilize application and do rest of the cleanup.
         this.pendingNgTaskCleanup?.()
-      });
-
     }
 
   }
