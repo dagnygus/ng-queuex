@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from "@angular/common";
 import {
   assertNotInReactiveContext,
+  ChangeDetectorRef,
   Directive,
   effect,
   EmbeddedViewRef,
@@ -8,9 +9,9 @@ import {
   InjectionToken,
   Input,
   input,
-  InputSignal,
   OnChanges,
   OnDestroy,
+  OnInit,
   PLATFORM_ID,
   Signal,
   SimpleChanges,
@@ -18,7 +19,21 @@ import {
   ValueProvider,
   ViewContainerRef,
 } from "@angular/core";
-import { consumerAfterComputation, consumerBeforeComputation, consumerDestroy, consumerMarkDirty, consumerPollProducersForChange, createWatch, isInNotificationPhase, REACTIVE_NODE, ReactiveNode, setActiveConsumer, Watch } from "@angular/core/primitives/signals";
+import {
+  consumerAfterComputation,
+  consumerBeforeComputation,
+  consumerDestroy,
+  consumerMarkDirty,
+  consumerPollProducersForChange,
+  createWatch,
+  isInNotificationPhase,
+  REACTIVE_NODE,
+  ReactiveNode,
+  setActiveConsumer,
+  SIGNAL,
+  SignalNode,
+  Watch
+} from "@angular/core/primitives/signals";
 import {
   PriorityLevel,
   assertNgQueuexIntegrated,
@@ -26,13 +41,18 @@ import {
   priorityNameToNumber,
   priorityInputTransform,
   scheduleChangeDetection,
-  AbortTaskFunction
+  AbortTaskFunction,
+  detectChangesSync,
+  isInConcurrentTaskContext,
+  onTaskExecuted,
+  scheduleTask
 } from "@ng-queuex/core";
-import { detectChangesSync, isInConcurrentTaskContext, onTaskExecuted, scheduleTask } from "../../../core";
+import { assertSignal } from "../utils/utils";
 
 declare const ngDevMode: boolean | undefined;
 
-interface QxIfView {
+interface QxIfView<T = unknown> {
+  context: QueuexIfContext<T>
   dispose(): void
 }
 
@@ -70,7 +90,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
 
       this.abortTask = scheduleChangeDetection(() => {
         if (this.destroyed) { return; }
-        this.scheduled = false;
+
 
         let thenViewRef = this.view.thenViewRef;
         const vcRef = this.view.vcRef;
@@ -107,7 +127,8 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
           this.run();
         }
 
-      }, this.view.ifDir.qxIfPriority(), this.view.thenViewRef);
+        this.scheduled = false;
+      }, this.view.priorityNode.value, this.view.thenViewRef);
     },
     run(this: QueuexIfEffectNode) {
       if ((typeof ngDevMode === 'undefined' || ngDevMode) && isInNotificationPhase()) {
@@ -147,7 +168,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
     kind: 'effect',
     consumerMarkedDirty(this: QueuexIfEffectNode) {
       if (typeof ngDevMode === 'undefined' || ngDevMode) {
-        assertNotInReactiveContext(() => 'Internal Error: Reactive context (THEN_NODE)!')
+        assertNotInReactiveContext(() => 'Internal Error: Reactive context (ELSE_NODE)!')
       }
       this.schedule();
     },
@@ -161,7 +182,6 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
 
       this.abortTask = scheduleChangeDetection(() => {
         if (this.destroyed) { return; }
-        this.scheduled = false;
 
         let elseViewRef = this.view.elseViewRef;
         const vcRef = this.view.vcRef;
@@ -198,7 +218,8 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
           this.run();
         }
 
-      }, this.view.ifDir.qxIfPriority(), this.view.elseViewRef);
+        this.scheduled = false;
+      }, this.view.priorityNode.value, this.view.elseViewRef);
     },
     run(this: QueuexIfEffectNode) {
       if ((typeof ngDevMode === 'undefined' || ngDevMode) && isInNotificationPhase()) {
@@ -211,7 +232,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
       }
       this.hasRun = true;
 
-      const viewRef = this.view.thenViewRef;
+      const viewRef = this.view.elseViewRef;
 
       if (viewRef) {
         const prevConsumer = consumerBeforeComputation(this);
@@ -255,13 +276,14 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
 const QX_IF_DEFAULT_PRIORITY = new InjectionToken<PriorityLevel>('QX_IF_DEFAULT_PRIORITY', { factory: () => 3 /* Priority.Normal */ });
 
 export function provideQxIfDefaultPriority(priority: PriorityName): ValueProvider {
-  return { provide: QX_IF_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority) }
+  return { provide: QX_IF_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, 'provideQxIfDefaultPriority()') }
 }
 
-class ClientQxIfView<T = unknown> implements QxIfView {
+class ClientQxIfView<T = unknown> implements QxIfView<T> {
 
   ifDir: QueuexIf<T>
-  context: QueuexIfContext<T>;
+  priorityNode: SignalNode<PriorityLevel>;
+  context: QueuexIfContext<T> = null!;
   inputWatch: Watch
   thenNode: QueuexIfEffectNode<T>;
   elseNode: QueuexIfEffectNode<T>;
@@ -273,47 +295,17 @@ class ClientQxIfView<T = unknown> implements QxIfView {
   elseTmpHasChange: boolean = false
   vcRef = inject(ViewContainerRef)
   disposed = false
-  abortTask: AbortTaskFunction = null!
+  abortTask: AbortTaskFunction | null = null
+  inputWatchScheduled = false
 
   constructor(directive: QueuexIf<T>) {
     this.ifDir = directive;
+    this.priorityNode = directive.qxIfPriority[SIGNAL];
     this.thenTmpRef = directive.qxIfThen();
-    this.context = new QueuexIfContext(directive.qxIf);
 
     this.inputWatch = createWatch(
-      () => {
-        this.ifDir.qxIf();
-        const thenTmpRef = this.ifDir.qxIfThen();
-        if (this.thenTmpRef !== thenTmpRef) {
-          this.thenTmpHasChange = true;
-          this.thenTmpRef = thenTmpRef;
-        }
-        const elseTmpRef = this.ifDir.qxIfElse();
-        if (this.elseTmpRef !== elseTmpRef) {
-          this.elseTmpHasChange = true;
-        }
-
-        const prevConsumer = setActiveConsumer(null);
-        try {
-          this.thenNode.schedule()
-          this.elseNode.schedule();
-        } finally {
-          setActiveConsumer(prevConsumer);
-        }
-      },
-      () => {
-        if (isInConcurrentTaskContext()) {
-          onTaskExecuted(() => {
-            if (this.disposed) { return; }
-            this.inputWatch.run();
-          });
-        } else {
-          this.abortTask = scheduleTask(
-            () => this.inputWatch.run(),
-            1 //Highest
-          );
-        }
-      },
+      () => this.inputWatchCallback(),
+      () => this.scheduleInputWatchCallback(),
       false
     );
 
@@ -323,9 +315,50 @@ class ClientQxIfView<T = unknown> implements QxIfView {
     this.inputWatch.notify();
   }
 
+  inputWatchCallback(): void {
+    this.ifDir.qxIf();
+    const thenTmpRef = assertTemplateRef(this.ifDir.qxIfThen(), 'qxIfThen');
+    if (this.thenTmpRef !== thenTmpRef) {
+      this.thenTmpHasChange = true;
+      this.thenTmpRef = thenTmpRef;
+    }
+    const elseTmpRef = assertTemplateRef(this.ifDir.qxIfElse(), 'qxIfElse');
+    if (this.elseTmpRef !== elseTmpRef) {
+      this.elseTmpHasChange = true;
+      this.elseTmpRef = elseTmpRef
+    }
+
+    const prevConsumer = setActiveConsumer(null);
+    try {
+      this.thenNode.schedule()
+      this.elseNode.schedule();
+    } finally {
+      setActiveConsumer(prevConsumer);
+    }
+
+    this.inputWatchScheduled = false;
+  }
+
+  scheduleInputWatchCallback(): void {
+    if (this.inputWatchScheduled) { return; }
+    this.inputWatchScheduled = true;
+
+    if (isInConcurrentTaskContext()) {
+      onTaskExecuted(() => {
+        if (this.disposed) { return; }
+        this.inputWatch.run();
+      });
+    } else {
+      this.abortTask = scheduleTask(
+        () => this.inputWatch.run(),
+        1 //Highest
+      );
+    }
+  }
+
   dispose(): void {
     this.disposed = true;
-    this.abortTask();
+    this.abortTask?.();
     this.inputWatch.destroy();
     this.thenNode.destroy();
     this.elseNode.destroy();
@@ -334,21 +367,21 @@ class ClientQxIfView<T = unknown> implements QxIfView {
 
 class ServerQxIfView<T = unknown> implements QxIfView {
 
-  context: QueuexIfContext<T>;
+  context: QueuexIfContext<T> = null!;
   thenViewRef: EmbeddedViewRef<QueuexIfContext<T>> | null = null;
   elseViewRef: EmbeddedViewRef<QueuexIfContext<T>> | null = null;
   thenTmpRef: TemplateRef<QueuexIfContext<T>> | null = null;
   elseTmpRef: TemplateRef<QueuexIfContext<T>> | null = null;
-  vcRef = inject(ViewContainerRef)
+  vcRef = inject(ViewContainerRef);
+  cdRef = inject(ChangeDetectorRef);
 
   constructor(directive: QueuexIf<T>) {
-    this.context = new QueuexIfContext(directive.qxIf);
     effect(() => {
       this.update(
         directive.qxIf(),
-        directive.qxIfThen(),
-        directive.qxIfElse()
-      )
+        assertTemplateRef(directive.qxIfThen(), 'qxIfThen'),
+        assertTemplateRef(directive.qxIfElse(), 'qxIfElse')
+      );
     })
   }
 
@@ -357,6 +390,8 @@ class ServerQxIfView<T = unknown> implements QxIfView {
     thenTmpRef: TemplateRef<QueuexIfContext<T>>,
     elseTmpRef: TemplateRef<QueuexIfContext<T>> | null
   ): void {
+    let shouldRefresh = false
+
     if (this.thenTmpRef !== thenTmpRef) {
       this.thenTmpRef = thenTmpRef;
       this.thenViewRef = null;
@@ -388,42 +423,57 @@ class ServerQxIfView<T = unknown> implements QxIfView {
         }
       }
     }
-
   }
 
   dispose(): void { /* noop */ }
 }
 
 @Directive({ selector: '[qxIf]' })
-export class QueuexIf<T = unknown> implements OnChanges, OnDestroy {
+export class QueuexIf<T = unknown> implements OnChanges, OnInit, OnDestroy {
   private _view: QxIfView
+  private _init = false;
+  private _defaultThenTemplate: TemplateRef<QueuexIfContext<T>> = inject(TemplateRef);
 
   qxIfPriority = input(inject(QX_IF_DEFAULT_PRIORITY), { transform: priorityInputTransform });
-  qxIfThen: InputSignal<TemplateRef<QueuexIfContext<T>>> = input(inject(TemplateRef));
   qxIfElse = input<TemplateRef<QueuexIfContext<T>> | null>(null);
+  qxIfThen = input<TemplateRef<QueuexIfContext<T>>, TemplateRef<QueuexIfContext<T>> | null>(
+    this._defaultThenTemplate, { transform: (value) => value ?? this._defaultThenTemplate }
+);
 
   @Input({ required: true }) qxIf: Signal<T> = null!
 
   constructor() {
     assertNgQueuexIntegrated();
-
     if (isPlatformBrowser(inject(PLATFORM_ID))) {
       this._view = new ClientQxIfView(this)
     } else {
       this._view = new ServerQxIfView(this);
     }
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['qxIf']) {
+    if (changes['qxIf'] && this._init) {
       throw new Error('[qxIf] Main input can not be change!');
     }
+  }
+
+  ngOnInit(): void {
+    this._init = true;
+    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      assertSignal(this.qxIf, 'qxIf');
+    }
+    this._view.context = new QueuexIfContext<T>(this.qxIf);
   }
 
   ngOnDestroy(): void {
     this._view.dispose();
   }
+
+  static ngTemplateGuard_qxIf: 'binding';
+  static ngTemplateContextGuard<T>(dir: QueuexIf<T>, ctx: any): ctx is QueuexIfContext<Exclude<T, false | 0 | '' | null | undefined>> {
+    return true;
+  }
+
 }
 
 export class QueuexIfContext<T = unknown> {
@@ -431,7 +481,22 @@ export class QueuexIfContext<T = unknown> {
   public $implicit: Signal<T>
   public qxIf: Signal<T>
 
-  constructor(valueSignal: Signal<T>) {
-    this.$implicit = this.qxIf = valueSignal
+  constructor(valueSource: Signal<T>) {
+    this.$implicit = this.qxIf = valueSource;
   }
+}
+
+function assertTemplateRef<T>(templateRef: TemplateRef<T>, propertyName: string): TemplateRef<T>;
+function assertTemplateRef<T>(templateRef: TemplateRef<T> | null, propertyName: string): TemplateRef<T> | null;
+function assertTemplateRef<T>(templateRef: TemplateRef<T> | null, propertyName: string): TemplateRef<T> | null {
+  if (templateRef && !templateRef.createEmbeddedView) {
+    let typeName: string;
+    if (typeof templateRef === 'object' || typeof templateRef === 'function') {
+      typeName = (templateRef as any).constructor.name;
+    } else {
+      typeName = typeof templateRef;
+    }
+    throw new Error(`${propertyName} must be TemplateRef, but received ${typeName}`)
+  }
+  return templateRef
 }

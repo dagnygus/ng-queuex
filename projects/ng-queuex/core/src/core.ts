@@ -7,7 +7,8 @@ export {
   isInConcurrentCleanTaskContext,
   isInConcurrentDirtyTaskContext,
   onTaskExecuted,
-  whenIdle
+  whenIdle,
+  isTaskQueueEmpty
 } from "./scheduler/scheduler";
 export {
   provideNgQueuexIntegration,
