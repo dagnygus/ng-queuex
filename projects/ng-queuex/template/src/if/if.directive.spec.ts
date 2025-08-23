@@ -359,6 +359,29 @@ describe('QueuexIf directive.', () => {
         expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
       });
 
+      it('Change detection cycle should not enter to embedded view.', async () => {
+        const template =
+          '<span test-directive class="outer-test-dir"></span>' +
+          '<div *qxIf="conditionSource; priority: priorityLevel">' +
+            '<span test-directive class="inner-test-dir"></span>' +
+          '</div>'
+        fixture = createTestComponent(template);
+        getComponent().priorityLevel = priorityLevel;
+
+        fixture.detectChanges();
+        await whenIdle();
+        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
+        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
+
+        fixture.detectChanges();
+        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(1);
+        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
+
+        fixture.detectChanges();
+        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(2);
+        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
+      })
+
       it('Should trigger local change detection if consumed signal in template has change.', async () => {
         const template =
           '<div>' +

@@ -112,6 +112,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
               this.view.thenTmpRef,
               this.view.context
             );
+            this.view.thenViewRef.detach();
             consumerMarkDirty(this);
           }
         } else {
@@ -210,6 +211,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
               this.view.elseTmpRef,
               this.view.context
             );
+            this.view.elseViewRef.detach();
             consumerMarkDirty(this);
           }
         }

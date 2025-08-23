@@ -415,15 +415,7 @@ export function getCurrentTask(): SchedulerTask | null {
   return currentTask
 }
 
-/**
- * Determines that there is any task in queue. If there at least is one task of any status
- * (executing, executed, prepared, aborted) it will return false. This can be used in test
- * runners (jest/jasmine) or it will throw error.
- */
 export function isTaskQueueEmpty(): boolean {
-  if (typeof jasmine === 'undefined' && typeof jest === 'undefined') {
-    throw new Error('whenIdle(): Supported test runner not detected! This function can by used in supported test frameworks (jasmine/jest).')
-  }
   return taskQueue.length === 0;
 }
 

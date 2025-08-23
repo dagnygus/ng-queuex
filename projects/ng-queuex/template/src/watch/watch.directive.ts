@@ -1,5 +1,5 @@
 import { isPlatformServer } from "@angular/common";
-import { Directive, inject, InjectionToken, input, OnDestroy, PLATFORM_ID, TemplateRef, ValueProvider, ViewContainerRef, ViewRef } from "@angular/core";
+import { AfterContentChecked, Directive, inject, InjectionToken, input, OnDestroy, PLATFORM_ID, TemplateRef, ValueProvider, ViewContainerRef, ViewRef } from "@angular/core";
 import { createWatch, SIGNAL, SignalNode, Watch } from "@angular/core/primitives/signals";
 import { AbortTaskFunction, PriorityLevel, scheduleChangeDetection, detectChangesSync, PriorityName, priorityNameToNumber } from "@ng-queuex/core";
 
@@ -10,7 +10,8 @@ export function provideQueuexWatchDefaultPriority(priorityName: PriorityName): V
 }
 
 @Directive({ selector: '[watch]', standalone: true })
-export class QueuexWatch implements OnDestroy {
+export class QueuexWatch implements OnDestroy, AfterContentChecked {
+  private _init = false;
   private _viewRef: ViewRef | null = null;
   private _watch: Watch | null = null;
   private _abortTask: AbortTaskFunction | null = null;
@@ -35,6 +36,14 @@ export class QueuexWatch implements OnDestroy {
     }
   }
 
+  ngAfterContentChecked(): void {
+    if (this._init) { return; }
+    this._init = true;
+    if (this._viewRef) {
+      detectChangesSync(this._viewRef);
+    }
+  }
+
   ngOnDestroy(): void {
     this._abortTask?.();
     this._watch?.destroy();
@@ -45,7 +54,9 @@ export class QueuexWatch implements OnDestroy {
       this._viewRef = this._vcRef.createEmbeddedView(this._tmpRef);
       this._viewRef.detach();
     }
-    detectChangesSync(this._viewRef);
+    if (this._init) {
+      detectChangesSync(this._viewRef);
+    }
   }
 
   private _scheduleEffectCallback(): void {
