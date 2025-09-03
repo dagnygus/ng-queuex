@@ -1,45 +1,37 @@
 import { isPlatformServer } from "@angular/common";
-import { AfterContentChecked, Directive, inject, InjectionToken, input, OnDestroy, PLATFORM_ID, TemplateRef, ValueProvider, ViewContainerRef, ViewRef } from "@angular/core";
-import { createWatch, SIGNAL, SignalNode, Watch } from "@angular/core/primitives/signals";
-import { AbortTaskFunction, PriorityLevel, scheduleChangeDetection, detectChangesSync, PriorityName, priorityNameToNumber, priorityInputTransform } from "@ng-queuex/core";
-
-const QX_WATCH_DEFAULT_PRIORITY = new InjectionToken<PriorityLevel>('QX_WATCH_DEFAULT_PRIORITY', { factory: () => 1 /* Highest */ });
-
-export function provideQueuexWatchDefaultPriority(priorityName: PriorityName): ValueProvider {
-  return { provide: QX_WATCH_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priorityName, ' provideQueuexWatchDefaultPriority()') }
-}
+import { Directive, inject, OnDestroy, PLATFORM_ID, TemplateRef, ViewContainerRef, ViewRef } from "@angular/core";
+import { createWatch, Watch } from "@angular/core/primitives/signals";
+import { AbortTaskFunction, scheduleChangeDetection, detectChangesSync, onTaskExecuted, isInConcurrentTaskContext } from "@ng-queuex/core";
 
 @Directive({ selector: '[watch]', standalone: true })
 export class QueuexWatch implements OnDestroy {
   private _viewRef: ViewRef | null = null;
-  private _watch: Watch | null = null;
+  private _watcher: Watch | null = null;
   private _abortTask: AbortTaskFunction | null = null;
   private _vcRef = inject(ViewContainerRef);
   private _tmpRef = inject(TemplateRef);
-  private _priorityNode: SignalNode<PriorityLevel> | null = null!
-
-
-  watchPriority = input(inject(QX_WATCH_DEFAULT_PRIORITY), { transform: priorityInputTransform })
+  private _destroyed = false;
+  private _scheduled = false;
 
   constructor() {
-    if (isPlatformServer(PLATFORM_ID)) {
+    if (isPlatformServer(inject(PLATFORM_ID))) {
       this._vcRef.createEmbeddedView(this._tmpRef);
     } else {
-      this._priorityNode = this.watchPriority[SIGNAL];
-      this._watch = createWatch(
+      this._watcher = createWatch(
         () => this._effectCallback(),
         () => this._scheduleEffectCallback(),
         false
       );
-      this._watch.notify();
-      this._watch.run();
+      this._watcher.notify();
+      this._watcher.run();
     }
   }
 
 
   ngOnDestroy(): void {
+    this._destroyed = true;
     this._abortTask?.();
-    this._watch?.destroy();
+    this._watcher?.destroy();
   }
 
   private _effectCallback(): void {
@@ -48,15 +40,25 @@ export class QueuexWatch implements OnDestroy {
       this._viewRef.detach();
     }
     detectChangesSync(this._viewRef);
+    this._scheduled = false;
   }
 
   private _scheduleEffectCallback(): void {
+    if (this._scheduled) { return; }
+    this._scheduled = true;
+
     if (this._viewRef) {
-      this._abortTask = scheduleChangeDetection(
-        () => this._watch!.run(),
-        this._priorityNode!.value,
-        this._viewRef
-      )
+      if (isInConcurrentTaskContext()) {
+        if (this._destroyed) { return; }
+        onTaskExecuted(() => this._watcher!.run())
+      } else {
+        this._abortTask = scheduleChangeDetection(
+          () => this._watcher!.run(),
+          1,
+          this._viewRef
+        );
+      }
+
     }
   }
 

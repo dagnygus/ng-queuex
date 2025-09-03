@@ -1,9 +1,9 @@
-import { Component, Directive, DoCheck, PLATFORM_ID, provideZonelessChangeDetection, signal, WritableSignal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Directive, DoCheck, PLATFORM_ID, provideZonelessChangeDetection, signal, WritableSignal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { provideQxIfDefaultPriority, QueuexIf } from "./if.directive";
 import { By } from "@angular/platform-browser";
 import { completeIntegrationForTest, Priority, PriorityLevel, PriorityName, provideNgQueuexIntegration, whenIdle } from "@ng-queuex/core";
-import { describePriorityLevel } from "../utils/test_utils";
+import { defineGlobalFlag, describePriorityLevel } from "../utils/test_utils";
 
 interface TestEnvironmentOptions {
   defaultPriority?: PriorityName | 'undefined';
@@ -20,7 +20,8 @@ const defaultTestEnvConfig: Required<TestEnvironmentOptions> = {
 @Component({
   selector: 'test-cmp',
   template: '',
-  standalone: false
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 class TestComponent {
 
@@ -29,6 +30,7 @@ class TestComponent {
   priorityLevel: PriorityLevel = 3;
   valueSource1: WritableSignal<any> = signal('foo');
   valueSource2: WritableSignal<any> = signal('foo');
+  renderCallback: (() => void) | null = null;
 }
 
 @Directive({ selector: '[test-directive]', standalone: false })
@@ -44,9 +46,9 @@ class TestDirective implements DoCheck {
 
 const Priorities: PriorityLevel[] = [1, 2, 3, 4, 5];
 
-function createTestComponent(template: string): ComponentFixture<TestComponent> {
+function createTestComponent(template: string, changeDetection: ChangeDetectionStrategy = ChangeDetectionStrategy.OnPush): ComponentFixture<TestComponent> {
   TestBed
-    .overrideComponent(TestComponent, { set: { template } })
+    .overrideComponent(TestComponent, { set: { template, changeDetection } })
     .runInInjectionContext(() => completeIntegrationForTest());
   return TestBed.createComponent(TestComponent);
 }
@@ -120,7 +122,16 @@ describe('QueuexIf directive.', () => {
       fixture.detectChanges();
       await whenIdle();
       const directive = getQxIfDirective('span');
-      expect(directive.qxIfPriority()).toBe(Priority.Normal);
+      expect(directive.qxIfPriority).toBe(Priority.Normal);
+    });
+
+    it('Should throw error if qxIf input is not signal', async () => {
+      const template = '<span *qxIf="conditionSource()"></span>';
+      fixture = createTestComponent(template);
+      expect(() => fixture.detectChanges()).toThrowError(
+        '\'qxIf\' must be a signal, but received \'boolean\''
+      );
+      await whenIdle();
     });
 
     Priorities.forEach((priorityLevel) => {
@@ -134,7 +145,7 @@ describe('QueuexIf directive.', () => {
           fixture.detectChanges();
           await whenIdle();
           const directive = getQxIfDirective('span');
-          expect(directive.qxIfPriority()).toBe(priorityLevel);
+          expect(directive.qxIfPriority).toBe(priorityLevel);
         });
 
         it('Should work in a template attribute.', async () => {
@@ -325,121 +336,202 @@ describe('QueuexIf directive.', () => {
             await fixture.whenStable();
             expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
         });
-      });
 
-      it('Should not trigger local change detection when condition goes from truthy to truthy.', async () => {
-        const template =
-          '<div *qxIf="conditionSource">' +
-            '<span test-directive></span>' +
-            '<span class="greeter">HELLO</span>' +
-          '</div>'
-        fixture = createTestComponent(template);
-        getComponent().priorityLevel = priorityLevel;
-        getComponent().conditionSource.set('A');
+        it('Should not trigger local change detection when condition goes from truthy to truthy.', async () => {
+          const template =
+            '<div *qxIf="conditionSource">' +
+              '<span test-directive></span>' +
+              '<span class="greeter">HELLO</span>' +
+            '</div>'
 
-        fixture.detectChanges();
-        await whenIdle();
-        expect(queryAll('span.greeter').length).toBe(1);
-        expect(getTextContent()).toBe('HELLO');
-        expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
+          fixture = createTestComponent(template);
+          getComponent().priorityLevel = priorityLevel;
+          getComponent().conditionSource.set('A');
 
-        getComponent().conditionSource.set('B');
-        await whenIdle();
-        expect(queryAll('span.greeter').length).toBe(1);
-        expect(getTextContent()).toBe('HELLO');
-        expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
+          fixture.detectChanges();
+          await whenIdle();
+          expect(queryAll('span.greeter').length).toBe(1);
+          expect(getTextContent()).toBe('HELLO');
+          expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
 
-        getComponent().conditionSource.set('C');
-        await whenIdle();
-        expect(queryAll('span.greeter').length).toBe(1);
-        expect(getTextContent()).toBe('HELLO');
-        expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
+          getComponent().conditionSource.set('B');
+          await whenIdle();
+          expect(queryAll('span.greeter').length).toBe(1);
+          expect(getTextContent()).toBe('HELLO');
+          expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
 
-        await fixture.whenStable();
-        expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
-      });
+          getComponent().conditionSource.set('C');
+          await whenIdle();
+          expect(queryAll('span.greeter').length).toBe(1);
+          expect(getTextContent()).toBe('HELLO');
+          expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
 
-      it('Change detection cycle should not enter to embedded view.', async () => {
-        const template =
-          '<span test-directive class="outer-test-dir"></span>' +
-          '<div *qxIf="conditionSource; priority: priorityLevel">' +
-            '<span test-directive class="inner-test-dir"></span>' +
-          '</div>'
-        fixture = createTestComponent(template);
-        getComponent().priorityLevel = priorityLevel;
+          await fixture.whenStable();
+          expect(getTestDirective('span[test-directive]').checkCount).toBe(0);
+        });
 
-        fixture.detectChanges();
-        await whenIdle();
-        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
-        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
-
-        fixture.detectChanges();
-        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(1);
-        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
-
-        fixture.detectChanges();
-        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(2);
-        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
-      })
-
-      it('Should trigger local change detection if consumed signal in template has change.', async () => {
-        const template =
-          '<div>' +
-            '<span test-directive class="outer-test-dir"></span> ' +
+        it('Change detection cycle should not enter to embedded view.', async () => {
+          const template =
+            '<span test-directive class="outer-test-dir"></span>' +
             '<div *qxIf="conditionSource; priority: priorityLevel">' +
               '<span test-directive class="inner-test-dir"></span>' +
-              '<span class="slot1">{{valueSource1()}}</span>' +
-              '<span class="slot2">{{valueSource2()}}</span>' +
-            '</div>' +
-          '</div>';
+            '</div>'
+          fixture = createTestComponent(template, ChangeDetectionStrategy.Default);
+          getComponent().priorityLevel = priorityLevel;
 
-        fixture = createTestComponent(template);
-        getComponent().priorityLevel = priorityLevel;
+          fixture.detectChanges();
+          await whenIdle();
+          expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
+          expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
 
-        fixture.detectChanges();
-        await whenIdle();
+          fixture.detectChanges();
+          expect(getTestDirective('span.outer-test-dir').checkCount).toBe(1);
+          expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
 
-        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
-        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
-        expect(query('span.slot1').textContent).toBe('foo');
-        expect(query('span.slot2').textContent).toBe('foo');
+          fixture.detectChanges();
+          expect(getTestDirective('span.outer-test-dir').checkCount).toBe(2);
+          expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
+        })
 
-        getComponent().valueSource1.set('bar')
-        await whenIdle();
-        await fixture.whenStable()
-        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
-        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(1);
-        expect(query('span.slot1').textContent).toBe('bar');
-        expect(query('span.slot2').textContent).toBe('foo');
+        it('Should trigger local change detection if consumed signal in template has change.', async () => {
+          const template =
+            '<div>' +
+              '<span test-directive class="outer-test-dir"></span> ' +
+              '<div *qxIf="conditionSource; priority: priorityLevel">' +
+                '<span test-directive class="inner-test-dir"></span>' +
+                '<span class="slot1">{{valueSource1()}}</span>' +
+                '<span class="slot2">{{valueSource2()}}</span>' +
+              '</div>' +
+            '</div>';
 
-        getComponent().valueSource1.set('fizz')
-        await whenIdle();
-        await fixture.whenStable()
-        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
-        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(2);
-        expect(query('span.slot1').textContent).toBe('fizz');
-        expect(query('span.slot2').textContent).toBe('foo');
+          fixture = createTestComponent(template);
+          getComponent().priorityLevel = priorityLevel;
 
-        getComponent().valueSource2.set('bar')
-        await whenIdle();
-        await fixture.whenStable()
-        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
-        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(3);
-        expect(query('span.slot1').textContent).toBe('fizz');
-        expect(query('span.slot2').textContent).toBe('bar');
+          fixture.detectChanges();
+          await whenIdle();
 
-        getComponent().valueSource2.set('fizz')
-        await whenIdle();
-        await fixture.whenStable()
-        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
-        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(4);
-        expect(query('span.slot1').textContent).toBe('fizz');
-        expect(query('span.slot2').textContent).toBe('fizz');
+          expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
+          expect(getTestDirective('span.inner-test-dir').checkCount).toBe(0);
+          expect(query('span.slot1').textContent).toBe('foo');
+          expect(query('span.slot2').textContent).toBe('foo');
 
-        await fixture.whenStable();
-        expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
-        expect(getTestDirective('span.inner-test-dir').checkCount).toBe(4);
+          getComponent().valueSource1.set('bar')
+          await whenIdle();
+          await fixture.whenStable()
+          expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
+          expect(getTestDirective('span.inner-test-dir').checkCount).toBe(1);
+          expect(query('span.slot1').textContent).toBe('bar');
+          expect(query('span.slot2').textContent).toBe('foo');
+
+          getComponent().valueSource1.set('fizz')
+          await whenIdle();
+          await fixture.whenStable()
+          expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
+          expect(getTestDirective('span.inner-test-dir').checkCount).toBe(2);
+          expect(query('span.slot1').textContent).toBe('fizz');
+          expect(query('span.slot2').textContent).toBe('foo');
+
+          getComponent().valueSource2.set('bar')
+          await whenIdle();
+          await fixture.whenStable()
+          expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
+          expect(getTestDirective('span.inner-test-dir').checkCount).toBe(3);
+          expect(query('span.slot1').textContent).toBe('fizz');
+          expect(query('span.slot2').textContent).toBe('bar');
+
+          getComponent().valueSource2.set('fizz')
+          await whenIdle();
+          await fixture.whenStable()
+          expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
+          expect(getTestDirective('span.inner-test-dir').checkCount).toBe(4);
+          expect(query('span.slot1').textContent).toBe('fizz');
+          expect(query('span.slot2').textContent).toBe('fizz');
+
+          await fixture.whenStable();
+          expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
+          expect(getTestDirective('span.inner-test-dir').checkCount).toBe(4);
+        });
+
+        it('Should call render callback if embedded view gets created.', async () => {
+          const template = '<span *qxIf="conditionSource; renderCallback: renderCallback">HELLO</span>';
+          fixture = createTestComponent(template);
+          getComponent().conditionSource.set(false);
+          const spy = jasmine.createSpy();
+          getComponent().renderCallback = spy;
+
+          fixture.detectChanges();
+          expect(getTextContent()).toBe('');
+          expect(spy.calls.count()).toBe(0);
+
+          await whenIdle();
+          expect(getTextContent()).toBe('');
+          expect(spy.calls.count()).toBe(0);
+
+          getComponent().conditionSource.set(true);
+          await whenIdle();
+          expect(getTextContent()).toBe('HELLO');
+          expect(spy.calls.count()).toBe(1);
+        });
+
+        it('Should call render callback when embedded view gets destroyed.', async () => {
+          const template = '<span *qxIf="conditionSource; renderCallback: renderCallback">HELLO</span>';
+          fixture = createTestComponent(template);
+          const spy = jasmine.createSpy();
+          getComponent().renderCallback = spy;
+
+          fixture.detectChanges();
+          await whenIdle();
+          spy.calls.reset();
+          expect(getTextContent()).toBe('HELLO');
+
+          getComponent().conditionSource.set(false);
+          await whenIdle();
+          expect(getTextContent()).toBe('')
+          expect(spy.calls.count()).toBe(1);
+        });
+
+        it('Should argument passed to render callback be equal qxIf input', async () => {
+          const template = '<span *qxIf="conditionSource; renderCallback: renderCallback">HELLO</span>';
+          fixture = createTestComponent(template);
+          getComponent().conditionSource.set(true);
+          const spy = jasmine.createSpy();
+          getComponent().renderCallback = spy;
+
+          fixture.detectChanges();
+          await whenIdle();
+          expect(spy.calls.mostRecent().args[0]).toBe(true);
+
+          getComponent().conditionSource.set(false);
+          await whenIdle();
+          expect(spy.calls.mostRecent().args[0]).toBeFalse();
+
+          getComponent().conditionSource.set('A');
+          await whenIdle();
+          expect(spy.calls.mostRecent().args[0]).toBe('A');
+
+          getComponent().conditionSource.set(undefined);
+          await whenIdle();
+          expect(spy.calls.mostRecent().args[0]).toBe(undefined);
+
+          getComponent().conditionSource.set(1);
+          await whenIdle();
+          expect(spy.calls.mostRecent().args[0]).toBe(1);
+
+          getComponent().conditionSource.set(0);
+          await whenIdle();
+          expect(spy.calls.mostRecent().args[0]).toBe(0);
+
+          const obj = {}
+          getComponent().conditionSource.set(obj);
+          await whenIdle();
+          expect(spy.calls.mostRecent().args[0]).toBe(obj);
+
+          getComponent().conditionSource.set(null);
+          await whenIdle();
+          expect(spy.calls.mostRecent().args[0]).toBe(null);
+        })
       });
+
     });
 
     describe('Then/else templates.', () => {
@@ -557,7 +649,7 @@ describe('QueuexIf directive.', () => {
             expect(getTextContent()).toBe('false');
           });
 
-          it('SHould support binding to variable using as.', async () => {
+          it('Should support binding to variable using as.', async () => {
             const template =
               '<span *qxIf="conditionSource as v; else elseBlock; priority: priorityLevel">{{v()}}</span>' +
               '<ng-template #elseBlock let-v>{{v()}}</ng-template>'
@@ -687,6 +779,113 @@ describe('QueuexIf directive.', () => {
             await fixture.whenStable();
             expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
             expect(getTestDirective('span.inner-test-dir').checkCount).toBe(4);
+          });
+
+          it('Should call render callback if thenTemplate will change and condition is truthy.', async () => {
+            const template =
+              '<span *qxIf="conditionSource then nestedConditionSource() ? thenBlock1 : thenBlock2; renderCallback: renderCallback"></span>' +
+              '<ng-template #thenBlock1><span>THEN1</span></ng-template>' +
+              '<ng-template #thenBlock2><span>THEN2</span></ng-template>';
+            fixture = createTestComponent(template);
+            const spy = jasmine.createSpy();
+            getComponent().renderCallback = spy;
+            fixture.detectChanges()
+            await whenIdle();
+            expect(getTextContent()).toBe('THEN1');
+            spy.calls.reset();
+
+            getComponent().nestedConditionSource.set(false);
+            fixture.detectChanges();
+            expect(spy.calls.count()).toBe(0);
+            await whenIdle();
+            expect(getTextContent()).toBe('THEN2');
+            expect(spy.calls.count()).toBe(1);
+          });
+
+          it('Should not call render callback if thenTemplate will change and condition is falsy.', async () => {
+            const template =
+              '<span *qxIf="conditionSource then nestedConditionSource() ? thenBlock1 : thenBlock2; renderCallback: renderCallback"></span>' +
+              '<ng-template #thenBlock1><span>THEN1</span></ng-template>' +
+              '<ng-template #thenBlock2><span>THEN2</span></ng-template>';
+            fixture = createTestComponent(template);
+            const spy = jasmine.createSpy();
+            getComponent().renderCallback = spy;
+            getComponent().conditionSource.set(false);
+            fixture.detectChanges()
+            await whenIdle();
+            expect(getTextContent()).toBe('');
+            spy.calls.reset();
+
+            getComponent().nestedConditionSource.set(false);
+            fixture.detectChanges();
+            expect(spy.calls.count()).toBe(0);
+            await whenIdle();
+            expect(getTextContent()).toBe('');
+            expect(spy.calls.count()).toBe(0);
+          });
+
+          it('Should run render callback if elseTemplate will change and condition is falsy', async () => {
+            const template =
+              '<span *qxIf="conditionSource else nestedConditionSource() ? elseBlock1 : elseBlock2; renderCallback: renderCallback"></span>' +
+              '<ng-template #elseBlock1><span>ELSE1</span></ng-template>' +
+              '<ng-template #elseBlock2><span>ELSE2</span></ng-template>';
+            fixture = createTestComponent(template);
+            const spy = jasmine.createSpy();
+            getComponent().renderCallback = spy;
+            getComponent().conditionSource.set(false);
+            fixture.detectChanges();
+            await whenIdle();
+            expect(getTextContent()).toBe('ELSE1');
+            spy.calls.reset();
+
+            getComponent().nestedConditionSource.set(false);
+            fixture.detectChanges();
+            await whenIdle();
+            expect(getTextContent()).toBe('ELSE2');
+            expect(spy.calls.count()).toBe(1);
+          });
+
+          it('Should not run render callback if elseTemplate will change and condition is truthy', async () => {
+            const template =
+              '<span *qxIf="conditionSource else nestedConditionSource() ? elseBlock1 : elseBlock2; renderCallback: renderCallback"></span>' +
+              '<ng-template #elseBlock1><span>ELSE1</span></ng-template>' +
+              '<ng-template #elseBlock2><span>ELSE2</span></ng-template>';
+            fixture = createTestComponent(template);
+            const spy = jasmine.createSpy();
+            getComponent().renderCallback = spy;
+            fixture.detectChanges();
+            await whenIdle();
+            expect(getTextContent()).toBe('');
+            spy.calls.reset();
+
+            getComponent().nestedConditionSource.set(false);
+            fixture.detectChanges();
+            await whenIdle();
+            expect(getTextContent()).toBe('');
+            expect(spy.calls.count()).toBe(0);
+          });
+
+          it('Should run render callback if view toggled.', async () => {
+            const template =
+              '<span *qxIf="conditionSource else elseBlock; renderCallback: renderCallback">THEN</span>' +
+              '<ng-template #elseBlock><span>ELSE</span></ng-template>';
+            fixture = createTestComponent(template);
+            const spy = jasmine.createSpy();
+            getComponent().renderCallback = spy;
+            fixture.detectChanges();
+            await whenIdle();
+            expect(getTextContent()).toBe('THEN');
+            spy.calls.reset();
+
+            getComponent().conditionSource.set(false);
+            await whenIdle();
+            expect(getTextContent()).toBe('ELSE');
+            expect(spy.calls.count()).toBe(1);
+
+            getComponent().conditionSource.set(true);
+            await whenIdle();
+            expect(getTextContent()).toBe('THEN');
+            expect(spy.calls.count()).toBe(2);
           });
 
         });
@@ -825,6 +1024,7 @@ describe('QueuexIf directive.', () => {
       expect(els[0].classList.contains('marker')).toBeTrue();
     });
 
+
     describe('Then/else templates.', () => {
 
       it('Should support else.', () => {
@@ -957,7 +1157,7 @@ describe('QueuexIf directive.', () => {
     });
   });
 
-  describe('Server environment with zoneless change detection.', () => {
+    describe('Server environment with zoneless change detection.', () => {
     beforeEach(() => {
       setupTestEnvironment({ serverPlatform: true, zoneless: true });
     });
@@ -1222,7 +1422,6 @@ describe('QueuexIf directive.', () => {
         expect(els.length).toBe(1);
         els[0].classList.add('marker');
       });
-
     });
   });
 });

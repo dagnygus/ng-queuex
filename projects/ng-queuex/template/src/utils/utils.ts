@@ -9,5 +9,5 @@ export function assertSignal(arg: any, propertyName: string): void {
   } else {
     typeName = typeof arg;
   }
-  throw new Error(`${propertyName} must be a signal, but received ${typeName}`);
+  throw new Error(`'${propertyName}' must be a signal, but received '${typeName}'`);
 }
