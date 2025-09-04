@@ -1,4 +1,4 @@
-import { assertInInjectionContext, DestroyRef, inject, isSignal, Signal } from "@angular/core";
+import { assertInInjectionContext, assertNotInReactiveContext, DestroyRef, inject, isSignal, Signal } from "@angular/core";
 import { PriorityLevel } from "../scheduler/scheduler_utils";
 import { ReactiveHookFn, ReactiveNode, createWatch, setPostSignalSetFn, setActiveConsumer, Watch } from "@angular/core/primitives/signals";
 
@@ -124,6 +124,9 @@ export function value<T>(initialValue: T | Signal<T>, debugName: string): ValueR
  */
 export function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef, debugName: string): ValueRef<T>;
 export function value<T>(initialValue: T | Signal<T>, arg2?: any, arg3?: any): ValueRef<T> {
+  (typeof ngDevMode === 'undefined' || ngDevMode) &&
+    assertNotInReactiveContext(value);
+
   let destroyRef: DestroyRef | null = null;
   let debugName = 'ValueRef'
 

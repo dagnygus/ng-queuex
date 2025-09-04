@@ -334,6 +334,8 @@ class ClientQxIfView<T = unknown> implements QxIfView<T> {
     this.context.$implicit();
     this.thenTmpRef = assertTemplateRef(this.ifDir.qxIfThen(), 'qxIfThen');
     this.elseTmpRef = assertTemplateRef(this.ifDir.qxIfElse(), 'qxIfThen');
+    // this.thenTmpRef = assertTemplateRef(this.thenTmpRefSource(), 'qxIfThen')
+    // this.thenTmpRef = assertTemplateRef(this.elseTmpRefSource(), 'qxIfElse')
 
     const prevConsumer = setActiveConsumer(null);
     try {
