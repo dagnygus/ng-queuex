@@ -42,4 +42,4 @@ export {
 } from './shared_signal/shared_signal';
 export type {
   SharedSignalRef
-} from './shared_signal/shared_signal'
+} from './shared_signal/shared_signal';
