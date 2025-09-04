@@ -37,3 +37,9 @@ export type {
 export {
   QueuexIterableDiffers
 } from "./iterable_differs/iterable_differs";
+export {
+  sharedSignal
+} from './shared_signal/shared_signal';
+export type {
+  SharedSignalRef
+} from './shared_signal/shared_signal'
