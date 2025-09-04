@@ -112,7 +112,7 @@ export function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef): V
  * @throws Error if is used not in injection context.
  * @throws Error if is used in reactive context.
  */
-export function value<T>(initialValue: T | Signal<T>, debugName: string): ValueRef<T>;
+export function value<T>(initialValue: T | Signal<T>, debugName: string | undefined): ValueRef<T>;
 /**
  * Creates a value reference.
  *
@@ -126,7 +126,7 @@ export function value<T>(initialValue: T | Signal<T>, debugName: string): ValueR
  *
  * @see {@link DestroyRef}
  */
-export function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef, debugName: string): ValueRef<T>;
+export function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef, debugName: string | undefined): ValueRef<T>;
 export function value<T>(initialValue: T | Signal<T>, arg2?: any, arg3?: any): ValueRef<T> {
   (typeof ngDevMode === 'undefined' || ngDevMode) &&
     assertNotInReactiveContext(value);

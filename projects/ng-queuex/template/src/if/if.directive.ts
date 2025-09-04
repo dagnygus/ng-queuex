@@ -8,7 +8,6 @@ import {
   inject,
   InjectionToken,
   Input,
-  input,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
@@ -35,7 +34,6 @@ import {
   assertNgQueuexIntegrated,
   PriorityName,
   priorityNameToNumber,
-  priorityInputTransform,
   scheduleChangeDetection,
   AbortTaskFunction,
   detectChangesSync,
@@ -44,7 +42,8 @@ import {
   scheduleTask,
   ValueRef,
   sharedSignal,
-  value
+  value,
+  advancePriorityInputTransform
 } from "@ng-queuex/core";
 import { assertSignal } from "../utils/utils";
 
@@ -469,15 +468,15 @@ export class QueuexIf<T = unknown> implements OnInit, OnDestroy {
   private _view: QxIfView
   private _defaultThenTemplate: TemplateRef<QueuexIfContext<T>> = inject(TemplateRef);
   private _conditionSource = sharedSignal<T>(undefined!);
-  private _thenTmpRefSource = sharedSignal(this._defaultThenTemplate);
-  private _elseTmpRefSource = sharedSignal<TemplateRef<QueuexIfContext<T>> | null>(null);
+  private _thenTmpRefSource = sharedSignal(this._defaultThenTemplate, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'thenTemplateRefSource' : undefined);
+  private _elseTmpRefSource = sharedSignal<TemplateRef<QueuexIfContext<T>> | null>(null, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'elseTemplateRefSource' : undefined);
   private _priorityRef = value<PriorityLevel>(inject(QX_IF_DEFAULT_PRIORITY));
 
   @Input() qxIfRenderCallback: ((arg: T) => void ) | null = null;
   @Input({ required: true }) set qxIf(condition: T | Signal<T>) {
     this._conditionSource.set(condition);
   }
-  @Input({ transform: priorityInputTransform }) set qxIfPriority(priorityLevel: PriorityLevel) {
+  @Input({ transform: advancePriorityInputTransform }) set qxIfPriority(priorityLevel: PriorityLevel | Signal<PriorityLevel>) {
     this._priorityRef.set(priorityLevel)
   }
   @Input() set qxIfThen(thenTmpRef: TemplateRef<QueuexIfContext<T>> | Signal<TemplateRef<QueuexIfContext<T>>> | null | undefined) {
@@ -526,7 +525,7 @@ export class QueuexIfContext<T = unknown> {
 function assertTemplateRef<T>(templateRef: TemplateRef<T>, propertyName: string): TemplateRef<T>;
 function assertTemplateRef<T>(templateRef: TemplateRef<T> | null, propertyName: string): TemplateRef<T> | null;
 function assertTemplateRef<T>(templateRef: TemplateRef<T> | null, propertyName: string): TemplateRef<T> | null {
-  if (templateRef && !templateRef.createEmbeddedView) {
+  if (templateRef && typeof templateRef.createEmbeddedView !== 'function') {
     let typeName: string;
     if (typeof templateRef === 'object' || typeof templateRef === 'function') {
       typeName = (templateRef as any).constructor.name;
