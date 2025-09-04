@@ -1,4 +1,4 @@
-import { isSignal, Signal } from "@angular/core";
+import { computed, isSignal, Signal } from "@angular/core";
 
 declare const ngDevMode: boolean | undefined;
 
@@ -231,6 +231,38 @@ export function priorityInputTransform(value: PriorityInput, debugFunctionName: 
     return coercePriority(value);
   } else {
     return priorityNameToNumber(value, debugFunctionName);
+  }
+}
+
+/**
+ * @description
+ * Transforms priority names to it's raw numeric values or transforms signal to computed signal with the same manner.
+ * @param value Priority name ('highest', 'high', 'normal', 'low', 'lowest') or priority numeric level (1, 2, 3, 4, 5) or signal providing the same values.
+ * @see {@link PriorityInput}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
+ * @see {@link priorityInputTransform}
+ */
+export function advancePriorityInputTransform(value: PriorityInput | Signal<PriorityInput>): PriorityLevel | Signal<PriorityLevel>;
+/**
+ * @description
+ * Transforms priority names to it's raw numeric values or transforms signal to computed signal with the same manner.
+ * @param value Priority name ('highest', 'high', 'normal', 'low', 'lowest') or priority numeric level (1, 2, 3, 4, 5) or signal providing the same values.
+ * @param debugFunctionName Caller function name for debugging prepuces, ended with open close parentheses (e.g. someFunctionName()).
+ * @see {@link PriorityInput}
+ * @see {@link PriorityName}
+ * @see {@link PriorityLevel}
+ * @see {@link priorityInputTransform}
+ */
+export function advancePriorityInputTransform(value: PriorityInput | Signal<PriorityInput>, debugFunctionName: string): PriorityLevel | Signal<PriorityLevel>;
+export function advancePriorityInputTransform(
+  value: PriorityInput | Signal<PriorityInput>,
+  debugFunctionName: string = 'advancePriorityInputTransform()'
+): PriorityLevel | Signal<PriorityLevel> {
+  if (isSignal(value)) {
+    return computed(() => priorityInputTransform(value(), debugFunctionName))
+  } else {
+    return priorityInputTransform(value);
   }
 }
 

@@ -24,6 +24,7 @@ export {
   Priority,
   priorityNameToNumber,
   priorityInputTransform,
+  advancePriorityInputTransform
 } from "./scheduler/scheduler_utils";
 export type {
   QueuexIterableDiffer,

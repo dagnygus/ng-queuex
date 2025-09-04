@@ -84,7 +84,8 @@ export function watchSignal<T>(source: Signal<T>, callback: (arg: T) => void): W
  * in safe way (even in notification faze) without touching internal signal node.
  *
  * @param initialValue The initial value or signal to bind.
- * @throws Error if is not in injection context.
+ * @throws Error if is used not in injection context.
+ * @throws Error if is used in reactive context.
  */
 export function value<T>(initialValue: T | Signal<T>): ValueRef<T>;
 /**
@@ -95,6 +96,7 @@ export function value<T>(initialValue: T | Signal<T>): ValueRef<T>;
  *
  * @param initialValue The initial value or signal to bind.
  * @param destroyRef The object that implements `DestroyRef` abstract class.
+ * @throws Error if is used in reactive context.
  *
  * @see {@link DestroyRef}
  */
@@ -107,7 +109,8 @@ export function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef): V
  *
  * @param initialValue The initial value or signal to bind.
  * @param debugName Optional developer-friendly label for debugging purposes.
- * @throws Error if is not in injection context.
+ * @throws Error if is used not in injection context.
+ * @throws Error if is used in reactive context.
  */
 export function value<T>(initialValue: T | Signal<T>, debugName: string): ValueRef<T>;
 /**
@@ -119,6 +122,7 @@ export function value<T>(initialValue: T | Signal<T>, debugName: string): ValueR
  * @param initialValue The initial value or signal to bind.
  * @param destroyRef The object that implements `DestroyRef` abstract class.
  * @param debugName Optional developer-friendly label for debugging purposes.
+ * @throws Error if is used in reactive context.
  *
  * @see {@link DestroyRef}
  */

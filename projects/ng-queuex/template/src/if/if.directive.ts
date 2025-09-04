@@ -41,7 +41,10 @@ import {
   detectChangesSync,
   isInConcurrentTaskContext,
   onTaskExecuted,
-  scheduleTask
+  scheduleTask,
+  ValueRef,
+  sharedSignal,
+  value
 } from "@ng-queuex/core";
 import { assertSignal } from "../utils/utils";
 
@@ -130,7 +133,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
         }
 
         this.scheduled = false;
-      }, this.view.ifDir.qxIfPriority, this.view.thenViewRef);
+      }, this.view.priorityRef.value, this.view.thenViewRef);
     },
     run(this: QueuexIfEffectNode) {
       if ((typeof ngDevMode === 'undefined' || ngDevMode) && isInNotificationPhase()) {
@@ -225,7 +228,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
         }
 
         this.scheduled = false;
-      }, this.view.ifDir.qxIfPriority, this.view.elseViewRef);
+      }, this.view.priorityRef.value, this.view.elseViewRef);
     },
     run(this: QueuexIfEffectNode) {
       if ((typeof ngDevMode === 'undefined' || ngDevMode) && isInNotificationPhase()) {
@@ -308,11 +311,12 @@ class ClientQxIfView<T = unknown> implements QxIfView<T> {
 
   constructor(
     public ifDir: QueuexIf<T>,
-    // public thenTmpRefSource: Signal<TemplateRef<QueuexIfContext<T>>>,
-    // public elseTmpRefSource: Signal<TemplateRef<QueuexIfContext<T>>>,
+    public thenTmpRefSource: Signal<TemplateRef<QueuexIfContext<T>>>,
+    public elseTmpRefSource: Signal<TemplateRef<QueuexIfContext<T>> | null>,
+    public priorityRef: ValueRef<PriorityLevel>
   ) {
     this.ifDir = ifDir;
-    this.thenTmpRef = ifDir.qxIfThen();
+    this.thenTmpRef = thenTmpRefSource()
   }
 
   init(context: QueuexIfContext<T>): void {
@@ -332,10 +336,10 @@ class ClientQxIfView<T = unknown> implements QxIfView<T> {
 
   inputWatchCallback(): void {
     this.context.$implicit();
-    this.thenTmpRef = assertTemplateRef(this.ifDir.qxIfThen(), 'qxIfThen');
-    this.elseTmpRef = assertTemplateRef(this.ifDir.qxIfElse(), 'qxIfThen');
-    // this.thenTmpRef = assertTemplateRef(this.thenTmpRefSource(), 'qxIfThen')
-    // this.thenTmpRef = assertTemplateRef(this.elseTmpRefSource(), 'qxIfElse')
+    // this.thenTmpRef = assertTemplateRef(this.ifDir.qxIfThen(), 'qxIfThen');
+    // this.elseTmpRef = assertTemplateRef(this.ifDir.qxIfElse(), 'qxIfThen');
+    this.thenTmpRef = assertTemplateRef(this.thenTmpRefSource(), 'qxIfThen')
+    this.elseTmpRef = assertTemplateRef(this.elseTmpRefSource(), 'qxIfElse')
 
     const prevConsumer = setActiveConsumer(null);
     try {
@@ -397,18 +401,20 @@ class ServerQxIfView<T = unknown> implements QxIfView {
   elseTmpRef: TemplateRef<QueuexIfContext<T>> | null = null;
   vcRef = inject(ViewContainerRef);
   cdRef = inject(ChangeDetectorRef);
-  shouldRunRenderCb = false
   value: any
   directiveIsInit = false;
 
-  constructor(directive: QueuexIf<T>) {
+  constructor(
+    thenTmpRefSource: Signal<TemplateRef<QueuexIfContext<T>>>,
+    elseTmpRefSource: Signal<TemplateRef<QueuexIfContext<T>> | null>,
+  ) {
 
     effect(() => {
       this.value = this.context.$implicit()
       this.update(
         this.value,
-        assertTemplateRef(directive.qxIfThen(), 'qxIfThen'),
-        assertTemplateRef(directive.qxIfElse(), 'qxIfElse')
+        assertTemplateRef(thenTmpRefSource(), 'qxIfThen'),
+        assertTemplateRef(elseTmpRefSource(), 'qxIfElse')
       );
     })
   }
@@ -462,25 +468,23 @@ class ServerQxIfView<T = unknown> implements QxIfView {
 export class QueuexIf<T = unknown> implements OnInit, OnDestroy {
   private _view: QxIfView
   private _defaultThenTemplate: TemplateRef<QueuexIfContext<T>> = inject(TemplateRef);
-  private _condition: Signal<T> = null!
-
-  @Input({ transform: priorityInputTransform }) qxIfPriority = inject(QX_IF_DEFAULT_PRIORITY);
-
-  qxIfElse = input<TemplateRef<QueuexIfContext<T>> | null>(null);
-
-  qxIfThen = input<TemplateRef<QueuexIfContext<T>>, TemplateRef<QueuexIfContext<T>> | null>(
-    this._defaultThenTemplate, { transform: (value) => value ?? this._defaultThenTemplate }
-  );
+  private _conditionSource = sharedSignal<T>(undefined!);
+  private _thenTmpRefSource = sharedSignal(this._defaultThenTemplate);
+  private _elseTmpRefSource = sharedSignal<TemplateRef<QueuexIfContext<T>> | null>(null);
+  private _priorityRef = value<PriorityLevel>(inject(QX_IF_DEFAULT_PRIORITY));
 
   @Input() qxIfRenderCallback: ((arg: T) => void ) | null = null;
-  @Input({ required: true }) set qxIf(condition: Signal<T>) {
-    if (this._condition as any) {
-      throw new Error('[qxIf]: Main input con be initialize only once!');
-    }
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
-      assertSignal(condition, 'qxIf');
-    }
-    this._condition = condition;
+  @Input({ required: true }) set qxIf(condition: T | Signal<T>) {
+    this._conditionSource.set(condition);
+  }
+  @Input({ transform: priorityInputTransform }) set qxIfPriority(priorityLevel: PriorityLevel) {
+    this._priorityRef.set(priorityLevel)
+  }
+  @Input() set qxIfThen(thenTmpRef: TemplateRef<QueuexIfContext<T>> | Signal<TemplateRef<QueuexIfContext<T>>> | null | undefined) {
+    thenTmpRef != null ? this._thenTmpRefSource.set(thenTmpRef) : this._thenTmpRefSource.set(this._defaultThenTemplate);
+  }
+  @Input() set qxIfElse(elseTmpRef: TemplateRef<QueuexIfContext<T>> | Signal<TemplateRef<QueuexIfContext<T>>> | null | undefined) {
+    this._elseTmpRefSource.set(elseTmpRef);
   }
 
 
@@ -488,14 +492,14 @@ export class QueuexIf<T = unknown> implements OnInit, OnDestroy {
   constructor() {
     assertNgQueuexIntegrated();
     if (isPlatformBrowser(inject(PLATFORM_ID))) {
-      this._view = new ClientQxIfView(this)
+      this._view = new ClientQxIfView(this, this._thenTmpRefSource.ref, this._elseTmpRefSource.ref, this._priorityRef)
     } else {
-      this._view = new ServerQxIfView(this);
+      this._view = new ServerQxIfView(this._thenTmpRefSource.ref, this._elseTmpRefSource.ref);
     }
   }
 
   ngOnInit(): void {
-    this._view.init(new QueuexIfContext<T>(this._condition));
+    this._view.init(new QueuexIfContext<T>(this._conditionSource.ref));
   }
 
   ngOnDestroy(): void {
