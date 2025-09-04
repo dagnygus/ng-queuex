@@ -1,6 +1,7 @@
 import { createWatch, SIGNAL } from "@angular/core/primitives/signals";
 import { sharedSignal, SharedSignalRef } from "./shared_signal";
-import { signal } from "@angular/core";
+import { Component, Directive, inject, Input, OnInit, signal, TemplateRef, ViewContainerRef } from "@angular/core";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 interface ManualEffectRef {
   runEffect(): void;
@@ -132,3 +133,89 @@ describe('Shared signal', () => {
     expectLog(['A', 'B', 'E']);
   })
 });
+
+@Directive({ selector: '[presenter]', standalone: false })
+class Presenter implements OnInit {
+  source = sharedSignal<any>(undefined);
+  tmpRef = inject(TemplateRef);
+  vcRef = inject(ViewContainerRef);
+
+  @Input({ required: true }) set presenter(value: any) {
+    this.source.set(value);
+  }
+
+  ngOnInit(): void {
+    this.vcRef.createEmbeddedView(this.tmpRef, { $implicit: this.source.ref })
+  }
+}
+
+@Component({
+  selector: 'test-cmp',
+  standalone: false,
+  template: '<span *presenter="source; let v">{{v()}}</span>'
+})
+class TestComponent {
+  source: any;
+}
+
+let fixture: ComponentFixture<TestComponent> = null!;
+
+async function setupTestEnvironment(): Promise<void> {
+  await TestBed.configureTestingModule({
+    declarations: [TestComponent, Presenter]
+  }).compileComponents();
+  fixture = TestBed.createComponent(TestComponent);
+}
+
+function resetTestEnvironment(): void {
+  TestBed.resetTestingModule();
+  fixture = null!;
+}
+
+function detectChanges(): void {
+  fixture.detectChanges();
+}
+
+function getComponent(): TestComponent {
+  return fixture.componentInstance;
+}
+function expectTextContent(text: string): void {
+  expect(fixture.nativeElement.textContent).toBe(text);
+}
+
+describe('Shared signals with component templates.', () => {
+  beforeEach(() => setupTestEnvironment());
+  afterEach(() => resetTestEnvironment());
+
+  it('Should present content correctly.', () => {
+    getComponent().source = 'A'
+    detectChanges();
+    expectTextContent('A');
+
+    getComponent().source = 'B';
+    detectChanges();
+    expectTextContent('B');
+
+    const source1 = signal('C')
+    getComponent().source = source1;
+    detectChanges();
+    expectTextContent('C');
+
+    source1.set('D');
+    detectChanges();
+    expectTextContent('D');
+
+    const source2 = signal('E');
+    getComponent().source = source2;
+    detectChanges();
+    expectTextContent('E');
+
+    source2.set('F');
+    detectChanges();
+    expectTextContent('F');
+
+    getComponent().source = 'G';
+    detectChanges();
+    expectTextContent('G');
+  })
+})

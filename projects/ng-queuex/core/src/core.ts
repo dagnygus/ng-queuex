@@ -43,3 +43,9 @@ export {
 export type {
   SharedSignalRef
 } from './shared_signal/shared_signal';
+export {
+  value
+} from './value_ref/value_ref';
+export type {
+  ValueRef
+} from './value_ref/value_ref';

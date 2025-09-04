@@ -9,12 +9,10 @@ import {
   InjectionToken,
   Input,
   input,
-  OnChanges,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
   Signal,
-  SimpleChanges,
   TemplateRef,
   ValueProvider,
   ViewContainerRef,
@@ -293,7 +291,6 @@ export function provideQxIfDefaultPriority(priority: PriorityName): ValueProvide
 
 class ClientQxIfView<T = unknown> implements QxIfView<T> {
 
-  ifDir: QueuexIf<T>
   context: QueuexIfContext<T> = null!;
   inputWatcher: Watch | null = null;
   thenNode: QueuexIfEffectNode<T> = null!;
@@ -309,9 +306,13 @@ class ClientQxIfView<T = unknown> implements QxIfView<T> {
   renderCallbackScheduled = false;
   inputWatchScheduled = false;
 
-  constructor(directive: QueuexIf<T>) {
-    this.ifDir = directive;
-    this.thenTmpRef = directive.qxIfThen();
+  constructor(
+    public ifDir: QueuexIf<T>,
+    // public thenTmpRefSource: Signal<TemplateRef<QueuexIfContext<T>>>,
+    // public elseTmpRefSource: Signal<TemplateRef<QueuexIfContext<T>>>,
+  ) {
+    this.ifDir = ifDir;
+    this.thenTmpRef = ifDir.qxIfThen();
   }
 
   init(context: QueuexIfContext<T>): void {

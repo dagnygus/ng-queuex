@@ -1,0 +1,161 @@
+import { assertInInjectionContext, DestroyRef, inject, isSignal, Signal } from "@angular/core";
+import { PriorityLevel } from "../scheduler/scheduler_utils";
+import { ReactiveHookFn, ReactiveNode, createWatch, setPostSignalSetFn, setActiveConsumer, Watch } from "@angular/core/primitives/signals";
+
+declare const ngDevMode: boolean | undefined;
+/**
+ * Represents reference to value directly provided by `set` method or
+ * to the most recent value of provided signal. In case of signal, it allows safely
+ * access to recent value in notification faze without touching internal signal node.
+ */
+export interface ValueRef<T> {
+
+  /**
+   * The underlying value.
+   */
+  readonly value: T
+
+  /**
+   * Updates the value.
+   *
+   * If plain value is provided, directly sets the underlying value.
+   * If signal is provided, reference will fallow that signal.
+   *
+   * @param value A new value or signal to observe and extracts values in synchronic way.
+   */
+  set(value: T | Signal<T>): void
+}
+
+interface InternalValueRef<T> extends ValueRef<T> {
+  __watcher__: Watch | null;
+  __value__: T;
+}
+
+const BASE_VALUE_REF = {
+  set(this: InternalValueRef<any>, value: any | Signal<any>) {
+    if (this.__watcher__) { this.__watcher__.destroy(); }
+    if (isSignal(value)) {
+      this.__watcher__ = watchSignal(value, (v) => this.__value__ = v);
+      return;
+    }
+    this.__value__ = value;
+  },
+  get value() {
+    return (this as any).__value__;
+  }
+}
+
+export function watchSignal<T>(source: Signal<T>, callback: (arg: T) => void): Watch {
+  let prevHook: ReactiveHookFn | null = null;
+  let node: ReactiveNode | null = null;
+  const hook: ReactiveHookFn = (n) => {
+    node = n;
+    watcher.run();
+  }
+  const watcher = createWatch(
+    () => {
+      setPostSignalSetFn(prevHook);
+      if (prevHook) {
+        prevHook(node!);
+      }
+      const value = source();
+      const prevConsumer = setActiveConsumer(null);
+      try {
+        callback(value);
+      } finally {
+        setActiveConsumer(prevConsumer);
+      }
+    },
+    () => {
+      prevHook = setPostSignalSetFn(hook);
+    },
+    true
+  );
+  watcher.notify();
+  watcher.run();
+
+  return watcher;
+}
+
+/**
+ * Creates a value reference.
+ *
+ * Value reference allows access to directly provided value or to provided signal recent underlying value
+ * in safe way (even in notification faze) without touching internal signal node.
+ *
+ * @param initialValue The initial value or signal to bind.
+ * @throws Error if is not in injection context.
+ */
+export function value<T>(initialValue: T | Signal<T>): ValueRef<T>;
+/**
+ * Creates a value reference.
+ *
+ * Value reference allows access to directly provided value or to provided signal recent underlying value
+ * in safe way (even in notification faze) without touching internal signal node.
+ *
+ * @param initialValue The initial value or signal to bind.
+ * @param destroyRef The object that implements `DestroyRef` abstract class.
+ *
+ * @see {@link DestroyRef}
+ */
+export function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef): ValueRef<T>;
+/**
+ * Creates a value reference.
+ *
+ * Value reference allows access to directly provided value or to provided signal recent underlying value
+ * in safe way (even in notification faze) without touching internal signal node.
+ *
+ * @param initialValue The initial value or signal to bind.
+ * @param debugName Optional developer-friendly label for debugging purposes.
+ * @throws Error if is not in injection context.
+ */
+export function value<T>(initialValue: T | Signal<T>, debugName: string): ValueRef<T>;
+/**
+ * Creates a value reference.
+ *
+ * Value reference allows access to directly provided value or to provided signal recent underlying value
+ * in safe way (even in notification faze) without touching internal signal node.
+ *
+ * @param initialValue The initial value or signal to bind.
+ * @param destroyRef The object that implements `DestroyRef` abstract class.
+ * @param debugName Optional developer-friendly label for debugging purposes.
+ *
+ * @see {@link DestroyRef}
+ */
+export function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef, debugName: string): ValueRef<T>;
+export function value<T>(initialValue: T | Signal<T>, arg2?: any, arg3?: any): ValueRef<T> {
+  let destroyRef: DestroyRef | null = null;
+  let debugName = 'ValueRef'
+
+  if (typeof arg2 === 'object' && typeof arg2.onDestroy === 'function' && typeof arg2.destroyed === 'boolean') {
+    destroyRef = arg2
+  }
+
+  if (typeof arg2 === 'string') { debugName = arg2; }
+  if (typeof arg3 === 'string') { debugName = arg3; }
+
+  if (!destroyRef) {
+    (typeof ngDevMode === 'undefined' || ngDevMode) &&
+      assertInInjectionContext(value);
+    destroyRef = inject(DestroyRef);
+  }
+
+  const ref = Object.create(BASE_VALUE_REF) as InternalValueRef<T>;
+  ref.__value__ = undefined!;
+  ref.__watcher__ = null;
+  ref.set(initialValue);
+
+  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    (ref as any).toString = () => `[ValueRef.value: ${ref.__value__}]`;
+    (ref as any).debugName = debugName;
+  }
+
+
+  destroyRef.onDestroy(() => {
+    if(ref.__watcher__) {
+      ref.__watcher__.destroy();
+    }
+  });
+
+  return ref;
+}

@@ -1,4 +1,4 @@
-import { computed, isSignal, signal, Signal, WritableSignal } from "@angular/core";
+import { computed, CreateComputedOptions, isSignal, signal, Signal, WritableSignal } from "@angular/core";
 
 declare const ngDevMode: boolean | undefined;
 
@@ -15,7 +15,7 @@ export interface SharedSignalRef<T> {
    /**
    * The underlying signal reference.
    */
-  ref: Signal<T>
+  readonly ref: Signal<T>
 
    /**
    * Updates the signal value.
@@ -83,7 +83,12 @@ export function sharedSignal<T>(initialValue: T | Signal<T>, debugName?: string)
     return result;
   }).bind(signalRef);
 
-  signalRef.ref = computed(compotation);
+  const options = typeof debugName === 'string' ? { debugName } : undefined
+
+  Object.defineProperty(signalRef, 'ref', {
+    value: computed(compotation, options),
+    writable: false
+  });
 
   if (typeof ngDevMode === 'undefined' || ngDevMode) {
     (signalRef as any).toString = () => `[SharedSignalRef.ref: ${signalRef.ref}]`;
