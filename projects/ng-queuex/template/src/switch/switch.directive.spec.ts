@@ -1,188 +1,11 @@
-import { Attribute, Component, computed, Directive, DoCheck, OnChanges, PLATFORM_ID, provideZonelessChangeDetection, signal, TemplateRef, ViewChild } from "@angular/core";
-import { provideQueuexSwitchDefaultPriority, QueuexSwitch, QueuexSwitchCase, QueuexSwitchDefault, syncWatch } from "./switch.directive";
-import { setPostSignalSetFn } from "@angular/core/primitives/signals";
+import { Attribute, Component, Directive, DoCheck, PLATFORM_ID, provideZonelessChangeDetection, signal, TemplateRef, ViewChild } from "@angular/core";
+import { provideQueuexSwitchDefaultPriority, QueuexSwitch, QueuexSwitchCase, QueuexSwitchDefault } from "./switch.directive";
 import { completeIntegrationForTest, Priority, PriorityLevel, PriorityName, provideNgQueuexIntegration, whenIdle } from "@ng-queuex/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
-import { defineGlobalFlag, describePriorityLevel } from "../utils/test_utils";
+import { describePriorityLevel } from "../utils/test_utils";
 import { NgTemplateOutlet } from "@angular/common";
 
-describe('Testing syncWatch() function.', () => {
-  it('Should watch signal synchronously.', () => {
-    const log: string[] = [];
-    const source = signal('A');
-    const watch = syncWatch(source, (value) => log.push(value));
-    log.push('B');
-    source.set('C');
-    log.push('D');
-    expect(log).toEqual(['A','B','C','D']);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    watch.destroy();
-  });
-
-  it('Should not watch when is destroyed.', () => {
-    const log: string[] = [];
-    const source = signal('A');
-    const watch = syncWatch(source, (value) => log.push(value));
-    watch.destroy();
-    source.set('B');
-    expect(log).toEqual(['A']);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    source.set('C');
-    expect(log).toEqual(['A']);
-    expect(setPostSignalSetFn(null)).toBeNull();
-  });
-
-  it('Should watch two signals separately synchronously.', () => {
-    const log: string[] = [];
-    const source1 = signal('A');
-    const source2 = signal('B');
-    const watch1 = syncWatch(source1, (v) => log.push(v));
-    const watch2 = syncWatch(source2, (v) => log.push(v));
-
-    log.push('C');
-    source1.set('D');
-    log.push('E');
-    source2.set('F');
-    log.push('G');
-    source1.set('H');
-    source2.set('I');
-    log.push('J');
-
-    expect(log).toEqual([
-      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'
-    ]);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    watch1.destroy();
-    watch2.destroy();
-  });
-
-  it('Should watch computed signal synchronously.', () => {
-    const log: string[] = [];
-    const source = signal('A');
-    const derived = computed(() => source());
-    const watcher = syncWatch(derived, (value) => log.push(value));
-    log.push('B');
-    source.set('C');
-    log.push('D');
-    expect(log).toEqual([ 'A', 'B', 'C', 'D' ]);
-    expect(setPostSignalSetFn(null)).toEqual(null);
-    watcher.destroy();
-  });
-
-  it('Should watch two computed signals separately synchronously.', () => {
-    const log: string[] = [];
-    const source1 = signal('A');
-    const source2 = signal('B');
-    const derived1 = computed(() => source1());
-    const derived2 = computed(() => source2());
-    const watch1 = syncWatch(derived1, (v) => log.push(v));
-    const watch2 = syncWatch(derived2, (v) => log.push(v));
-
-    log.push('C');
-    source1.set('D');
-    log.push('E');
-    source2.set('F');
-    log.push('G');
-    source1.set('H');
-    source2.set('I');
-    log.push('J');
-
-    expect(log).toEqual([
-      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'
-    ]);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    watch1.destroy();
-    watch2.destroy();
-  });
-
-  it('Should watch computed signal form two source without any problem.', () => {
-    const log: string[] = [];
-    const source1 = signal('A');
-    const source2 = signal('A');
-    const derived = computed(() => source1() + source2());
-    const watcher = syncWatch(derived, (value) => log.push(value));
-    expect(log).toEqual(['AA']);
-    source1.set('B');
-    expect(log).toEqual([ 'AA', 'BA']);
-    source2.set('B');
-    expect(log).toEqual([ 'AA', 'BA', 'BB']);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    watcher.destroy();
-  });
-
-  it('Should two watchers observe one signal without any problem.', () => {
-    const log: string[] = [];
-    const source = signal('A');
-    const watcher1 = syncWatch(source, (v) => log.push(v));
-    const watcher2 = syncWatch(source, (v) => log.push(v));
-    expect(log).toEqual([ 'A', 'A' ]);
-    source.set('B');
-    expect(log).toEqual([ 'A', 'A', 'B', 'B' ]);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    watcher1.destroy();
-    watcher2.destroy();
-  });
-
-  it('Should two watchers observe one computed signal without any problem.', () => {
-    const log: string[] = [];
-    const source = signal('A');
-    const derived = computed(() => source())
-    const watcher1 = syncWatch(derived, (v) => log.push(v));
-    const watcher2 = syncWatch(derived, (v) => log.push(v));
-    expect(log).toEqual([ 'A', 'A' ]);
-    source.set('B');
-    expect(log).toEqual([ 'A', 'A', 'B', 'B' ]);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    watcher1.destroy();
-    watcher2.destroy();
-  });
-
-  it('Should three watchers observe one signal without any problem.', () => {
-    const log: string[] = [];
-    const source = signal('A');
-    const watcher1 = syncWatch(source, (v) => log.push(v));
-    const watcher2 = syncWatch(source, (v) => log.push(v));
-    const watcher3 = syncWatch(source, (v) => log.push(v));
-    expect(log).toEqual([ 'A', 'A', 'A' ]);
-    source.set('B');
-    expect(log).toEqual([ 'A', 'A', 'A', 'B', 'B', 'B' ]);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    watcher1.destroy();
-    watcher2.destroy();
-    watcher3.destroy();
-  });
-
-  it('Should three watchers observe one computed signal without any problem.', () => {
-    const log: string[] = [];
-    const source = signal('A');
-    const derived = computed(() => source());
-    const watcher1 = syncWatch(derived, (v) => log.push(v));
-    const watcher2 = syncWatch(derived, (v) => log.push(v));
-    const watcher3 = syncWatch(derived, (v) => log.push(v));
-    expect(log).toEqual([ 'A', 'A', 'A' ]);
-    source.set('B');
-    expect(log).toEqual([ 'A', 'A', 'A', 'B', 'B', 'B' ]);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    watcher1.destroy();
-    watcher2.destroy();
-    watcher3.destroy();
-  });
-
-  it('Should two watchers observe shared source in correct order', () => {
-    const log: string[] = [];
-    const source = signal('A');
-    const derived = computed(() => source())
-    const watcher1 = syncWatch(derived, (v) => log.push(v + '1'));
-    const watcher2 = syncWatch(derived, (v) => log.push(v + '2'));
-    expect(log).toEqual([ 'A1', 'A2' ]);
-    source.set('B');
-    expect(log).toEqual([ 'A1', 'A2', 'B1', 'B2' ]);
-    expect(setPostSignalSetFn(null)).toBeNull();
-    watcher1.destroy();
-    watcher2.destroy();
-  });
-});
 
 interface TestEnvironmentOptions {
   defaultPriority?: PriorityName | 'undefined',
@@ -197,6 +20,7 @@ const defaultTestEnvConfig: Required<TestEnvironmentOptions> = {
 }
 
 const Priorities: PriorityLevel[] = [1, 2, 3, 4, 5];
+// const Priorities: PriorityLevel[] = [3,];
 
 @Component({
   selector: 'text-cmp',
@@ -211,8 +35,8 @@ class TestComponent {
   counter = signal(0)
   trueSource = signal(true);
   falseSource = signal(false);
-  renderCb1: ((arg: any) => void) | null = null;
-  renderCb2: ((arg: any) => void) | null = null;
+  onRender: ((arg: any) => void) | null = null;
+
 
   @ViewChild('foo', { static: true }) foo: TemplateRef<any> | null = null!
   @ViewChild('foo', { static: true }) bar: TemplateRef<any> | null = null!
@@ -281,6 +105,9 @@ function getTextContent(): string {
 function expectTextContent(text: string): void {
   expect(getTextContent()).toBe(text);
 }
+function whenStable(): Promise<unknown> {
+  return fixture.whenStable();
+}
 
 function query(predicate: string): HTMLElement {
   return fixture.debugElement.query(By.css(predicate)).nativeElement;
@@ -294,12 +121,12 @@ function getTestDirective(predicate: string): TestDirective {
 function getAllTestDirectives(predicate: string): TestDirective[] {
   return fixture.debugElement.queryAll(By.css(predicate)).map((el) => el.injector.get(TestDirective));
 }
-function getQueuexSwitchDirective(predicate: string): QueuexSwitch<any> {
+function getQueuexSwitchDirective(predicate: string): QueuexSwitch {
   return fixture.debugElement.query(By.css(predicate)).injector.get(QueuexSwitch);
 }
 
 describe('QueuexSwitch directive.', () => {
-  afterEach(() => resetTestEnvironment())
+  afterEach(() => resetTestEnvironment());
 
   it('Should have normal default priority.', async () => {
     const template = '<div [qxSwitch]="valueSource"></div>';
@@ -307,7 +134,8 @@ describe('QueuexSwitch directive.', () => {
     createTestComponent(template);
     detectChanges();
     await whenIdle();
-    expect(getQueuexSwitchDirective('div').priority).toBe(Priority.Normal);
+    //@ts-expect-error
+    expect(getQueuexSwitchDirective('div')._priorityRef.value).toBe(Priority.Normal);
   });
 
   Priorities.forEach((priorityLevel) => {
@@ -317,7 +145,8 @@ describe('QueuexSwitch directive.', () => {
     createTestComponent(template);
     detectChanges();
     await whenIdle();
-    expect(getQueuexSwitchDirective('div').priority).toBe(priorityLevel);
+    //@ts-expect-error
+    expect(getQueuexSwitchDirective('div')._priorityRef.value).toBe(priorityLevel);
     });
   });
 
@@ -669,33 +498,96 @@ describe('QueuexSwitch directive.', () => {
         });
       });
 
-      // describe('Render event.', () => {
-      //   [3].forEach((priorityLevel) => {
+      describe('Render event.', () => {
+        Priorities.forEach((priorityLevel) => {
 
-      //     describePriorityLevel(priorityLevel, () => {
-      //       it('Should run render callback if qxSwitchCase template gets created or destroyed', async () => {
-      //         const endDef = defineGlobalFlag('dag');
-      //         const template =
-      //           '<ul [qxSwitch]="valueSource" [priority]="priorityLevel">' +
-      //             '<li *qxSwitchCase="\'a\'; renderCallback: renderCb1">when a;</li>' +
-      //           '</ul>';
-      //         createTestComponent(template);
-      //         endDef();
-      //         getComponent().priorityLevel = priorityLevel as any;
-      //         getComponent().valueSource.set('a');
-      //         const spy = jasmine.createSpy();
-      //         getComponent().renderCb1 = spy;
+          describePriorityLevel(priorityLevel, () => {
+            it('Should emit render event if qxSwitchCase template gets created or destroyed', async () => {
+              const template =
+                '<ul [qxSwitch]="valueSource" [priority]="priorityLevel" (render)="onRender($event)">' +
+                  '<li *qxSwitchCase="\'a\'">when a;</li>' +
+                '</ul>';
+              createTestComponent(template);
+              getComponent().priorityLevel = priorityLevel as any;
+              getComponent().valueSource.set('a');
+              const spy = jasmine.createSpy();
+              getComponent().onRender = spy;
 
-      //         detectChanges();
-      //         await whenIdle();
-      //         expectTextContent('when a;')
-      //         expect(spy.calls.count()).toBe(1);
-      //         expect(spy.calls.mostRecent().args[0]).toBe('a');
+              detectChanges();
+              await whenIdle();
+              expectTextContent('when a;')
+              expect(spy.calls.count()).toBe(1);
+              expect(spy.calls.mostRecent().args[0]).toBe('a');
 
-      //       })
-      //     })
-      //   });
-      // });
+              getComponent().valueSource.set('b');
+              await whenIdle();
+              expectTextContent('');
+              expect(spy.calls.count()).toBe(2);
+              expect(spy.calls.mostRecent().args[0]).toBe('b');
+
+              getComponent().valueSource.set('a');
+              await whenIdle();
+              expectTextContent('when a;')
+              expect(spy.calls.count()).toBe(3);
+              expect(spy.calls.mostRecent().args[0]).toBe('a');
+            });
+
+            it('Should emit render event if view toggles.', async () => {
+              const template =
+                '<ul [qxSwitch]="valueSource" [priority]="priorityLevel" (render)="onRender($event)">' +
+                  '<li *qxSwitchCase="\'a\'">when a;</li>' +
+                  '<li *qxSwitchCase="\'b\'">when b;</li>' +
+                  '<li *qxSwitchDefault>when default;</li>' +
+                '</ul>';
+              createTestComponent(template);
+              getComponent().priorityLevel = priorityLevel;
+              getComponent().valueSource.set('a');
+              const spy = jasmine.createSpy();
+              getComponent().onRender = spy;
+
+              detectChanges();
+              await whenIdle();
+              expectTextContent('when a;')
+              expect(spy.calls.count()).toBe(1);
+              expect(spy.calls.mostRecent().args[0]).toBe('a');
+
+              getComponent().valueSource.set('b');
+              await whenIdle();
+              expectTextContent('when b;');
+              expect(spy.calls.count()).toBe(2);
+              expect(spy.calls.mostRecent().args[0]).toBe('b');
+
+              getComponent().valueSource.set('c');
+              await whenIdle();
+              expectTextContent('when default;');
+              expect(spy.calls.count()).toBe(3);
+              expect(spy.calls.mostRecent().args[0]).toBe('c');
+
+              getComponent().valueSource.set('d');
+              await whenIdle();
+              expectTextContent('when default;');
+              expect(spy.calls.count()).toBe(3);
+              expect(spy.calls.mostRecent().args[0]).toBe('c');
+            });
+
+            it('Should not emit render event if nothing gets created', async () => {
+              const template =
+                '<ul [qxSwitch]="valueSource" [priority]="priorityLevel" (render)="onRender($event)">' +
+                '</ul>';
+              createTestComponent(template);
+              getComponent().priorityLevel = priorityLevel;
+              getComponent().valueSource.set('a');
+              const spy = jasmine.createSpy();
+              getComponent().onRender = spy;
+
+              detectChanges();
+              await whenIdle();
+              expectTextContent('')
+              expect(spy.calls.count()).toBe(0);
+            })
+          });
+        });
+      });
     });
   });
 
@@ -799,7 +691,6 @@ describe('QueuexSwitch directive.', () => {
         getComponent().when1 = 'a';
         getComponent().when2 = 'b';
         getComponent().valueSource.set('a')
-        detectChanges();
 
         detectChanges();
         expectTextContent('when 1;');
@@ -810,12 +701,40 @@ describe('QueuexSwitch directive.', () => {
 
         getComponent().when1 = 'c'
         detectChanges();
-        detectChanges();
         expectTextContent('when 1;');
 
         getComponent().when1 = 'd';
         detectChanges();
-        detectChanges();
+        expectTextContent('when default;');
+      });
+
+      it('Should switch amongst signals when values.', async () => {
+        resetTestEnvironment();
+        setupTestEnvironment({ serverPlatform: true, zoneless: true });
+        const template =
+          '<ul [qxSwitch]="valueSource" [priority]="priorityLevel"> ' +
+            '<li *qxSwitchCase="when1">when 1;</li>' +
+            '<li *qxSwitchCase="when2">when 2;</li>' +
+            '<li *qxSwitchDefault>when default;</li>' +
+          '</ul>';
+        createTestComponent(template);
+        getComponent().when1 = signal('a');
+        getComponent().when2 = signal('b');
+        getComponent().valueSource.set('a');
+
+        await whenStable()
+        expectTextContent('when 1;');
+
+        getComponent().valueSource.set('c');
+        await whenStable();
+        expectTextContent('when default;')
+
+        getComponent().when1.set('c');
+        await whenStable();
+        expectTextContent('when 1;');
+
+        getComponent().when1.set('d');
+        await whenStable();
         expectTextContent('when default;');
       });
     });

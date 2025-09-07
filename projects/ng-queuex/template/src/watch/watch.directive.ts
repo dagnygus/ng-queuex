@@ -1,9 +1,9 @@
 import { isPlatformServer } from "@angular/common";
 import { Directive, inject, OnDestroy, PLATFORM_ID, TemplateRef, ViewContainerRef, ViewRef } from "@angular/core";
 import { createWatch, Watch } from "@angular/core/primitives/signals";
-import { AbortTaskFunction, scheduleChangeDetection, detectChangesSync, onTaskExecuted, isInConcurrentTaskContext } from "@ng-queuex/core";
+import { AbortTaskFunction, scheduleChangeDetection, detectChangesSync, onTaskExecuted, isInConcurrentTaskContext, assertNgQueuexIntegrated } from "@ng-queuex/core";
 
-@Directive({ selector: '[watch]', standalone: true })
+@Directive({ selector: 'ng-template[watch]', standalone: true })
 export class QueuexWatch implements OnDestroy {
   private _viewRef: ViewRef | null = null;
   private _watcher: Watch | null = null;
@@ -14,6 +14,7 @@ export class QueuexWatch implements OnDestroy {
   private _scheduled = false;
 
   constructor() {
+    assertNgQueuexIntegrated('[watch]: Assertion failed! "@ng-queuex/core" not provided.');
     if (isPlatformServer(inject(PLATFORM_ID))) {
       this._vcRef.createEmbeddedView(this._tmpRef);
     } else {

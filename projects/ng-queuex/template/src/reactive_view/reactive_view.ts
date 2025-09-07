@@ -1,7 +1,7 @@
 import { isPlatformServer } from "@angular/common";
-import { Directive, inject, InjectionToken, Input, OnDestroy, OnInit, PLATFORM_ID, TemplateRef, ValueProvider, ViewContainerRef, ViewRef } from "@angular/core";
+import { Directive, inject, InjectionToken, Input, OnDestroy, OnInit, PLATFORM_ID, Signal, TemplateRef, ValueProvider, ViewContainerRef, ViewRef } from "@angular/core";
 import { createWatch, Watch } from "@angular/core/primitives/signals";
-import { AbortTaskFunction, assertNgQueuexIntegrated, detectChangesSync, priorityInputTransform, PriorityLevel, PriorityName, priorityNameToNumber, scheduleChangeDetection, scheduleTask } from "@ng-queuex/core";
+import { AbortTaskFunction, advancePriorityInputTransform, assertNgQueuexIntegrated, detectChangesSync, PriorityLevel, PriorityName, priorityNameToNumber, scheduleChangeDetection, scheduleTask, value } from "@ng-queuex/core";
 
 const QX_REACTIVE_VIEW_PRIORITY = new InjectionToken<PriorityLevel>('QX_REACTIVE_VIEW_PRIORITY', { factory: () => 3 })
 
@@ -9,7 +9,7 @@ export function provideQueuexReactiveViewDefaultPriority(priority: PriorityName)
   return { provide: QX_REACTIVE_VIEW_PRIORITY, useValue: priorityNameToNumber(priority) }
 }
 
-@Directive({ selector: '[reactiveView]' })
+@Directive({ selector: 'ng-template[reactiveView]' })
 export class QueuexReactiveView implements OnInit, OnDestroy {
   private _tmpRef = inject(TemplateRef);
   private _vcRef = inject(ViewContainerRef);
@@ -19,12 +19,15 @@ export class QueuexReactiveView implements OnInit, OnDestroy {
   private _abortTask: AbortTaskFunction | null = null;
   private _renderCbAbortTask: AbortTaskFunction | null = null;
   private _isServer = false;
+  private _priorityRef = value(inject(QX_REACTIVE_VIEW_PRIORITY), (typeof ngDevMode === 'undefined' || ngDevMode) ? 'reactiveView="priorityLevel"' : undefined)
 
-  @Input({ alias: 'reactiveView', transform: priorityInputTransform }) priority = inject(QX_REACTIVE_VIEW_PRIORITY);
+  @Input({ alias: 'reactiveView', transform: advancePriorityInputTransform }) set priority(value: PriorityLevel | Signal<PriorityLevel>) {
+    this._priorityRef.set(value);
+  }
   @Input() reactiveViewRenderCallback: (() => void) | null = null;
 
   constructor() {
-    assertNgQueuexIntegrated();
+    assertNgQueuexIntegrated('[reactiveView]: Assertion failed! "@ng-queuex/core" not provided.');
     if (isPlatformServer(inject(PLATFORM_ID))) {
       this._vcRef.createEmbeddedView(this._tmpRef);
       this._isServer = true;
@@ -43,7 +46,7 @@ export class QueuexReactiveView implements OnInit, OnDestroy {
       () => {
         this.reactiveViewRenderCallback?.();
       },
-      this.priority
+      this._priorityRef.value
     )
   }
 
@@ -61,7 +64,7 @@ export class QueuexReactiveView implements OnInit, OnDestroy {
 
     this._abortTask = scheduleChangeDetection(
       () => this._watcher!.run(),
-      this.priority,
+      this._priorityRef.value,
       this._viewRef
     )
   }

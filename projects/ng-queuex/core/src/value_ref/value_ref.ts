@@ -80,8 +80,18 @@ export function watchSignal<T>(source: Signal<T>, callback: (arg: T) => void): W
 /**
  * Creates a value reference.
  *
- * Value reference allows access to directly provided value or to provided signal recent underlying value
- * in safe way (even in notification faze) without touching internal signal node.
+ * A `ValueRef` is a lightweight wrapper that always exposes
+ * the most recent value of either:
+ *   - a plain value of type `T`, or
+ *   - a reactive `Signal<T>`.
+ *
+ * Unlike reading a signal directly, accessing `.value` on a `ValueRef`
+ * is always safe — even during the signal notification phase, when
+ * normal signal reads are disallowed. The reference never touches
+ * the internal signal node and does not participate in dependency tracking.
+ *
+ * The `set()` method does not update the underlying signal. Instead,
+ * it rebinds the `ValueRef` to a new value or to another signal.
  *
  * @param initialValue The initial value or signal to bind.
  * @throws Error if is used not in injection context.
@@ -91,8 +101,18 @@ export function value<T>(initialValue: T | Signal<T>): ValueRef<T>;
 /**
  * Creates a value reference.
  *
- * Value reference allows access to directly provided value or to provided signal recent underlying value
- * in safe way (even in notification faze) without touching internal signal node.
+ * A `ValueRef` is a lightweight wrapper that always exposes
+ * the most recent value of either:
+ *   - a plain value of type `T`, or
+ *   - a reactive `Signal<T>`.
+ *
+ * Unlike reading a signal directly, accessing `.value` on a `ValueRef`
+ * is always safe — even during the signal notification phase, when
+ * normal signal reads are disallowed. The reference never touches
+ * the internal signal node and does not participate in dependency tracking.
+ *
+ * The `set()` method does not update the underlying signal. Instead,
+ * it rebinds the `ValueRef` to a new value or to another signal.
  *
  * @param initialValue The initial value or signal to bind.
  * @param destroyRef The object that implements `DestroyRef` abstract class.
@@ -104,8 +124,18 @@ export function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef): V
 /**
  * Creates a value reference.
  *
- * Value reference allows access to directly provided value or to provided signal recent underlying value
- * in safe way (even in notification faze) without touching internal signal node.
+ * A `ValueRef` is a lightweight wrapper that always exposes
+ * the most recent value of either:
+ *   - a plain value of type `T`, or
+ *   - a reactive `Signal<T>`.
+ *
+ * Unlike reading a signal directly, accessing `.value` on a `ValueRef`
+ * is always safe — even during the signal notification phase, when
+ * normal signal reads are disallowed. The reference never touches
+ * the internal signal node and does not participate in dependency tracking.
+ *
+ * The `set()` method does not update the underlying signal. Instead,
+ * it rebinds the `ValueRef` to a new value or to another signal.
  *
  * @param initialValue The initial value or signal to bind.
  * @param debugName Optional developer-friendly label for debugging purposes.
@@ -116,8 +146,18 @@ export function value<T>(initialValue: T | Signal<T>, debugName: string | undefi
 /**
  * Creates a value reference.
  *
- * Value reference allows access to directly provided value or to provided signal recent underlying value
- * in safe way (even in notification faze) without touching internal signal node.
+ * A `ValueRef` is a lightweight wrapper that always exposes
+ * the most recent value of either:
+ *   - a plain value of type `T`, or
+ *   - a reactive `Signal<T>`.
+ *
+ * Unlike reading a signal directly, accessing `.value` on a `ValueRef`
+ * is always safe — even during the signal notification phase, when
+ * normal signal reads are disallowed. The reference never touches
+ * the internal signal node and does not participate in dependency tracking.
+ *
+ * The `set()` method does not update the underlying signal. Instead,
+ * it rebinds the `ValueRef` to a new value or to another signal.
  *
  * @param initialValue The initial value or signal to bind.
  * @param destroyRef The object that implements `DestroyRef` abstract class.

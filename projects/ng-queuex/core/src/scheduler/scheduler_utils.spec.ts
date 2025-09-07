@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input, provideZonelessChangeDetection, signal } from "@angular/core";
-import { coercePriority, noopFn, Priority, priorityInputTransform, priorityNameToNumber } from "./scheduler_utils"
+import { ChangeDetectionStrategy, Component, forwardRef, input, isSignal, provideZonelessChangeDetection, Signal, signal } from "@angular/core";
+import { advancePriorityInputTransform, coercePriority, noopFn, Priority, priorityInputTransform, PriorityLevel, priorityNameToNumber } from "./scheduler_utils"
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
@@ -40,7 +40,7 @@ describe('Testing priorityKeyToNumber() function.', () => {
 
   it('Should throw error if invalid name is provided.', () => {
     expect(() => priorityNameToNumber('superDuperF__kingBig' as any))
-    .toThrowError('priorityKeyToNumber(): Provided key \'superDuperF__kingBig\' is not recognized as priority!')
+    .toThrowError('priorityNameToNumber(): Provided key \'superDuperF__kingBig\' is not recognized as priority!')
   });
 });
 
@@ -61,7 +61,7 @@ describe('Testing priorityInputTransform() function', () => {
     expect(priorityInputTransform(5)).toBe(5);
   });
 
-  it('Should round numeric input and clamp between 1 and 5', () => {
+  it('Should round numeric input and clamp between 1 and 5 and transform names to numbers.', () => {
     expect(priorityInputTransform(-100 as any)).toBe(1);
     expect(priorityInputTransform(-5 as any)).toBe(1);
     expect(priorityInputTransform(-1 as any)).toBe(1);
@@ -96,3 +96,99 @@ describe('Testing priorityInputTransform() function', () => {
     .toThrowError('priorityInputTransform(): Provided key \'superDuperF__kingBig\' is not recognized as priority!')
   });
 });
+
+describe('Testing advancePriorityInputTransform() function', () => {
+  it('Should round numeric input and clamp between 1 and 5 and transform names to numbers.', () => {
+    expect(advancePriorityInputTransform(-100 as any)).toBe(1);
+    expect(advancePriorityInputTransform(-5 as any)).toBe(1);
+    expect(advancePriorityInputTransform(-1 as any)).toBe(1);
+    expect(advancePriorityInputTransform(0 as any)).toBe(1);
+    expect(advancePriorityInputTransform(0.4999999 as any)).toBe(1);
+    expect(advancePriorityInputTransform(0.5 as any)).toBe(1);
+    expect(advancePriorityInputTransform(1)).toBe(1);
+    expect(advancePriorityInputTransform(1.4999999 as any)).toBe(1);
+    expect(advancePriorityInputTransform(1.5 as any)).toBe(2);
+    expect(advancePriorityInputTransform(2.4999999 as any)).toBe(2);
+    expect(advancePriorityInputTransform(2.5 as any)).toBe(3);
+    expect(advancePriorityInputTransform(3.4999999 as any)).toBe(3);
+    expect(advancePriorityInputTransform(3.5 as any)).toBe(4);
+    expect(advancePriorityInputTransform(4.4999999 as any)).toBe(4);
+    expect(advancePriorityInputTransform(4.5 as any)).toBe(5);
+    expect(advancePriorityInputTransform(5)).toBe(5);
+    expect(advancePriorityInputTransform(5.4999999 as any)).toBe(5);
+    expect(advancePriorityInputTransform(5.5 as any)).toBe(5);
+    expect(advancePriorityInputTransform(6 as any)).toBe(5);
+    expect(advancePriorityInputTransform(7 as any)).toBe(5);
+    expect(advancePriorityInputTransform(100 as any)).toBe(5);
+
+    expect(advancePriorityInputTransform('highest')).toBe(1);
+    expect(advancePriorityInputTransform('high')).toBe(2);
+    expect(advancePriorityInputTransform('normal')).toBe(3);
+    expect(advancePriorityInputTransform('low')).toBe(4);
+    expect(advancePriorityInputTransform('lowest')).toBe(5);
+  });
+
+  it('Should throw error if invalid name is provided.', () => {
+    expect(() => advancePriorityInputTransform('superDuperF__kingBig' as any))
+    .toThrowError('priorityInputTransform(): Provided key \'superDuperF__kingBig\' is not recognized as priority!')
+  });
+
+  it('Should transform signal to computed signal witch will provide priority levels as rounded numbers clamped between 1 and 5.', () => {
+    const source = signal<number | string>(0);
+    const derived = advancePriorityInputTransform(source as any) as unknown as Signal<PriorityLevel>;
+
+    expect(isSignal(derived)).toBeTrue();
+    expect(derived()).toBe(1);
+    source.set(-100);
+    expect(derived()).toBe(1);
+    source.set(1);
+    expect(derived()).toBe(1);
+    source.set(1.49999999);
+    expect(derived()).toBe(1);
+    source.set(1.5);
+    expect(derived()).toBe(2);
+    source.set(2);
+    expect(derived()).toBe(2);
+    source.set(2.4999999);
+    expect(derived()).toBe(2);
+    source.set(2.5);
+    expect(derived()).toBe(3);
+    source.set(3);
+    expect(derived()).toBe(3);
+    source.set(2.5);
+    expect(derived()).toBe(3);
+    source.set(3);
+    expect(derived()).toBe(3);
+    source.set(3.4999999);
+    expect(derived()).toBe(3);
+    source.set(3.5);
+    expect(derived()).toBe(4);
+    source.set(4);
+    expect(derived()).toBe(4);
+    source.set(4.4999999);
+    expect(derived()).toBe(4);
+    source.set(4.5);
+    expect(derived()).toBe(5);
+    source.set(5);
+    expect(derived()).toBe(5);
+    source.set(10);
+    expect(derived()).toBe(5);
+
+    source.set('highest');
+    expect(derived()).toBe(1);
+    source.set('high')
+    expect(derived()).toBe(2);
+    source.set('normal');
+    expect(derived()).toBe(3);
+    source.set('low')
+    expect(derived()).toBe(4);
+    source.set('lowest');
+    expect(derived()).toBe(5);
+  });
+
+  it('Computed signal should throw error when underlying value is invalid.', () => {
+    const source = signal('superDuperF__kingBig');
+    const derived = advancePriorityInputTransform(source as any) as unknown as Signal<any>;
+    expect(() => derived()).toThrowError('advancePriorityInputTransform(): Provided key \'superDuperF__kingBig\' is not recognized as priority!')
+  })
+})

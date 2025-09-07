@@ -118,7 +118,8 @@ describe('QueuexReactiveView directive.', () => {
     createTestComponent(template);
     detectChanges();
     await whenIdle();
-    expect(getReactiveViewDirective('span').priority).toBe(Priority.Normal);
+    //@ts-expect-error
+    expect(getReactiveViewDirective('span')._priorityRef.value).toBe(Priority.Normal);
   });
 
   Priorities.forEach((priorityLevel) => {
@@ -129,7 +130,8 @@ describe('QueuexReactiveView directive.', () => {
         createTestComponent(template);
         detectChanges();
         await whenIdle();
-        expect(getReactiveViewDirective('span').priority).toBe(priorityLevel);
+        //@ts-expect-error
+        expect(getReactiveViewDirective('span')._priorityRef.value).toBe(priorityLevel);
       });
     })
   })

@@ -1,14 +1,14 @@
 import { isPlatformServer } from "@angular/common";
 import { Directive, inject, InjectionToken, Input, OnDestroy, OnInit, PLATFORM_ID, TemplateRef, ValueProvider, ViewContainerRef, ɵmarkForRefresh } from "@angular/core";
-import { AbortTaskFunction, priorityInputTransform, PriorityLevel, PriorityName, priorityNameToNumber, scheduleTask } from "@ng-queuex/core";
+import { AbortTaskFunction, assertNgQueuexIntegrated, priorityInputTransform, PriorityLevel, PriorityName, priorityNameToNumber, scheduleTask } from "@ng-queuex/core";
 
 const QX_LAZY_VIEW_DEFAULT_PRIORITY = new InjectionToken<PriorityLevel>('PriorityLevel', { factory: () => 3 /* Priority.Normal */ });
 
 export function provideQueuexLazyViewDefaultPriority(priority: PriorityName): ValueProvider {
-  return { provide: QX_LAZY_VIEW_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority) }
+  return { provide: QX_LAZY_VIEW_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, 'provideQueuexLazyViewDefaultPriority()') }
 }
 
-@Directive({ selector: '[lazyView]' })
+@Directive({ selector: 'ng-template[lazyView]' })
 export class QueuexLazyView implements OnInit, OnDestroy {
   private _abortTask: AbortTaskFunction | null = null;
   private _renderCbAbortTask: AbortTaskFunction | null = null;
@@ -20,6 +20,7 @@ export class QueuexLazyView implements OnInit, OnDestroy {
   @Input() lazyViewRenderCallback: (() => void) | null = null;
 
   constructor() {
+    assertNgQueuexIntegrated('[lazyView]: Assertion failed! "@ng-queuex/core" not provided.');
     if (isPlatformServer(inject(PLATFORM_ID))) {
       this._vcRef.createEmbeddedView(this._tmpRef);
       this._isServer = true

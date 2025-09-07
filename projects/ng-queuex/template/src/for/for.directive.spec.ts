@@ -164,7 +164,8 @@ describe('QueuexForOf directive.', () => {
     createTestComponent();
     detectChanges();
     await whenIdle();
-    expect(getForOfDirective('span').qxForPriority).toBe(Priority.Normal);
+    //@ts-expect-error private member
+    expect(getForOfDirective('span')._priorityRef.value).toBe(Priority.Normal);
   });
 
   Priorities.forEach((priorityLevel) => {
@@ -174,7 +175,8 @@ describe('QueuexForOf directive.', () => {
         createTestComponent();
         detectChanges()
         await whenIdle();
-        expect(getForOfDirective('span').qxForPriority).toBe(priorityLevel);
+        //@ts-expect-error private member
+        expect(getForOfDirective('span')._priorityRef.value).toBe(priorityLevel);
       });
     });
   });
@@ -189,16 +191,6 @@ describe('QueuexForOf directive.', () => {
     );
     await whenIdle();
   });
-
-  it('Should throw error if qxForOf input is not signal', async () => {
-    const template = '<div *qxFor="let item of items()"></div>';
-    setupTestEnvironment();
-    createTestComponent(template);
-    expect(() => detectChanges()).toThrowError(
-      '\'qxForOf\' must be a signal, but received \'Array\''
-    );
-    await whenIdle();
-  })
 
   describe('Browser environment.', () => {
     beforeEach(() => setupTestEnvironment());

@@ -122,16 +122,8 @@ describe('QueuexIf directive.', () => {
       fixture.detectChanges();
       await whenIdle();
       const directive = getQxIfDirective('span');
-      expect(directive.qxIfPriority).toBe(Priority.Normal);
-    });
-
-    it('Should throw error if qxIf input is not signal', async () => {
-      const template = '<span *qxIf="conditionSource()"></span>';
-      fixture = createTestComponent(template);
-      expect(() => fixture.detectChanges()).toThrowError(
-        '\'qxIf\' must be a signal, but received \'boolean\''
-      );
-      await whenIdle();
+      //@ts-expect-error private member access
+      expect(directive._priorityRef.value).toBe(Priority.Normal);
     });
 
     Priorities.forEach((priorityLevel) => {
@@ -145,7 +137,8 @@ describe('QueuexIf directive.', () => {
           fixture.detectChanges();
           await whenIdle();
           const directive = getQxIfDirective('span');
-          expect(directive.qxIfPriority).toBe(priorityLevel);
+          //@ts-expect-error private member access
+          expect(directive._priorityRef.value).toBe(priorityLevel);
         });
 
         it('Should work in a template attribute.', async () => {

@@ -50,7 +50,11 @@ import {
   isInConcurrentTaskContext,
   onTaskExecuted,
   priorityInputTransform,
-  assertNgQueuexIntegrated
+  assertNgQueuexIntegrated,
+  sharedSignal,
+  value,
+  advancePriorityInputTransform,
+  ValueRef
 } from "@ng-queuex/core"
 import { assertSignal } from "../utils/utils"
 
@@ -110,7 +114,6 @@ interface NgIterableItemNode<T, U extends NgIterable<T> = NgIterable<T>> extends
   destroyed: boolean;
   forOfView: ClientQueuexForOfView<T, U>;
   context: ClientQueuexForOfContext<T, U>;
-  directive: QueuexForOf<T, U>;
   viewRef: ViewRef | null;
   vcRef: ViewContainerRef;
   tmpRef: TemplateRef<any>
@@ -176,7 +179,7 @@ const BASE_NG_ITERABLE_ITEM_NODE: Omit<NgIterableItemNode<any>, OmitFromNode> =
         this.forOfView.removeAborter(abortTask!);
 
         this.scheduled = false;
-      }, this.directive.qxForPriority, this.viewRef);
+      }, this.forOfView.priorityRef.value, this.viewRef);
 
       if (abortTask) {
         abortTask(() => {
@@ -222,7 +225,6 @@ function createItemNode<T, U extends NgIterable<T> = NgIterable<T>>(
   node.forOfView = forOfView;
   node.vcRef = forOfView.vcRef;
   node.tmpRef = forOfView.tmpRef;
-  node.directive = forOfView.forOfDir;
   node.viewRef = null;
   node.destroyed = false;
   node.scheduled = false;
@@ -267,7 +269,7 @@ function assertValidPropertyPath(obj: any, propPath: string): void {
 }
 
 export function provideQueuexForOfDefaultPriority(priority: PriorityName): ValueProvider {
-  return { provide: QX_FOR_OF_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority) }
+  return { provide: QX_FOR_OF_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, 'provideQueuexForOfDefaultPriority()') }
 }
 
 export function trackByIndex<T, U extends T>(index: number, item: U): any {
@@ -296,7 +298,11 @@ class ClientQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
   trackByFn: TrackByFunction<T> = null!;
   itemEqualFn: ValueEqualityFn<T> | null = null;
 
-  constructor(public forOfDir: QueuexForOf<T, U>) { }
+  constructor(
+    public forOfDir: QueuexForOf<T, U>,
+    public dataSource: Signal<QueuexForOfInput<T, U>>,
+    public priorityRef: ValueRef<PriorityLevel>
+  ) { }
 
   init(trackByFn: TrackByFunction<T>, itemEqualFn: ValueEqualityFn<T> | null): void {
     this.trackByFn = trackByFn;
@@ -317,7 +323,7 @@ class ClientQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
       this.count,
       item,
       this.itemEqualFn,
-      this.forOfDir.qxForOf,
+      this.dataSource,
       this
     );
   }
@@ -361,15 +367,15 @@ class ClientQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
       this.rendering = false;
       if (this.shouldRunRenderCallback) {
         this.shouldRunRenderCallback = false;
-        this.forOfDir.qxForRenderCallback?.(this.forOfDir.qxForOf());
+        this.forOfDir.qxForRenderCallback?.(this.dataSource());
       }
-    }, this.forOfDir.qxForPriority);
+    }, this.priorityRef.value);
 
     this.addAborter(abortTask);
   }
 
   update(): void {
-    const data = this.forOfDir.qxForOf();
+    const data = this.dataSource();
     const prevConsumer = setActiveConsumer(null)
     try {
       if (!this.differ && data) {
@@ -459,17 +465,15 @@ class ServerQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
   private _tmpRef = inject(TemplateRef);
   private _differs = inject(QueuexIterableDiffers);
   private _differ: QueuexIterableDiffer<T> | null = null;;
-  private _forOfDir: QueuexForOf<T, U>;
   private _count: number = 0;
   private _itemEqualFn: ValueEqualityFn<T> | null = null
   private _trackByFn: TrackByFunction<T> = null!
 
   constructor(
-    directive: QueuexForOf<T, U>,
+    private _dataSource: Signal<QueuexForOfInput<T, U>>
   ) {
-    this._forOfDir = directive;
     effect(() => {
-      this._update(directive.qxForOf());
+      this._update(this._dataSource());
     });
   }
 
@@ -480,7 +484,7 @@ class ServerQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
       this._count,
       item,
       this._itemEqualFn,
-      this._forOfDir.qxForOf
+      this._dataSource
     )
     this._vcRef.createEmbeddedView(this._tmpRef, context, currentIndex);
   }
@@ -532,19 +536,25 @@ class ServerQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
   }
 }
 
-@Directive({ selector: '[qxFor]' })
+@Directive({ selector: 'ng-template[qxFor]' })
 export class QueuexForOf<T, U extends NgIterable<T> = NgIterable<T>> implements OnInit, OnDestroy {
 
   private _trackBy: TrackByFunction<T> = null!;
   private _itemPropPath: string = undefined!;
   private _itemEqualFn: ValueEqualityFn<T> | null = null;
   private _view: QueuexForOfView<T> = null!;
+  private _dataSource = sharedSignal<QueuexForOfInput<T, U>>(undefined, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'qxForOf' : undefined);
+  private _priorityRef = value<PriorityLevel>(inject(QX_FOR_OF_DEFAULT_PRIORITY), (typeof ngDevMode === 'undefined' || ngDevMode) ? 'qxForOfPriority' : undefined);
 
-  @Input({ transform: priorityInputTransform }) qxForPriority = inject(QX_FOR_OF_DEFAULT_PRIORITY);
-  @Input({ required: true }) qxForOf: Signal<QueuexForOfInput<T, U>> = null!;
+  @Input({ transform: advancePriorityInputTransform }) set qxForPriority(priority: PriorityLevel | Signal<PriorityLevel>) {
+    this._priorityRef.set(priority);
+  }
+  @Input({ required: true }) set qxForOf(data: QueuexForOfInput<T, U> | Signal<QueuexForOfInput<T, U>>) {
+    this._dataSource.set(data);
+  }
   @Input({ required: true }) set qxForTrackBy(trackBy: TrackBy<T>) {
     if (this._trackBy as any) {
-      throw new Error('[qxFor] "trackBy" can not be provided more then once!')
+      throw new Error('[qxFor] "trackBy" can not be provided more then once!');
     }
     if (trackBy === 'index') {
       this._trackBy = trackByIndex;
@@ -589,16 +599,13 @@ export class QueuexForOf<T, U extends NgIterable<T> = NgIterable<T>> implements 
   constructor() {
     assertNgQueuexIntegrated('[qxFor]: Assertion failed! "@ng-queuex/core" integration not provided!');
     if (isPlatformServer(inject(PLATFORM_ID))) {
-      this._view = new ServerQueuexForOfView(this);
+      this._view = new ServerQueuexForOfView(this._dataSource.ref);
     } else {
-      this._view = new ClientQueuexForOfView(this)
+      this._view = new ClientQueuexForOfView(this, this._dataSource.ref, this._priorityRef)
     }
   }
 
   ngOnInit(): void {
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
-      assertSignal(this.qxForOf, 'qxForOf');
-    }
     this._view.init(this._trackBy, this._itemEqualFn);
   }
 

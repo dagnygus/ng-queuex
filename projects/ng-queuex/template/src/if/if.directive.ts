@@ -195,7 +195,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
           if (elseViewRef) {
             const index = vcRef.indexOf(elseViewRef);
             vcRef.remove(index);
-            elseViewRef.detectChanges()//To immediately clear dom. There is some issue with destroyed view. Explanation will down bellow this file;
+            elseViewRef.detectChanges()//To immediately clear dom. There is some issue with destroyed view. Explanation will be down bellow this file;
             this.view.elseViewRef = null;
             elseViewRef = null;
             this.renderCbShouldRun = true;
@@ -206,7 +206,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
           if (elseViewRef) {
             const index = vcRef.indexOf(elseViewRef)
             vcRef.remove(index);
-            elseViewRef.detectChanges();//To immediately clear dom. There is some issue with destroyed view. Explanation will down bellow this file;
+            elseViewRef.detectChanges();//To immediately clear dom. There is some issue with destroyed view. Explanation will br down bellow this file;
             this.view.elseViewRef = null;
             this.renderCbShouldRun = true;
           }
@@ -314,7 +314,6 @@ class ClientQxIfView<T = unknown> implements QxIfView<T> {
     public elseTmpRefSource: Signal<TemplateRef<QueuexIfContext<T>> | null>,
     public priorityRef: ValueRef<PriorityLevel>
   ) {
-    this.ifDir = ifDir;
     this.thenTmpRef = thenTmpRefSource()
   }
 
@@ -335,8 +334,6 @@ class ClientQxIfView<T = unknown> implements QxIfView<T> {
 
   inputWatchCallback(): void {
     this.context.$implicit();
-    // this.thenTmpRef = assertTemplateRef(this.ifDir.qxIfThen(), 'qxIfThen');
-    // this.elseTmpRef = assertTemplateRef(this.ifDir.qxIfElse(), 'qxIfThen');
     this.thenTmpRef = assertTemplateRef(this.thenTmpRefSource(), 'qxIfThen')
     this.elseTmpRef = assertTemplateRef(this.elseTmpRefSource(), 'qxIfElse')
 
@@ -463,14 +460,14 @@ class ServerQxIfView<T = unknown> implements QxIfView {
   dispose(): void { /* noop */ }
 }
 
-@Directive({ selector: '[qxIf]' })
+@Directive({ selector: 'ng-template[qxIf]' })
 export class QueuexIf<T = unknown> implements OnInit, OnDestroy {
   private _view: QxIfView
   private _defaultThenTemplate: TemplateRef<QueuexIfContext<T>> = inject(TemplateRef);
-  private _conditionSource = sharedSignal<T>(undefined!);
+  private _conditionSource = sharedSignal<T>(undefined!, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'conditionSource' : undefined);
   private _thenTmpRefSource = sharedSignal(this._defaultThenTemplate, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'thenTemplateRefSource' : undefined);
   private _elseTmpRefSource = sharedSignal<TemplateRef<QueuexIfContext<T>> | null>(null, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'elseTemplateRefSource' : undefined);
-  private _priorityRef = value<PriorityLevel>(inject(QX_IF_DEFAULT_PRIORITY));
+  private _priorityRef = value<PriorityLevel>(inject(QX_IF_DEFAULT_PRIORITY), (typeof ngDevMode === 'undefined' || ngDevMode) ? 'priorityRef' : undefined);
 
   @Input() qxIfRenderCallback: ((arg: T) => void ) | null = null;
   @Input({ required: true }) set qxIf(condition: T | Signal<T>) {
@@ -486,10 +483,8 @@ export class QueuexIf<T = unknown> implements OnInit, OnDestroy {
     this._elseTmpRefSource.set(elseTmpRef);
   }
 
-
-
   constructor() {
-    assertNgQueuexIntegrated();
+    assertNgQueuexIntegrated('[qxIf]: Assertion failed! "@ng-queuex/core" integration not provided.');
     if (isPlatformBrowser(inject(PLATFORM_ID))) {
       this._view = new ClientQxIfView(this, this._thenTmpRefSource.ref, this._elseTmpRefSource.ref, this._priorityRef)
     } else {
