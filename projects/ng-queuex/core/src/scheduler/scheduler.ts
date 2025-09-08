@@ -1,3 +1,5 @@
+// see https://github.com/facebook/react/blob/main/packages/scheduler/src/forks/Scheduler.js
+
 import { ɵglobal } from "@angular/core"
 import {
   peek,
@@ -12,12 +14,12 @@ import {
   noopFn,
   // taskCleanup
 } from './scheduler_utils';
+import { NG_DEV_MODE } from "../utlils";
 
 interface FlushWorkFn {
   (hasTimeRemaining: boolean, initialTime: number): boolean
 }
 
-declare const ngDevMode: boolean | undefined;
 declare const Zone: ZoneType | undefined
 declare const jasmine: object | undefined;
 declare const jest: object | undefined;
@@ -119,7 +121,7 @@ function workLoop(
     // advanceTimers(currentTime);
     currentTask = peek(taskQueue);
     //<MyCode>
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (NG_DEV_MODE) {
         if (currentTask) {
           if (
             currentTask.callback !== null &&
@@ -150,7 +152,7 @@ function workLoop(
         }
         const callback = currentTask.callback;
         //<MyCode>
-        if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        if (NG_DEV_MODE) {
           if (
             callback === null &&
             currentTask.status !== TaskStatus.Aborted &&

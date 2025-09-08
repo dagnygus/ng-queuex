@@ -56,9 +56,7 @@ import {
   advancePriorityInputTransform,
   ValueRef
 } from "@ng-queuex/core"
-import { assertSignal } from "../utils/utils"
-
-declare const ngDevMode: boolean | undefined
+import { NG_DEV_MODE } from "../utils/utils";
 
 type Num =
   0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
@@ -127,7 +125,7 @@ interface QueuexForOfView<T> extends QueuexIterableChangeOperationHandler<T> {
   dispose(): void;
 }
 
-type OmitFromNode = 'forOfView' |'destroyed' | 'scheduled' | 'hasRun' | 'context' | 'directive' | 'viewRef' | 'vcRef' | 'tmpRef'
+type OmitFromNode = 'forOfView' |'destroyed' | 'scheduled' | 'hasRun' | 'context' | 'directive' | 'viewRef' | 'vcRef' | 'tmpRef';
 
 const BASE_NG_ITERABLE_ITEM_NODE: Omit<NgIterableItemNode<any>, OmitFromNode> =
   /* @__PURE__ */(() => ({
@@ -136,7 +134,7 @@ const BASE_NG_ITERABLE_ITEM_NODE: Omit<NgIterableItemNode<any>, OmitFromNode> =
     consumerAllowSignalWrites: false,
     kind: 'effect',
     consumerMarkedDirty() {
-      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (NG_DEV_MODE) {
         assertNotInReactiveContext(() => 'Internal Error: Reactive context (THEN_NODE)!')
       }
       this.schedule();
@@ -190,7 +188,7 @@ const BASE_NG_ITERABLE_ITEM_NODE: Omit<NgIterableItemNode<any>, OmitFromNode> =
       }
     },
     run(this: NgIterableItemNode<any>) {
-      if ((typeof ngDevMode === 'undefined' || ngDevMode) && isInNotificationPhase()) {
+      if (NG_DEV_MODE && isInNotificationPhase()) {
         throw new Error(`Schedulers cannot synchronously execute watches while scheduling.`);
       }
 
@@ -269,7 +267,7 @@ function assertValidPropertyPath(obj: any, propPath: string): void {
 }
 
 export function provideQueuexForOfDefaultPriority(priority: PriorityName): ValueProvider {
-  return { provide: QX_FOR_OF_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, 'provideQueuexForOfDefaultPriority()') }
+  return { provide: QX_FOR_OF_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, provideQueuexForOfDefaultPriority) }
 }
 
 export function trackByIndex<T, U extends T>(index: number, item: U): any {
@@ -543,8 +541,8 @@ export class QueuexForOf<T, U extends NgIterable<T> = NgIterable<T>> implements 
   private _itemPropPath: string = undefined!;
   private _itemEqualFn: ValueEqualityFn<T> | null = null;
   private _view: QueuexForOfView<T> = null!;
-  private _dataSource = sharedSignal<QueuexForOfInput<T, U>>(undefined, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'qxForOf' : undefined);
-  private _priorityRef = value<PriorityLevel>(inject(QX_FOR_OF_DEFAULT_PRIORITY), (typeof ngDevMode === 'undefined' || ngDevMode) ? 'qxForOfPriority' : undefined);
+  private _dataSource = sharedSignal<QueuexForOfInput<T, U>>(undefined, NG_DEV_MODE ? 'qxForOf' : undefined);
+  private _priorityRef = value<PriorityLevel>(inject(QX_FOR_OF_DEFAULT_PRIORITY), NG_DEV_MODE ? 'qxForOfPriority' : undefined);
 
   @Input({ transform: advancePriorityInputTransform }) set qxForPriority(priority: PriorityLevel | Signal<PriorityLevel>) {
     this._priorityRef.set(priority);
@@ -571,7 +569,7 @@ export class QueuexForOf<T, U extends NgIterable<T> = NgIterable<T>> implements 
 
       this._itemPropPath = trackBy.substring(5);
       this._trackBy = (function (this: QueuexForOf<T,U>, index: number, item: T) {
-        if (typeof ngDevMode === 'undefined' || ngDevMode) {
+        if (NG_DEV_MODE) {
           assertValidPropertyPath(item, this._itemPropPath);
         }
         return (item as any)[this._itemPropPath];
@@ -589,7 +587,7 @@ export class QueuexForOf<T, U extends NgIterable<T> = NgIterable<T>> implements 
     if (this._itemEqualFn as any) {
       throw new Error('[qxFor]: "equal" can not be provided more then once!');
     }
-    if ((typeof ngDevMode === 'undefined' || ngDevMode) && typeof equal !== 'function') {
+    if (NG_DEV_MODE && typeof equal !== 'function') {
       throw new Error('[qxFor][equal]: Provided input is not a function!')
     }
     this._itemEqualFn = equal;
@@ -671,7 +669,7 @@ class ServerQueuexForOfContext<T, U extends NgIterable<T> = NgIterable<T>> imple
     this.even = computed(() => this.index() % 2 === 0);
     this.odd = computed(() => this.index() % 2 !== 0);
 
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (NG_DEV_MODE) {
 
       indexGetFn.toString = () => `[Signal: ${indexGetFn()}]`;
       indexGetFn.debugName = 'QueuexFotOfContextIndexSignal';

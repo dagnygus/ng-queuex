@@ -193,6 +193,27 @@ describe('Testing watchSignal() function.', () => {
     watcher2.destroy();
     watcher3.destroy();
   });
+
+  it('Should two signals with multiple watchers works correctly', () => {
+    const log: string[] = [];
+    const source1 = signal('a');
+    const source2 = signal('A');
+    const watcher11 = watchSignal(source1, (v) => log.push(v + '1'));
+    const watcher12 = watchSignal(source1, (v) => log.push(v + '2'));
+    const watcher21 = watchSignal(source2, (v) => log.push(v + '1'));
+    const watcher22 = watchSignal(source2, (v) => log.push(v + '2'));
+
+    expect(log).toEqual([ 'a1', 'a2', 'A1', 'A2' ]);
+    source1.set('b');
+    source2.set('B');
+    expect(log).toEqual([
+      'a1', 'a2', 'A1', 'A2', 'b1', 'b2', 'B1', 'B2'
+    ]);
+    watcher11.destroy();
+    watcher12.destroy();
+    watcher21.destroy();
+    watcher22.destroy();
+  })
 });
 
 class FakeDestroyRef implements DestroyRef {

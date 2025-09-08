@@ -1,7 +1,5 @@
 import { computed, isSignal, Signal } from "@angular/core";
 
-declare const ngDevMode: boolean | undefined;
-
 export interface SchedulerTask {
   id: number;
   sortIndex: number;

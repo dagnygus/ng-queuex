@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Directive, DoCheck, PLATFORM_ID, provideZonelessChangeDetection, signal, WritableSignal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Directive, DoCheck, inject, PLATFORM_ID, provideZonelessChangeDetection, signal, WritableSignal } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { provideQxIfDefaultPriority, QueuexIf } from "./if.directive";
+import { provideQueuexIfDefaultPriority, QueuexIf } from "./if.directive";
 import { By } from "@angular/platform-browser";
 import { completeIntegrationForTest, Priority, PriorityLevel, PriorityName, provideNgQueuexIntegration, whenIdle } from "@ng-queuex/core";
 import { defineGlobalFlag, describePriorityLevel } from "../utils/test_utils";
@@ -82,7 +82,7 @@ describe('QueuexIf directive.', () => {
     const providers: any[] = [provideNgQueuexIntegration()];
 
     if (localConfig.defaultPriority !== 'undefined') {
-      providers.push(provideQxIfDefaultPriority(localConfig.defaultPriority));
+      providers.push(provideQueuexIfDefaultPriority(localConfig.defaultPriority));
     }
 
     if (localConfig.zoneless) {
@@ -522,7 +522,7 @@ describe('QueuexIf directive.', () => {
           getComponent().conditionSource.set(null);
           await whenIdle();
           expect(spy.calls.mostRecent().args[0]).toBe(null);
-        })
+        });
       });
 
     });

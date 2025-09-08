@@ -1,6 +1,6 @@
-import { computed, CreateComputedOptions, isSignal, signal, Signal, WritableSignal } from "@angular/core";
+import { computed, isSignal, signal, Signal, WritableSignal } from "@angular/core";
+import { NG_DEV_MODE } from "../utlils";
 
-declare const ngDevMode: boolean | undefined;
 
 /**
  * Represents a reference to a shared signal.
@@ -90,7 +90,7 @@ export function sharedSignal<T>(initialValue: T | Signal<T>, debugName?: string)
     writable: false
   });
 
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (NG_DEV_MODE) {
     (signalRef as any).toString = () => `[SharedSignalRef.ref: ${signalRef.ref}]`;
     if (typeof debugName === 'string') {
       (signalRef as any).debugName = debugName;

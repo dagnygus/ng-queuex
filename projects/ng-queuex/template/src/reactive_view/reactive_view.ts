@@ -6,7 +6,7 @@ import { AbortTaskFunction, advancePriorityInputTransform, assertNgQueuexIntegra
 const QX_REACTIVE_VIEW_PRIORITY = new InjectionToken<PriorityLevel>('QX_REACTIVE_VIEW_PRIORITY', { factory: () => 3 })
 
 export function provideQueuexReactiveViewDefaultPriority(priority: PriorityName): ValueProvider {
-  return { provide: QX_REACTIVE_VIEW_PRIORITY, useValue: priorityNameToNumber(priority) }
+  return { provide: QX_REACTIVE_VIEW_PRIORITY, useValue: priorityNameToNumber(priority, provideQueuexReactiveViewDefaultPriority) }
 }
 
 @Directive({ selector: 'ng-template[reactiveView]' })
@@ -27,7 +27,7 @@ export class QueuexReactiveView implements OnInit, OnDestroy {
   @Input() reactiveViewRenderCallback: (() => void) | null = null;
 
   constructor() {
-    assertNgQueuexIntegrated('[reactiveView]: Assertion failed! "@ng-queuex/core" not provided.');
+    assertNgQueuexIntegrated('[reactiveView]: Assertion failed! "@ng-queuex/core" integration not provided.');
     if (isPlatformServer(inject(PLATFORM_ID))) {
       this._vcRef.createEmbeddedView(this._tmpRef);
       this._isServer = true;

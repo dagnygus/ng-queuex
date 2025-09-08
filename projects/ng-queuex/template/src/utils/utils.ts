@@ -1,6 +1,8 @@
 import { Signal } from "@angular/core";
 import { SIGNAL } from "@angular/core/primitives/signals";
 
+declare const ngDevMode: boolean | undefined;
+
 export function assertSignal(arg: any, propertyName: string): void {
   if (typeof arg === 'function' && arg[SIGNAL]) { return; }
   let typeName: string
@@ -11,3 +13,5 @@ export function assertSignal(arg: any, propertyName: string): void {
   }
   throw new Error(`'${propertyName}' must be a signal, but received '${typeName}'`);
 }
+
+export const NG_DEV_MODE = typeof ngDevMode === 'undefined' || !!ngDevMode

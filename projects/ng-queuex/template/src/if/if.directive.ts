@@ -45,9 +45,7 @@ import {
   value,
   advancePriorityInputTransform
 } from "@ng-queuex/core";
-import { assertSignal } from "../utils/utils";
-
-declare const ngDevMode: boolean | undefined;
+import { NG_DEV_MODE } from "../utils/utils";
 
 interface QxIfView<T = unknown> {
   init(context: QueuexIfContext<T>): void
@@ -75,13 +73,13 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
     kind: 'effect',
     abortTask: null,
     consumerMarkedDirty(this: QueuexIfEffectNode) {
-      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (NG_DEV_MODE) {
         assertNotInReactiveContext(() => 'Internal Error: Reactive context (THEN_NODE)!')
       }
       this.schedule();
     },
     schedule(this: QueuexIfEffectNode) {
-      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (NG_DEV_MODE) {
         assertNotInReactiveContext(() => 'Internal Error: Reactive context (THEN_NODE)!')
       }
 
@@ -135,7 +133,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
       }, this.view.priorityRef.value, this.view.thenViewRef);
     },
     run(this: QueuexIfEffectNode) {
-      if ((typeof ngDevMode === 'undefined' || ngDevMode) && isInNotificationPhase()) {
+      if (NG_DEV_MODE && isInNotificationPhase()) {
         throw new Error(`Schedulers cannot synchronously execute watches while scheduling.`);
       }
 
@@ -171,13 +169,13 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
     consumerAllowSignalWrites: false,
     kind: 'effect',
     consumerMarkedDirty(this: QueuexIfEffectNode) {
-      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (NG_DEV_MODE) {
         assertNotInReactiveContext(() => 'Internal Error: Reactive context (ELSE_NODE)!')
       }
       this.schedule();
     },
     schedule(this: QueuexIfEffectNode) {
-      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (NG_DEV_MODE) {
         assertNotInReactiveContext(() => 'Internal Error: Reactive context (ELSE_NODE)!')
       }
 
@@ -230,7 +228,7 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
       }, this.view.priorityRef.value, this.view.elseViewRef);
     },
     run(this: QueuexIfEffectNode) {
-      if ((typeof ngDevMode === 'undefined' || ngDevMode) && isInNotificationPhase()) {
+      if (NG_DEV_MODE && isInNotificationPhase()) {
         throw new Error(`Schedulers cannot synchronously execute watches while scheduling.`);
       }
 
@@ -287,8 +285,8 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
 
 const QX_IF_DEFAULT_PRIORITY = new InjectionToken<PriorityLevel>('QX_IF_DEFAULT_PRIORITY', { factory: () => 3 /* Priority.Normal */ });
 
-export function provideQxIfDefaultPriority(priority: PriorityName): ValueProvider {
-  return { provide: QX_IF_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, 'provideQxIfDefaultPriority()') }
+export function provideQueuexIfDefaultPriority(priority: PriorityName): ValueProvider {
+  return { provide: QX_IF_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, provideQueuexIfDefaultPriority) }
 }
 
 class ClientQxIfView<T = unknown> implements QxIfView<T> {
@@ -460,14 +458,19 @@ class ServerQxIfView<T = unknown> implements QxIfView {
   dispose(): void { /* noop */ }
 }
 
+/**
+ * A structural directive what is a drop in replacement for `NgFor`, with some additional features. Jest like `NgFor` it is design for conditional
+ * render the template based on the value to input. If the value is truthy, then directive creates embedded view based on attached ng-template element
+ * (as a default then template) or more likely based on template provided to [qxIfThen] input.
+ */
 @Directive({ selector: 'ng-template[qxIf]' })
 export class QueuexIf<T = unknown> implements OnInit, OnDestroy {
   private _view: QxIfView
   private _defaultThenTemplate: TemplateRef<QueuexIfContext<T>> = inject(TemplateRef);
-  private _conditionSource = sharedSignal<T>(undefined!, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'conditionSource' : undefined);
-  private _thenTmpRefSource = sharedSignal(this._defaultThenTemplate, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'thenTemplateRefSource' : undefined);
-  private _elseTmpRefSource = sharedSignal<TemplateRef<QueuexIfContext<T>> | null>(null, (typeof ngDevMode === 'undefined' || ngDevMode) ? 'elseTemplateRefSource' : undefined);
-  private _priorityRef = value<PriorityLevel>(inject(QX_IF_DEFAULT_PRIORITY), (typeof ngDevMode === 'undefined' || ngDevMode) ? 'priorityRef' : undefined);
+  private _conditionSource = sharedSignal<T>(undefined!, NG_DEV_MODE ? 'conditionSource' : undefined);
+  private _thenTmpRefSource = sharedSignal(this._defaultThenTemplate, NG_DEV_MODE ? 'thenTemplateRefSource' : undefined);
+  private _elseTmpRefSource = sharedSignal<TemplateRef<QueuexIfContext<T>> | null>(null, NG_DEV_MODE ? 'elseTemplateRefSource' : undefined);
+  private _priorityRef = value<PriorityLevel>(inject(QX_IF_DEFAULT_PRIORITY), NG_DEV_MODE ? 'priorityRef' : undefined);
 
   @Input() qxIfRenderCallback: ((arg: T) => void ) | null = null;
   @Input({ required: true }) set qxIf(condition: T | Signal<T>) {

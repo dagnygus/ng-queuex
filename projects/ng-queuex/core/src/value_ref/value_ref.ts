@@ -1,8 +1,7 @@
 import { assertInInjectionContext, assertNotInReactiveContext, DestroyRef, inject, isSignal, Signal } from "@angular/core";
-import { PriorityLevel } from "../scheduler/scheduler_utils";
 import { ReactiveHookFn, ReactiveNode, createWatch, setPostSignalSetFn, setActiveConsumer, Watch } from "@angular/core/primitives/signals";
+import { NG_DEV_MODE } from "../utlils";
 
-declare const ngDevMode: boolean | undefined;
 /**
  * Represents reference to value directly provided by `set` method or
  * to the most recent value of provided signal. In case of signal, it allows safely
@@ -168,7 +167,7 @@ export function value<T>(initialValue: T | Signal<T>, debugName: string | undefi
  */
 export function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef, debugName: string | undefined): ValueRef<T>;
 export function value<T>(initialValue: T | Signal<T>, arg2?: any, arg3?: any): ValueRef<T> {
-  (typeof ngDevMode === 'undefined' || ngDevMode) &&
+  (NG_DEV_MODE) &&
     assertNotInReactiveContext(value);
 
   let destroyRef: DestroyRef | null = null;
@@ -182,7 +181,7 @@ export function value<T>(initialValue: T | Signal<T>, arg2?: any, arg3?: any): V
   if (typeof arg3 === 'string') { debugName = arg3; }
 
   if (!destroyRef) {
-    (typeof ngDevMode === 'undefined' || ngDevMode) &&
+    (NG_DEV_MODE) &&
       assertInInjectionContext(value);
     destroyRef = inject(DestroyRef);
   }
@@ -192,7 +191,7 @@ export function value<T>(initialValue: T | Signal<T>, arg2?: any, arg3?: any): V
   ref.__watcher__ = null;
   ref.set(initialValue);
 
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (NG_DEV_MODE) {
     (ref as any).toString = () => `[ValueRef.value: ${ref.__value__}]`;
     (ref as any).debugName = debugName;
   }

@@ -13,6 +13,7 @@ import {
   InjectionToken,
   Injector,
   Input,
+  NgModule,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -44,8 +45,7 @@ import {
   value,
   ValueRef
 } from "@ng-queuex/core";
-
-declare const ngDevMode: boolean | undefined;
+import { NG_DEV_MODE } from "../utils/utils";
 
 interface CaseView {
   isChecking: boolean;
@@ -67,7 +67,7 @@ class ServerCaseView implements CaseView {
 
   constructor(caseSource: Signal<any> | null) {
     const switchView = inject(SwitchView, { optional: true,  host: true });
-    if ((typeof ngDevMode === 'undefined' || ngDevMode) && !switchView) {
+    if (NG_DEV_MODE && !switchView) {
       if (caseSource) {
         throwQxSwitchProviderNotFoundError('qxSwitchCase', 'QueuexSwitchCase');
       } else {
@@ -121,7 +121,7 @@ class ClientCaseView implements CaseView {
 
   constructor(caseSource: Signal<any> | null) {
     const switchView = inject(SwitchView, { optional: true,  host: true });
-    if ((typeof ngDevMode === 'undefined' || ngDevMode) && !switchView) {
+    if (NG_DEV_MODE && !switchView) {
       if (caseSource) {
         throwQxSwitchProviderNotFoundError('qxSwitchCase', 'QueuexSwitchCase');
       } else {
@@ -385,7 +385,7 @@ class ClientSwitchView implements SwitchView {
 const QX_SWITCH_DEFAULT_PRIORITY = new InjectionToken<PriorityLevel>('QX_SWITCH_DEFAULT_PRIORITY', { factory: () => 3 /* Priority.Normal */ })
 
 export function provideQueuexSwitchDefaultPriority(priority: PriorityName): ValueProvider {
-  return { provide:QX_SWITCH_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, 'provideQueuexSwitchDefaultPriority()') }
+  return { provide:QX_SWITCH_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, provideQueuexSwitchDefaultPriority) }
 }
 
 @Directive({
@@ -402,7 +402,7 @@ export function provideQueuexSwitchDefaultPriority(priority: PriorityName): Valu
   }]
 })
 export class QueuexSwitch implements OnChanges, OnInit, AfterContentChecked, OnDestroy {
-  private _priorityRef = value(inject(QX_SWITCH_DEFAULT_PRIORITY), (typeof ngDevMode === 'undefined' || ngDevMode) ? '[qxSwitch][priority]' : undefined)
+  private _priorityRef = value(inject(QX_SWITCH_DEFAULT_PRIORITY), NG_DEV_MODE ? '[qxSwitch][priority]' : undefined)
   private _switchSource = sharedSignal<any>(undefined);
   private _view = inject(SwitchView);
   private _cdRef = inject(ChangeDetectorRef);
@@ -417,7 +417,7 @@ export class QueuexSwitch implements OnChanges, OnInit, AfterContentChecked, OnD
   render = output<any>();
 
   constructor() {
-    assertNgQueuexIntegrated('[qxSwitch]: Assertion failed! "@ng-queuex/core" not provided.');
+    assertNgQueuexIntegrated('[qxSwitch]: Assertion failed! "@ng-queuex/core" integration not provided.');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -442,7 +442,7 @@ export class QueuexSwitch implements OnChanges, OnInit, AfterContentChecked, OnD
 
 @Directive({ selector: 'ng-template[qxSwitchCase]' })
 export class QueuexSwitchCase implements OnChanges, DoCheck, AfterContentChecked, OnDestroy {
-  private _caseSource = sharedSignal<any>(undefined, (typeof ngDevMode === 'undefined' || ngDevMode) ? '[qxSwitchCase]' : undefined);
+  private _caseSource = sharedSignal<any>(undefined, NG_DEV_MODE ? '[qxSwitchCase]' : undefined);
   private _caseView: CaseView;
 
   @Input({ required: true }) set qxSwitchCase(value: any) {
@@ -450,7 +450,7 @@ export class QueuexSwitchCase implements OnChanges, DoCheck, AfterContentChecked
   }
 
   constructor() {
-    assertNgQueuexIntegrated('[qxSwitchCase]: Assertion failed! "@ng-queuex/core" not provided.');
+    assertNgQueuexIntegrated('[qxSwitchCase]: Assertion failed! "@ng-queuex/core" integration not provided.');
     if (isPlatformServer(inject(PLATFORM_ID))) {
       this._caseView = new ServerCaseView(this._caseSource.ref);
     } else {
@@ -481,7 +481,7 @@ export class QueuexSwitchDefault implements OnDestroy {
   private _view: CaseView
 
   constructor() {
-    assertNgQueuexIntegrated('[qxSwitchDefault]: Assertion failed! "@ng-queuex/core" not provided.');
+    assertNgQueuexIntegrated('[qxSwitchDefault]: Assertion failed! "@ng-queuex/core" integration not provided.');
     if (isPlatformServer(inject(PLATFORM_ID))) {
       this._view = new ServerCaseView(null);
     } else {
@@ -494,7 +494,13 @@ export class QueuexSwitchDefault implements OnDestroy {
   }
 }
 
+const imports = [QueuexSwitch, QueuexSwitchDefault, QueuexSwitchDefault]
 
+@NgModule({
+  imports: imports,
+  exports: imports
+})
+export class QueuexSwitchModule {}
 
 function throwQxSwitchProviderNotFoundError(attrName: string, directiveName: string): never {
   throw new Error(

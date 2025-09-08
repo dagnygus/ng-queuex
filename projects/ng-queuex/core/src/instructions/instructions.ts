@@ -26,8 +26,7 @@ import {
   scheduleCallback
 } from "../scheduler/scheduler";
 import { Integrator, USAGE_EXAMPLE_IN_UNIT_TESTS } from "../environment/environment";
-
-declare const ngDevMode: boolean | undefined;
+import { NG_DEV_MODE } from "../utlils";
 
 type _ViewRef = ChangeDetectorRef & { _lView?: object };
 
@@ -191,7 +190,7 @@ export function detectChanges(cdRef: ChangeDetectorRef): AbortTaskFunction | nul
 export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel): AbortTaskFunction | null;
 export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel = 3 /* Priority.Normal */): AbortTaskFunction | null {
 
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (NG_DEV_MODE) {
     if (Integrator.instance === null) {
       throw new Error('detectChanges(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
     }
@@ -206,7 +205,7 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel 
   const relatedTask = coalescingScopes.get(cdRef);
 
   if (relatedTask) {
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (NG_DEV_MODE) {
       if (relatedTask.status === TaskStatus.Aborted) {
         throw new Error('InternalError: Related task to CdRef is aborted to early!');
       }
@@ -718,7 +717,7 @@ export function scheduleChangeDetection(
   cdRef: ChangeDetectorRef | null = null,
 ): AbortTaskFunction | null {
 
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (NG_DEV_MODE) {
     if (Integrator.instance === null) {
       throw new Error('scheduleChangeDetection(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
     }
@@ -734,7 +733,7 @@ export function scheduleChangeDetection(
     const relatedTask = coalescingScopes.get(cdRef);
 
     if (relatedTask) {
-      if (typeof ngDevMode === 'undefined' || ngDevMode) {
+      if (NG_DEV_MODE) {
         if (relatedTask.status === TaskStatus.Aborted) {
           throw new Error('InternalError: Related task to CdRef is aborted to early!');
         }
@@ -849,7 +848,7 @@ export function scheduleTask(callback: VoidFunction): AbortTaskFunction;
 export function scheduleTask(callback: VoidFunction, priority: PriorityLevel): AbortTaskFunction;
 export function scheduleTask(callback: VoidFunction, priority: Priority = 3 /* Priority.Normal */): AbortTaskFunction {
 
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (NG_DEV_MODE) {
     if (Integrator.instance === null) {
       throw new Error('scheduleTask(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
     }
@@ -901,7 +900,7 @@ export function scheduleTask(callback: VoidFunction, priority: Priority = 3 /* P
  */
 export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
 
-  if (typeof ngDevMode === 'undefined' || ngDevMode) {
+  if (NG_DEV_MODE) {
     if (Integrator.instance === null) {
       throw new Error('detectChangesSync(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
     }
@@ -922,7 +921,7 @@ export function detectChangesSync(cdRef: ChangeDetectorRef): boolean {
   if (relatedTask) {
 
     //Internal Errors
-    if (typeof ngDevMode === 'undefined' || ngDevMode) {
+    if (NG_DEV_MODE) {
       if (relatedTask.status === TaskStatus.Aborted) {
         throw new Error('InternalError: Related task to CdRef is aborted to early!');
       }

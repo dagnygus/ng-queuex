@@ -5,7 +5,7 @@ import { AbortTaskFunction, assertNgQueuexIntegrated, priorityInputTransform, Pr
 const QX_LAZY_VIEW_DEFAULT_PRIORITY = new InjectionToken<PriorityLevel>('PriorityLevel', { factory: () => 3 /* Priority.Normal */ });
 
 export function provideQueuexLazyViewDefaultPriority(priority: PriorityName): ValueProvider {
-  return { provide: QX_LAZY_VIEW_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, 'provideQueuexLazyViewDefaultPriority()') }
+  return { provide: QX_LAZY_VIEW_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, provideQueuexLazyViewDefaultPriority) }
 }
 
 @Directive({ selector: 'ng-template[lazyView]' })
@@ -20,7 +20,7 @@ export class QueuexLazyView implements OnInit, OnDestroy {
   @Input() lazyViewRenderCallback: (() => void) | null = null;
 
   constructor() {
-    assertNgQueuexIntegrated('[lazyView]: Assertion failed! "@ng-queuex/core" not provided.');
+    assertNgQueuexIntegrated('[lazyView]: Assertion failed! "@ng-queuex/core" integration not provided.');
     if (isPlatformServer(inject(PLATFORM_ID))) {
       this._vcRef.createEmbeddedView(this._tmpRef);
       this._isServer = true
