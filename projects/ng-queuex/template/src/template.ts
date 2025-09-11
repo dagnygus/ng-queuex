@@ -36,26 +36,26 @@ export {
   QueuexSwitch,
   QueuexSwitchCase,
   QueuexSwitchDefault,
-  QueuexSwitchModule,
+  // QueuexSwitchModule,
   provideQueuexSwitchDefaultPriority
 } from './switch/switch.directive';
 export {
   QueuexWatch
 } from './watch/watch.directive';
 
-const imports = [
-  QueuexIf,
-  QueuexForOf,
-  QueuexSwitch,
-  QueuexSwitchCase,
-  QueuexSwitchDefault,
-  QueuexReactiveView,
-  QueuexLazyView,
-  QueuexWatch
-];
+// const imports = [
+//   QueuexIf,
+//   QueuexForOf,
+//   QueuexSwitch,
+//   QueuexSwitchCase,
+//   QueuexSwitchDefault,
+//   QueuexReactiveView,
+//   QueuexLazyView,
+//   QueuexWatch
+// ];
 
-@NgModule({
-  imports: imports,
-  exports: imports
-})
-export class QueuexTemplateModule {}
+// @NgModule({
+//   imports: imports,
+//   exports: imports
+// })
+// export class QueuexTemplateModule {}

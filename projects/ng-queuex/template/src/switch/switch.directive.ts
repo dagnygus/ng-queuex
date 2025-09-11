@@ -642,50 +642,50 @@ export class QueuexSwitchDefault implements OnDestroy {
   }
 }
 
-const imports = [QueuexSwitch, QueuexSwitchDefault, QueuexSwitchDefault]
+// const imports: any[] = [QueuexSwitchCase, QueuexSwitchDefault]
 
-/**
- * `QueuexSwitchModule` bundles together the `QueuexSwitch` family of structural  directives, providing a drop-in replacement for Angular’s `NgSwitch` system.
- *
- * It includes:
- * - `QueuexSwitch` (`[qxSwitch]`) – the container directive controlling the switch context.
- * - `QueuexSwitchCase` (`*qxSwitchCase`) – defines conditional views based on case values.
- * - `QueuexSwitchDefault` (`*qxSwitchDefault`) – defines the fallback view when no case matches.
- *
- * Compared to Angular’s `NgSwitch`, the Queuex version provides:
- * - **Lazy view creation** using the concurrent scheduler from `ng-queuex/core`.
- * - **Detachment from Angular’s logical tree** for each embedded view.
- * - **Isolated reactive contexts** allowing direct signals in templates
- *   to trigger independent, fine-grained change detection.
- *
- * @usageNotes
- * Import `QueuexSwitchModule` into your feature module to make the directives available:
- *
- * ```ts
- * @NgModule({
- *   imports: [CommonModule, QueuexSwitchModule],
- *   declarations: [MyComponent]
- * })
- * export class MyFeatureModule {}
- * ```
- *
- * @example
- * ```html
- * <div [qxSwitch]="status">
- *   <p *qxSwitchCase="'loading'">Loading...</p>
- *   <p *qxSwitchCase="'success'">Loaded ✅</p>
- *   <p *qxSwitchDefault>Unknown state 🤔</p>
- * </div>
- * ```
- *
- * @class
- * @name QueuexSwitchModule
- */
-@NgModule({
-  imports: imports,
-  exports: imports
-})
-export class QueuexSwitchModule {}
+// /**
+//  * `QueuexSwitchModule` bundles together the `QueuexSwitch` family of structural  directives, providing a drop-in replacement for Angular’s `NgSwitch` system.
+//  *
+//  * It includes:
+//  * - `QueuexSwitch` (`[qxSwitch]`) – the container directive controlling the switch context.
+//  * - `QueuexSwitchCase` (`*qxSwitchCase`) – defines conditional views based on case values.
+//  * - `QueuexSwitchDefault` (`*qxSwitchDefault`) – defines the fallback view when no case matches.
+//  *
+//  * Compared to Angular’s `NgSwitch`, the Queuex version provides:
+//  * - **Lazy view creation** using the concurrent scheduler from `ng-queuex/core`.
+//  * - **Detachment from Angular’s logical tree** for each embedded view.
+//  * - **Isolated reactive contexts** allowing direct signals in templates
+//  *   to trigger independent, fine-grained change detection.
+//  *
+//  * @usageNotes
+//  * Import `QueuexSwitchModule` into your feature module to make the directives available:
+//  *
+//  * ```ts
+//  * @NgModule({
+//  *   imports: [CommonModule, QueuexSwitchModule],
+//  *   declarations: [MyComponent]
+//  * })
+//  * export class MyFeatureModule {}
+//  * ```
+//  *
+//  * @example
+//  * ```html
+//  * <div [qxSwitch]="status">
+//  *   <p *qxSwitchCase="'loading'">Loading...</p>
+//  *   <p *qxSwitchCase="'success'">Loaded ✅</p>
+//  *   <p *qxSwitchDefault>Unknown state 🤔</p>
+//  * </div>
+//  * ```
+//  *
+//  * @class
+//  * @name QueuexSwitchModule
+//  */
+// @NgModule({
+//   imports: imports,
+//   exports: imports,
+// })
+// export class QueuexSwitchModule {}
 
 function throwQxSwitchProviderNotFoundError(attrName: string, directiveName: string): never {
   throw new Error(
