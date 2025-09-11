@@ -50,3 +50,9 @@ export {
 export type {
   ValueRef
 } from './value_ref/value_ref';
+export {
+  concurrentEffect
+} from './concurrent_effect/concurrent_effect';
+export type {
+  ConcurrentEffectOptions
+} from './concurrent_effect/concurrent_effect'

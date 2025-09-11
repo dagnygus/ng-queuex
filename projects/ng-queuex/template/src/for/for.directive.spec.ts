@@ -1,21 +1,21 @@
 import { Component, computed, Directive, DoCheck, Pipe, PipeTransform, PLATFORM_ID, provideZonelessChangeDetection, Signal, signal } from "@angular/core";
 import { ComponentFixture, fakeAsync, flush, TestBed } from "@angular/core/testing";
-import { completeIntegrationForTest, Priority, PriorityLevel, PriorityName, provideNgQueuexIntegration, whenIdle } from "@ng-queuex/core";
+import { completeIntegrationForTest, isTaskQueueEmpty, Priority, PriorityLevel, PriorityName, provideNgQueuexIntegration, whenIdle } from "@ng-queuex/core";
 import { provideQueuexForOfDefaultPriority, QueuexForOf, trackByIndex, trackByItem } from "./for.directive";
 import { By } from "@angular/platform-browser";
-import { describePriorityLevel } from "../utils/test_utils";
+import { defineGlobalFlag, describePriorityLevel } from "../utils/test_utils";
 import { QueuexIf } from "../if/if.directive";
 
 interface TestEnvironmentOptions {
-  defaultPriority?: PriorityName | 'undefined',
-  serverPlatform?: boolean,
-  zoneless?: boolean
+  defaultPriority?: PriorityName | 'undefined';
+  serverPlatform?: boolean;
+  zoneless?: boolean;
 }
 
 const defaultTestEnvConfig: Required<TestEnvironmentOptions> = {
   defaultPriority: 'undefined',
   serverPlatform: false,
-  zoneless: false
+  zoneless: false,
 }
 
 class Foo {
@@ -102,7 +102,7 @@ function setupTestEnvironment(config?: TestEnvironmentOptions): void {
     providers.push(provideQueuexForOfDefaultPriority(localConfig.defaultPriority))
   }
   if (localConfig.zoneless) {
-    providers.push(provideZonelessChangeDetection())
+    providers.push(provideZonelessChangeDetection());
   }
   if (localConfig.serverPlatform) {
     providers.push({ provide: PLATFORM_ID, useValue: 'server' });
@@ -555,6 +555,25 @@ describe('QueuexForOf directive.', () => {
           expect(getTextContent()).toBe('1;2;3;');
           expect(getTestDirective('span.outer-test-dir').checkCount).toBe(0);
           expect(getAllTestDirectives('span.inner-test-dir').map((d) => d.checkCount)).toEqual([0, 0, 0]);
+        });
+
+        it('Should not support mutable data by default', async () => {
+          const data = [new Color('A', 'red'), new Color('B', 'orange'),  new Color('C', 'violet')];
+          const template =
+            '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel">{{item()}};</span>'
+          createTestComponent(template);
+          getComponent().priorityLevel = priorityLevel;
+          getComponent().items.set(data);
+
+          detectChanges();
+          await whenIdle();
+          expect(getTextContent()).toBe('(A|red);(B|orange);(C|violet);');
+
+          data[1].color = 'green';
+          data.push(new Color('D', 'blue'));
+          detectChanges();
+          await whenIdle();
+          expect(getTextContent()).toBe('(A|red);(B|orange);(C|violet);');
         });
       });
     });

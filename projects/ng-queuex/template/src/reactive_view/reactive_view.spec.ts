@@ -7,8 +7,8 @@ import { describePriorityLevel } from "../utils/test_utils";
 
 interface TestEnvironmentOptions {
   zoneless?: boolean;
-  serverPlatform?: boolean
-  defaultPriority?: PriorityName | 'undefined'
+  serverPlatform?: boolean;
+  defaultPriority?: PriorityName | 'undefined';
 }
 
 const defaultTestEnvConfig: Required<TestEnvironmentOptions> = {

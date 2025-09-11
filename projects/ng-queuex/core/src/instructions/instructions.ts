@@ -26,7 +26,7 @@ import {
   scheduleCallback
 } from "../scheduler/scheduler";
 import { Integrator, USAGE_EXAMPLE_IN_UNIT_TESTS } from "../environment/environment";
-import { NG_DEV_MODE } from "../utlils";
+import { NG_DEV_MODE } from "../utils";
 
 type _ViewRef = ChangeDetectorRef & { _lView?: object };
 

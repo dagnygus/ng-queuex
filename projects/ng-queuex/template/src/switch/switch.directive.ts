@@ -388,6 +388,56 @@ export function provideQueuexSwitchDefaultPriority(priority: PriorityName): Valu
   return { provide:QX_SWITCH_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, provideQueuexSwitchDefaultPriority) }
 }
 
+/**
+ * @Directive QueuexSwitch
+ *
+ * `QueuexSwitch` (`[qxSwitch]`) is the core structural directive of the switch family, designed as a drop-in replacement for Angular’s `NgSwitch`.
+ * It enables conditional rendering of templates based on the value of an expression, in combination with `QueuexSwitchCase` (`*qxSwitchCase`)
+ * and `QueuexSwitchDefault` (`*qxSwitchDefault`).
+ *
+ * Each embedded view created by `QueuexSwitch` is:
+ * - **Lazily instantiated** using the concurrent scheduler from `ng-queuex/core`.
+ * - **Detached from Angular’s logical tree**, ensuring that it does not participate
+ *   in the host component’s change detection cycle.
+ * - Assigned its own **isolated reactive context**, which means signals read directly
+ *   in the template can trigger fine-grained, independent change detection.
+ *
+ * When the `[qxSwitch]` expression changes, the directive activates the first matching `*qxSwitchCase` view (or the `*qxSwitchDefault` view if no case matches).
+ * Because views are scheduled and detached, rendering is both efficient and predictable, even for complex UI states.
+ *
+ * ### Server side fallback
+ *
+ * On the server side, `QueuexSwitch` behaves like Angular’s native `NgSwitch`. No detached views or reactive contexts are created, and no concurrent scheduling
+ * takes place. All cases are evaluated synchronously, ensuring predictable and performant SSR output.
+ *
+ * @example
+ * ```html
+ * <div [qxSwitch]="status">
+ *   <p *qxSwitchCase="'loading'">Loading...</p>
+ *   <p *qxSwitchCase="'success'">Data loaded successfully ✅</p>
+ *   <p *qxSwitchCase="'error'">Something went wrong ❌</p>
+ *   <p *qxSwitchDefault>Unknown state 🤔</p>
+ * </div>
+ * ```
+ *
+ * ### Inputs
+ *
+ * ```ts
+ * *@Input({ required: true })
+ * set qxSwitch(value: any | Signal<any>);
+ *
+ * // Priority level for concurrent scheduler, used for creating.
+ * *@Input({ transform: advancePriorityInputTransform })
+ * set priority(priority: PriorityLevel | Signal<PriorityLevel>);
+ * ```
+ *
+ * ### Outputs
+ * ```ts
+ * //Emits event when at least one of templates gets created or destroyed.
+ * render: OutputEmitterRef<any>;
+ * ```
+ *
+ */
 @Directive({
   selector: '[qxSwitch]:not(ng-template)',
   providers: [{
@@ -407,45 +457,104 @@ export class QueuexSwitch implements OnChanges, OnInit, AfterContentChecked, OnD
   private _view = inject(SwitchView);
   private _cdRef = inject(ChangeDetectorRef);
 
+  /**
+   * A priority for concurrent scheduler to manage views. It can be set as numeric value (1-5) or as
+   * string literal with valid options: `'highest' | 'high' | 'normal' | 'low' | 'lowest'`. Default is normal (3).
+   *
+   * This input also accepts the signal of the previously mentioned values
+   */
   @Input({ transform: advancePriorityInputTransform }) set priority(priority: PriorityLevel | Signal<PriorityLevel>) {
     this._priorityRef.set(priority);
   }
-  @Input({ required: true }) set qxSwitch(value: any) {
+
+  @Input({ required: true }) set qxSwitch(value: any | Signal<any>) {
     this._switchSource.set(value);
   }
 
+  /**
+   * A output what will be emitted when at least one of the template gets created or removed. This enables developers to perform actions when rendering has been done.
+   * The `render` is useful in situations where you rely on specific DOM properties like the dimensions of an item after it got rendered.
+   *
+   * The `render` emits the latest value causing the view to update.
+   */
   render = output<any>();
 
   constructor() {
     assertNgQueuexIntegrated('[qxSwitch]: Assertion failed! "@ng-queuex/core" integration not provided.');
   }
 
+  /**
+   * @internal
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['qxSwitch']) {
       this._view.isChecking = true
     }
   }
 
+  /**
+   * @internal
+   */
   ngOnInit(): void {
     this._view.initialize(this, this._cdRef, this._switchSource.ref, this._priorityRef);
   }
 
+  /**
+   * @internal
+   */
   ngAfterContentChecked(): void {
     this._view.isChecking = false;
   }
 
+  /**
+   * @internal
+   */
   ngOnDestroy(): void {
     this._view.dispose();
   }
-
 }
 
+/**
+ * `QueuexSwitchCase` (`*qxSwitchCase`) is a companion structural directive to  `QueuexSwitch` (`[qxSwitch]`). It defines a template block that
+ * is rendered when the bound `qxSwitch` expression matches the provided case value.
+ *
+ * Each case view created by this directive is:
+ * - **Lazily instantiated** through the concurrent scheduler from `ng-queuex/core`.
+ * - **Detached from Angular’s logical tree**, so it is not affected by the host
+ *   component’s change detection cycle.
+ * - Given its own **isolated reactive context**, which allows signals read directly
+ *   in the template to trigger local, fine-grained change detection.
+ *
+ * When the parent `[qxSwitch]` value changes, `QueuexSwitchCase` views are efficiently  scheduled and activated or destroyed depending
+ * on whether their case matches.
+ *
+ * ### Server side fallback
+ *
+ * During server-side rendering, `QueuexSwitchCase` falls back to the behavior of  Angular’s native `NgSwitchCase`. Views are instantiated
+ * synchronously and remain part of the standard logical view tree. No detachment, no isolated reactive contexts, and no scheduling are
+ * applied — ensuring clean, fast, and predictable SSR output.
+ *
+ * @example
+ * ```html
+ * <div [qxSwitch]="status">
+ *   <p *qxSwitchCase="'loading'">Loading…</p>
+ *   <p *qxSwitchCase="'success'">Data loaded ✅</p>
+ *   <p *qxSwitchCase="'error'">Something went wrong ❌</p>
+ *   <p *qxSwitchDefault>Unknown state 🤔</p>
+ * </div>
+ * ```
+ * ### Inputs
+ * ```ts
+ * *@Input({ required: true })
+ * set qxSwitchCase(value: any | Signal<any>);
+ * ```
+ */
 @Directive({ selector: 'ng-template[qxSwitchCase]' })
 export class QueuexSwitchCase implements OnChanges, DoCheck, AfterContentChecked, OnDestroy {
   private _caseSource = sharedSignal<any>(undefined, NG_DEV_MODE ? '[qxSwitchCase]' : undefined);
   private _caseView: CaseView;
 
-  @Input({ required: true }) set qxSwitchCase(value: any) {
+  @Input({ required: true }) set qxSwitchCase(value: any | Signal<any>) {
     this._caseSource.set(value)
   }
 
@@ -458,24 +567,60 @@ export class QueuexSwitchCase implements OnChanges, DoCheck, AfterContentChecked
     }
   }
 
+  /**
+   * @internal
+   */
   ngOnChanges(changes: SimpleChanges): void {
     this._caseView.isChecking = true;
   }
 
+  /**
+   * @internal
+   */
   ngDoCheck(): void {
     this._caseView.check();
   }
 
+  /**
+   * @internal
+   */
   ngAfterContentChecked(): void {
     this._caseView.isChecking = false;
   }
 
+  /**
+   * @internal
+   */
   ngOnDestroy(): void {
     this._caseView.dispose();
   }
 
 }
 
+/**
+ * `QueuexSwitchDefault` (`*qxSwitchDefault`) is a companion structural directive for `QueuexSwitch` (`[qxSwitch]`). It defines a fallback template
+ * that is rendered  when none of the `*qxSwitchCase` values match the parent `[qxSwitch]` expression.
+ *
+ * The default view created by this directive is:
+ * - **Lazily instantiated** using the concurrent scheduler from `ng-queuex/core`.
+ * - **Detached from Angular’s logical tree**, ensuring it is independent of the
+ *   host component’s change detection.
+ * - Assigned its own **isolated reactive context**, so signals read directly in the
+ *   template can trigger local, fine-grained change detection.
+ *
+ * Only one `QueuexSwitchDefault` block is allowed per `QueuexSwitch` container. If present, it guarantees that the switch will always render some content,
+ * even when no explicit case matches.
+ *
+ * @example
+ * ```html
+ * <div [qxSwitch]="status">
+ *   <p *qxSwitchCase="'loading'">Loading…</p>
+ *   <p *qxSwitchCase="'success'">Data loaded ✅</p>
+ *   <p *qxSwitchDefault>Nothing matched 🤷</p>
+ * </div>
+ * ```
+ *
+ */
 @Directive({ selector: 'ng-template[qxSwitchDefault]' })
 export class QueuexSwitchDefault implements OnDestroy {
   private _view: CaseView
@@ -489,6 +634,9 @@ export class QueuexSwitchDefault implements OnDestroy {
     }
   }
 
+  /**
+   * @internal
+   */
   ngOnDestroy(): void {
     this._view.dispose();
   }
@@ -496,6 +644,43 @@ export class QueuexSwitchDefault implements OnDestroy {
 
 const imports = [QueuexSwitch, QueuexSwitchDefault, QueuexSwitchDefault]
 
+/**
+ * `QueuexSwitchModule` bundles together the `QueuexSwitch` family of structural  directives, providing a drop-in replacement for Angular’s `NgSwitch` system.
+ *
+ * It includes:
+ * - `QueuexSwitch` (`[qxSwitch]`) – the container directive controlling the switch context.
+ * - `QueuexSwitchCase` (`*qxSwitchCase`) – defines conditional views based on case values.
+ * - `QueuexSwitchDefault` (`*qxSwitchDefault`) – defines the fallback view when no case matches.
+ *
+ * Compared to Angular’s `NgSwitch`, the Queuex version provides:
+ * - **Lazy view creation** using the concurrent scheduler from `ng-queuex/core`.
+ * - **Detachment from Angular’s logical tree** for each embedded view.
+ * - **Isolated reactive contexts** allowing direct signals in templates
+ *   to trigger independent, fine-grained change detection.
+ *
+ * @usageNotes
+ * Import `QueuexSwitchModule` into your feature module to make the directives available:
+ *
+ * ```ts
+ * @NgModule({
+ *   imports: [CommonModule, QueuexSwitchModule],
+ *   declarations: [MyComponent]
+ * })
+ * export class MyFeatureModule {}
+ * ```
+ *
+ * @example
+ * ```html
+ * <div [qxSwitch]="status">
+ *   <p *qxSwitchCase="'loading'">Loading...</p>
+ *   <p *qxSwitchCase="'success'">Loaded ✅</p>
+ *   <p *qxSwitchDefault>Unknown state 🤔</p>
+ * </div>
+ * ```
+ *
+ * @class
+ * @name QueuexSwitchModule
+ */
 @NgModule({
   imports: imports,
   exports: imports

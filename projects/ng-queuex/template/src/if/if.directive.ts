@@ -285,6 +285,13 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
 
 const QX_IF_DEFAULT_PRIORITY = new InjectionToken<PriorityLevel>('QX_IF_DEFAULT_PRIORITY', { factory: () => 3 /* Priority.Normal */ });
 
+/**
+ * @description
+ * Provides an override for `QueuexIf` default priority.
+ *
+ * @param priority Valid options: `'highest' | 'high' | 'normal' | 'low' | 'lowest'`
+ * @returns A value provider
+ */
 export function provideQueuexIfDefaultPriority(priority: PriorityName): ValueProvider {
   return { provide: QX_IF_DEFAULT_PRIORITY, useValue: priorityNameToNumber(priority, provideQueuexIfDefaultPriority) }
 }
@@ -459,9 +466,60 @@ class ServerQxIfView<T = unknown> implements QxIfView {
 }
 
 /**
- * A structural directive what is a drop in replacement for `NgFor`, with some additional features. Jest like `NgFor` it is design for conditional
- * render the template based on the value to input. If the value is truthy, then directive creates embedded view based on attached ng-template element
- * (as a default then template) or more likely based on template provided to [qxIfThen] input.
+ * @Directive QueuexIf
+ *
+ * The `QueuexIf` directive is a structural directive that serves as a drop-in replacement for Angular’s native `NgIf`, but comes with additional advanced capabilities.
+ * Much like NgIf, it is designed for conditional rendering of templates based on the value bound to its input.
+ *
+ * When the input evaluates to a truthy value, the directive creates an embedded view from the attached ng-template (the default `“then”` template) or, more commonly,
+ * from a custom template provided via the `[qxIfThen]` input. Conversely, when the input is falsy, the directive removes the active view and, if defined,
+ * instantiates the template specified in `[qxIfElse]`.
+ *
+ * Where `QueuexIf` truly stands out is in how it manages these views. Every embedded view is instantiated lazily through the concurrent scheduler provided by `"ng-queuex/core"`,
+ * ensuring efficient rendering under heavy workloads. Each view is also assigned its own isolated reactive context, enabling local change detection that runs independently from Angular’s
+ * global change detection cycles — and even separately from the host component’s change detection. Because views are detached from the parent logical tree, any signal read
+ * directly within the template can autonomously trigger change detection for that specific view.
+ *
+ * This architecture makes QueuexIf a powerful alternative to NgIf, combining familiar conditional rendering semantics with modern, high-performance rendering and granular reactivity.
+ *
+ * ### Server side fallback
+ *
+ * On the server side, QueuexIf gracefully falls back to the behavior of Angular’s native NgIf. All the advanced client-side features — such as lazy
+ * instantiation via the concurrent scheduler, isolated reactive contexts, and signal-driven change detection — are intentionally disabled during server-side rendering.
+ * These capabilities are unnecessary in an SSR environment and would only introduce additional overhead. By reverting to a simplified NgIf-like mode, QueuexIf ensures
+ * that server-rendered output remains clean, predictable, and optimized for maximum performance.
+ *
+ * ### Inputs
+ *
+ * ```ts
+ *  *@Input({ required: true })
+ *  set qxIf(condition: T | Signal<T>)
+ *
+ * // Gets called in browser when at least one view gets created or destroyed.
+ * *@Input()
+ *  qxIfRenderCallback: ((arg: T) => void) | null;
+ *
+ * // Priority level for concurrent scheduler, used for creating.
+ * *@Input({ transform: advancePriorityInputTransform })
+ *  set qxIfPriority(priorityLevel: PriorityLevel | Signal<PriorityLevel>);
+ *
+ * //Template what will be used to render if [qxIf] input will be truthy.
+ * *@Input()
+ *  set qxIfThen(thenTmpRef: TemplateRef<QueuexIfContext<T>> | Signal<TemplateRef<QueuexIfContext<T>>> | null | undefined);
+ *
+ * //Template what will be used to render if [qxIf] input will be falsy.
+ * *@Input()
+ *  set qxIfElse(elseTmpRef: TemplateRef<QueuexIfContext<T>> | Signal<TemplateRef<QueuexIfContext<T>>> | null | undefined);
+ *
+ * ```
+ * ### Template context variables
+ *
+ * ```ts
+ *  class QueuexIfContext<T>  {
+ *    $implicit: Signal<T>;
+ *    qxIf: Signal<T>;
+ *  }
+ * ```
  */
 @Directive({ selector: 'ng-template[qxIf]' })
 export class QueuexIf<T = unknown> implements OnInit, OnDestroy {
@@ -472,16 +530,41 @@ export class QueuexIf<T = unknown> implements OnInit, OnDestroy {
   private _elseTmpRefSource = sharedSignal<TemplateRef<QueuexIfContext<T>> | null>(null, NG_DEV_MODE ? 'elseTemplateRefSource' : undefined);
   private _priorityRef = value<PriorityLevel>(inject(QX_IF_DEFAULT_PRIORITY), NG_DEV_MODE ? 'priorityRef' : undefined);
 
+  /**
+   * A callback what will be called when at least one of the template gets created or removed. This enables developers to perform actions when rendering has been done.
+   * The `qxIfRenderCallback` is useful in situations where you rely on specific DOM properties like the dimensions of an item after it got rendered.
+   *
+   * The `qxIfRenderCallback` emits the latest value causing the view to update.
+   */
   @Input() qxIfRenderCallback: ((arg: T) => void ) | null = null;
+
+  /**
+   * The value to evaluate as the condition for showing a template.
+   */
   @Input({ required: true }) set qxIf(condition: T | Signal<T>) {
     this._conditionSource.set(condition);
   }
+
+  /**
+   * A priority for concurrent scheduler to manage views. It can be set as numeric value (1-5) or as
+   * string literal with valid options: `'highest' | 'high' | 'normal' | 'low' | 'lowest'`. Default is normal (3).
+   *
+   * This input also accepts the signal of the previously mentioned values
+   */
   @Input({ transform: advancePriorityInputTransform }) set qxIfPriority(priorityLevel: PriorityLevel | Signal<PriorityLevel>) {
     this._priorityRef.set(priorityLevel)
   }
+
+  /**
+   * A template to show if the condition evaluates to be truthy.
+   */
   @Input() set qxIfThen(thenTmpRef: TemplateRef<QueuexIfContext<T>> | Signal<TemplateRef<QueuexIfContext<T>>> | null | undefined) {
     thenTmpRef != null ? this._thenTmpRefSource.set(thenTmpRef) : this._thenTmpRefSource.set(this._defaultThenTemplate);
   }
+
+  /**
+   * A template to show if the condition evaluates to be falsy.
+   */
   @Input() set qxIfElse(elseTmpRef: TemplateRef<QueuexIfContext<T>> | Signal<TemplateRef<QueuexIfContext<T>>> | null | undefined) {
     this._elseTmpRefSource.set(elseTmpRef);
   }
@@ -495,14 +578,28 @@ export class QueuexIf<T = unknown> implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @internal
+   */
   ngOnInit(): void {
     this._view.init(new QueuexIfContext<T>(this._conditionSource.ref));
   }
 
+  /**
+   * @internal
+   */
   ngOnDestroy(): void {
     this._view.dispose();
   }
 
+  /**
+   * Assert the correct type of the expression bound to the `qxIf` input within the template.
+   *
+   * The presence of this static field is a signal to the Ivy template type check compiler that
+   * when the `QueuexIf` structural directive renders its template, the type of the expression bound
+   * to `qxIf` should be narrowed in some way. For `QueuexIf`, the binding expression itself is used to
+   * narrow its type, which allows the strictNullChecks feature of TypeScript to work with `QueuexIf`.
+   */
   static ngTemplateGuard_qxIf: 'binding';
   static ngTemplateContextGuard<T>(dir: QueuexIf<T>, ctx: any): ctx is QueuexIfContext<Exclude<T, false | 0 | '' | null | undefined>> {
     return true;

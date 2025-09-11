@@ -14,7 +14,7 @@ import {
   noopFn,
   // taskCleanup
 } from './scheduler_utils';
-import { NG_DEV_MODE } from "../utlils";
+import { NG_DEV_MODE } from "../utils";
 
 interface FlushWorkFn {
   (hasTimeRemaining: boolean, initialTime: number): boolean

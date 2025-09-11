@@ -1,6 +1,6 @@
 import { assertInInjectionContext, assertNotInReactiveContext, DestroyRef, inject, isSignal, Signal } from "@angular/core";
 import { ReactiveHookFn, ReactiveNode, createWatch, setPostSignalSetFn, setActiveConsumer, Watch } from "@angular/core/primitives/signals";
-import { NG_DEV_MODE } from "../utlils";
+import { NG_DEV_MODE } from "../utils";
 
 /**
  * Represents reference to value directly provided by `set` method or
