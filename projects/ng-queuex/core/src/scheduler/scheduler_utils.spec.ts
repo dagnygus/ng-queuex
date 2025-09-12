@@ -130,7 +130,7 @@ describe('Testing advancePriorityInputTransform() function', () => {
 
   it('Should throw error if invalid name is provided.', () => {
     expect(() => advancePriorityInputTransform('superDuperF__kingBig' as any))
-    .toThrowError('priorityInputTransform(): Provided key \'superDuperF__kingBig\' is not recognized as priority!')
+    .toThrowError('advancePriorityInputTransform(): Provided key \'superDuperF__kingBig\' is not recognized as priority!')
   });
 
   it('Should transform signal to computed signal witch will provide priority levels as rounded numbers clamped between 1 and 5.', () => {
