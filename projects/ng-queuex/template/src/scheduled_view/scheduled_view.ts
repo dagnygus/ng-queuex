@@ -1,6 +1,6 @@
 import { isPlatformServer } from "@angular/common";
 import { Directive, DoCheck, inject, InjectionToken, Input, OnDestroy, PLATFORM_ID, Signal, TemplateRef, ValueProvider, ViewContainerRef, ViewRef } from "@angular/core";
-import { AbortTaskFunction, advancePriorityInputTransform, detectChangesSync, PriorityLevel, PriorityName, priorityNameToNumber, scheduleChangeDetection, scheduleTask, value } from "@ng-queuex/core";
+import { AbortTaskFunction, advancePriorityInputTransform, assertNgQueuexIntegrated, detectChangesSync, PriorityLevel, PriorityName, priorityNameToNumber, scheduleChangeDetection, scheduleTask, value } from "@ng-queuex/core";
 import { NG_DEV_MODE } from "../utils/utils";
 
 const QX_SCHEDULED_VIEW_DEFAULT_PRIORITY = new InjectionToken<PriorityLevel>('QX_SCHEDULED_VIEW_DEFAULT_PRIORITY', { factory: () => 3 /* Priority.Normal */ });
@@ -96,6 +96,7 @@ export class QueuexScheduledView implements DoCheck, OnDestroy {
   @Input() scheduledViewRenderCallback: (() => void) | null = null;
 
   constructor() {
+    assertNgQueuexIntegrated('[scheduledView]: Assertion failed! "@ng-queuex/core" integration not provided.');
     if (this._isServer) {
       this._vcRef.createEmbeddedView(this._tmpRef);
     }

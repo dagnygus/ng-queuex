@@ -54,8 +54,8 @@ export class QueuexWatch implements OnDestroy {
       this._vcRef.createEmbeddedView(this._tmpRef);
     } else {
       this._watcher = createWatch(
-        () => this._effectCallback(),
-        () => this._scheduleEffectCallback(),
+        () => this._runEffect(),
+        () => this._scheduleEffect(),
         false
       );
       this._watcher.notify();
@@ -70,7 +70,7 @@ export class QueuexWatch implements OnDestroy {
     this._watcher?.destroy();
   }
 
-  private _effectCallback(): void {
+  private _runEffect(): void {
     if (!this._viewRef) {
       this._viewRef = this._vcRef.createEmbeddedView(this._tmpRef);
       this._viewRef.detach();
@@ -79,7 +79,7 @@ export class QueuexWatch implements OnDestroy {
     this._scheduled = false;
   }
 
-  private _scheduleEffectCallback(): void {
+  private _scheduleEffect(): void {
     if (this._scheduled) { return; }
     this._scheduled = true;
 

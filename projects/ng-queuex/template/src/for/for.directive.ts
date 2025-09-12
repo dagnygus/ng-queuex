@@ -123,7 +123,7 @@ interface NgIterableItemNode<T, U extends NgIterable<T> = NgIterable<T>> extends
 }
 
 interface QueuexForOfView<T> extends QueuexIterableChangeOperationHandler<T> {
-  init(trackByFn: TrackByFunction<T>, itemEqualFn: ValueEqualityFn<T> | null): void;
+  init(trackByFn: TrackByFunction<T>): void;
   dispose(): void;
 }
 
@@ -154,7 +154,6 @@ const BASE_NG_ITERABLE_ITEM_NODE: Omit<NgIterableItemNode<any>, OmitFromNode> =
         if (this.viewRef) {
           if (this.context._currentIndex === -1) {
             this.vcRef.remove(this.context._adjPrevIndex);
-            this.viewRef.detectChanges();
             this.forOfView.shouldRunRenderCallback = true;
             this.destroy();
             return;
@@ -303,7 +302,6 @@ class ClientQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
   aborters: AbortTaskFunction[] = [];
   inputWatcher: Watch = null!;
   trackByFn: TrackByFunction<T> = null!;
-  itemEqualFn: ValueEqualityFn<T> | null = null;
 
   constructor(
     public forOfDir: QueuexForOf<T, U>,
@@ -311,9 +309,8 @@ class ClientQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
     public priorityRef: ValueRef<PriorityLevel>
   ) { }
 
-  init(trackByFn: TrackByFunction<T>, itemEqualFn: ValueEqualityFn<T> | null): void {
+  init(trackByFn: TrackByFunction<T>): void {
     this.trackByFn = trackByFn;
-    this.itemEqualFn = itemEqualFn;
 
     this.inputWatcher = createWatch(
       () => this.update(),
@@ -329,7 +326,6 @@ class ClientQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
       currentIndex,
       this.count,
       item,
-      this.itemEqualFn,
       this.dataSource,
       this
     );
@@ -349,11 +345,7 @@ class ClientQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
     context._setIndex(currentIndex);
     context._setCount(this.count);
     context._setItem(item);
-    if (changed) {
-      consumerMarkDirty(context._node);
-    } else {
-      context._node.schedule()
-    }
+    context._node.schedule()
   }
   noop(record: StillPresentIterableChangeRecord<T>, changed: boolean): void {
     const { currentIndex, item } = record;
@@ -363,11 +355,7 @@ class ClientQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
     context._setIndex(currentIndex);
     context._setCount(this.count);
     context._setItem(item);
-    if (changed) {
-      consumerMarkDirty(context._node);
-    } else {
-      context._node.schedule()
-    }
+    context._node.schedule()
   }
   done(): void {
     const abortTask = scheduleTask(() => {
@@ -470,7 +458,6 @@ class ServerQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
   private _differs = inject(QueuexIterableDiffers);
   private _differ: QueuexIterableDiffer<T> | null = null;
   private _count: number = 0;
-  private _itemEqualFn: ValueEqualityFn<T> | null = null
   private _trackByFn: TrackByFunction<T> = null!
 
   constructor(
@@ -487,7 +474,6 @@ class ServerQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
       currentIndex,
       this._count,
       item,
-      this._itemEqualFn,
       this._dataSource
     )
     this._vcRef.createEmbeddedView(this._tmpRef, context, currentIndex);
@@ -512,9 +498,8 @@ class ServerQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
 
   done(): void { /* noop */ }
 
-  init(trackByFn: TrackByFunction<T>, itemEqualFn: ValueEqualityFn<T> | null): void {
+  init(trackByFn: TrackByFunction<T>): void {
     this._trackByFn = trackByFn;
-    this._itemEqualFn = itemEqualFn;
   }
 
   dispose(): void { /* noop */ }
@@ -543,7 +528,7 @@ class ServerQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
 /**
  * @Directive QueuexForOf
  *
- * This directive serves as a modern, high-performance replacement for Angular’s built-in `NgForOf` **(restricted to immutable data)**. It leverages a concurrent scheduling
+ * This directive serves as a modern, high-performance replacement for Angular’s built-in `NgForOf` **(restricted to immutable objects)**. It leverages a concurrent scheduling
  * mechanism to transform immutable data collections into fully synchronized UI views while seamlessly managing local change detection within embedded views.
  * Unlike traditional approaches, every signal change read directly in the template automatically triggers its own localized change detection cycle.
  *
@@ -578,11 +563,8 @@ class ServerQueuexForOfView<T, U extends NgIterable<T> = NgIterable<T>> implemen
  * *@Input({ required: true })
  * set qxForTrackBy(trackBy: TrackBy<T>)
  *
- * //An equality comparer function for individual item in collection, what will be used for signal creations context variables.
- * *@Input()
- * set qxForEqual(equal: ValueEqualityFn<T> | null);
  *
- * //A hook what will be used in browser where at least on view gets created, destroyed or moved
+ * //A hook what will be used in browser where at least one view gets created, destroyed or moved
  * *@Input()
  * qxForRenderCallback: ((data: QueuexForOfInput<T, U>) => void) | null;
  * ```
@@ -609,7 +591,6 @@ export class QueuexForOf<T, U extends NgIterable<T> = NgIterable<T>> implements 
 
   private _trackBy: TrackByFunction<T> = null!;
   private _itemPropPath: string = undefined!;
-  private _itemEqualFn: ValueEqualityFn<T> | null = null;
   private _view: QueuexForOfView<T> = null!;
   private _dataSource = sharedSignal<QueuexForOfInput<T, U>>(undefined, NG_DEV_MODE ? 'qxForOf' : undefined);
   private _priorityRef = value<PriorityLevel>(inject(QX_FOR_OF_DEFAULT_PRIORITY), NG_DEV_MODE ? 'qxForOfPriority' : undefined);
@@ -681,21 +662,6 @@ export class QueuexForOf<T, U extends NgIterable<T> = NgIterable<T>> implements 
   }
 
   /**
-   * An equality comparer function for individual item in collection, what will be used for signal creations context variables.
-   *
-   * @throws Error if when will be reassigned.
-   */
-  @Input() set qxForEqual(equal: ValueEqualityFn<T> | null) {
-    if (this._itemEqualFn as any) {
-      throw new Error('[qxFor]: "equal" can not be provided more then once!');
-    }
-    if (NG_DEV_MODE && typeof equal !== 'function') {
-      throw new Error('[qxFor][equal]: Provided input is not a function!')
-    }
-    this._itemEqualFn = equal;
-  }
-
-  /**
    * A callback what will be called when at least one of the template gets created, removed or moved. This enables developers to perform actions when rendering has been done.
    * The `qxForRenderCallback` is useful in situations where you rely on specific DOM properties like the dimensions of an item after it got rendered.
    *
@@ -716,7 +682,7 @@ export class QueuexForOf<T, U extends NgIterable<T> = NgIterable<T>> implements 
    * @internal
    */
   ngOnInit(): void {
-    this._view.init(this._trackBy, this._itemEqualFn);
+    this._view.init(this._trackBy);
   }
 
   /**
@@ -762,7 +728,6 @@ class ServerQueuexForOfContext<T, U extends NgIterable<T> = NgIterable<T>> imple
     index: number,
     count: number,
     item: T,
-    equal: ValueEqualityFn<T> | null,
     qxForOf: Signal<QueuexForOfInput<T, U>>
   ) {
     const [indexGetFn, indexSetFn] = createSignal(index) as unknown as [any, any];
@@ -773,7 +738,7 @@ class ServerQueuexForOfContext<T, U extends NgIterable<T> = NgIterable<T>> imple
     this.count = countGetFn;
     this._setCount = countSetFn;
 
-    const [itemGetFn, itemSetFn] = createSignal(item, equal ?? undefined) as unknown as [any, any];
+    const [itemGetFn, itemSetFn] = createSignal(item) as unknown as [any, any];
     this.$implicit = itemGetFn;
     this._setItem = itemSetFn;
 
@@ -809,11 +774,10 @@ class ClientQueuexForOfContext<T, U extends NgIterable<T> = NgIterable<T>> exten
     index: number,
     count: number,
     item: T,
-    equal: ValueEqualityFn<T> | null,
     qxForOf: Signal<QueuexForOfInput<T, U>>,
     forOfView: ClientQueuexForOfView<T, U>
   ) {
-    super(index, count, item, equal, qxForOf);
+    super(index, count, item, qxForOf);
     this._currentIndex = index;
     this._node = createItemNode(this, forOfView);
     consumerMarkDirty(this._node);

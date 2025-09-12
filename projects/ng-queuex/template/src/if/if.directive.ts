@@ -98,7 +98,6 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
           if (thenViewRef) {
             const index = vcRef.indexOf(thenViewRef);
             vcRef.remove(index);
-            thenViewRef.detectChanges();
             this.view.thenViewRef = null;
             thenViewRef = null;
             this.renderCbShouldRun = true;
@@ -119,7 +118,6 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
           if (thenViewRef) {
             const index = vcRef.indexOf(thenViewRef)
             vcRef.remove(index);
-            thenViewRef.detectChanges();//To immediately clear dom. There is some issue with destroyed view. Explanation will down bellow this file;
             this.view.thenViewRef = null;
             this.renderCbShouldRun = true;
           }
@@ -193,7 +191,6 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
           if (elseViewRef) {
             const index = vcRef.indexOf(elseViewRef);
             vcRef.remove(index);
-            elseViewRef.detectChanges()//To immediately clear dom. There is some issue with destroyed view. Explanation will be down bellow this file;
             this.view.elseViewRef = null;
             elseViewRef = null;
             this.renderCbShouldRun = true;
@@ -204,7 +201,6 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
           if (elseViewRef) {
             const index = vcRef.indexOf(elseViewRef)
             vcRef.remove(index);
-            elseViewRef.detectChanges();//To immediately clear dom. There is some issue with destroyed view. Explanation will br down bellow this file;
             this.view.elseViewRef = null;
             this.renderCbShouldRun = true;
           }
@@ -468,8 +464,8 @@ class ServerQxIfView<T = unknown> implements QxIfView {
 /**
  * @Directive QueuexIf
  *
- * The `QueuexIf` directive is a structural directive that serves as a drop-in replacement for Angular’s native `NgIf`, but comes with additional advanced capabilities.
- * Much like NgIf, it is designed for conditional rendering of templates based on the value bound to its input.
+ * The `QueuexIf` directive is a structural directive that serves as a drop-in replacement for Angular’s native `NgIf` **(restricted to immutable objects)**,
+ * but comes with additional advanced capabilities. Much like NgIf, it is designed for conditional rendering of templates based on the value bound to its input.
  *
  * When the input evaluates to a truthy value, the directive creates an embedded view from the attached ng-template (the default `“then”` template) or, more commonly,
  * from a custom template provided via the `[qxIfThen]` input. Conversely, when the input is falsy, the directive removes the active view and, if defined,

@@ -594,7 +594,7 @@ describe('QueuexSwitch directive.', () => {
   describe('Server environment', () => {
     beforeEach(() => setupTestEnvironment({ serverPlatform: true }))
 
-    it('Should switch amongst when values.', async () => {
+    it('Should switch amongst when values.', () => {
       const template =
         '<ul [qxSwitch]="valueSource" [priority]="priorityLevel">' +
           '<li *qxSwitchCase="\'a\'">when a</li>' +
@@ -617,7 +617,7 @@ describe('QueuexSwitch directive.', () => {
       expectTextContent('when b');
     });
 
-    it('Should switch amongst when values with fallback to default.', async () => {
+    it('Should switch amongst when values with fallback to default.', () => {
       const template =
         '<ul [qxSwitch]="valueSource" [priority]="priorityLevel">' +
           '<li *qxSwitchCase="\'a\'">when a</li>' +
@@ -640,7 +640,7 @@ describe('QueuexSwitch directive.', () => {
       expectTextContent('when default');
     });
 
-    it('Should support multiple views whens with the same value.', async () => {
+    it('Should support multiple views whens with the same value.', () => {
       const template =
         '<ul [qxSwitch]="valueSource" [priority]="priorityLevel">' +
           '<li *qxSwitchDefault>when default1;</li>' +
@@ -663,7 +663,7 @@ describe('QueuexSwitch directive.', () => {
       expectTextContent('when b1;when b2;');
     });
 
-    it('Should use === to match cases', async () => {
+    it('Should use === to match cases', () => {
       const template =
         '<ul [qxSwitch]="valueSource" [priority]="priorityLevel">' +
           '<li *qxSwitchCase="1">when one</li>' +
@@ -680,7 +680,7 @@ describe('QueuexSwitch directive.', () => {
     });
 
     describe('When value changes', () => {
-      it('Should switch amongst when values.', async () => {
+      it('Should switch amongst when values.', () => {
         const template =
           '<ul [qxSwitch]="valueSource" [priority]="priorityLevel"> ' +
             '<li *qxSwitchCase="when1">when 1;</li>' +
@@ -740,7 +740,7 @@ describe('QueuexSwitch directive.', () => {
     });
 
     describe('Corner cases', () => {
-      it('Should not crate default case if another case matches.', async () => {
+      it('Should not crate default case if another case matches.', () => {
         const log: string[] = [];
 
         @Directive({ selector: '[test]',  standalone: false})
@@ -765,7 +765,7 @@ describe('QueuexSwitch directive.', () => {
         expect(log).toEqual(['aCase'])
       });
 
-      it('Should create default cases if there is no other cases.', async () => {
+      it('Should create default cases if there is no other cases.', () => {
         const template =
           '<ul [qxSwitch]="valueSource" [priority]="priorityLevel">' +
             '<li *qxSwitchDefault>when default1;</li>' +
@@ -778,7 +778,7 @@ describe('QueuexSwitch directive.', () => {
         expectTextContent('when default1;when default2;');
       });
 
-      it('Should allow defaults before cases', async () => {
+      it('Should allow defaults before cases', () => {
         const template =
           '<ul [qxSwitch]="valueSource" [priority]="priorityLevel">' +
           '<li *qxSwitchDefault>when default1;</li>' +
@@ -802,7 +802,7 @@ describe('QueuexSwitch directive.', () => {
         expectTextContent('when b1;when b2;');
       });
 
-      it('Should throw error when qxSwitchCase is used outside of qxSwitch.', async () => {
+      it('Should throw error when qxSwitchCase is used outside of qxSwitch.', () => {
         const template =
           '<div [qxSwitch]="valueSource" [priority]="priorityLevel"></div>' +
           '<div *qxSwitchCase="\'a\'"></div>';
@@ -813,7 +813,7 @@ describe('QueuexSwitch directive.', () => {
         );
       });
 
-      it('Should throw error when qxSwitchDefault is used outside of qxSwitch.', async () => {
+      it('Should throw error when qxSwitchDefault is used outside of qxSwitch.', () => {
         const template =
           '<div [qxSwitch]="valueSource" [priority]="priorityLevel"></div>' +
           '<div *qxSwitchDefault></div>';
@@ -824,7 +824,7 @@ describe('QueuexSwitch directive.', () => {
         );
       });
 
-      it('Should support nested qxSwitch on ng-container with ngTemplateOutlet.', async () => {
+      it('Should support nested qxSwitch on ng-container with ngTemplateOutlet.', () => {
         const template =
           '<div [qxSwitch]="valueSource" [priority]="priorityLevel">' +
             '<ng-container *qxSwitchCase="\'case1\'" [qxSwitch]="trueSource" [priority]="priorityLevel"> ' +

@@ -181,17 +181,6 @@ describe('QueuexForOf directive.', () => {
     });
   });
 
-  it('Should throw error if \'equal\' input is set to function', async () => {
-    const template = '<div><span *qxFor="let item of items; trackBy: trackBy; equal: equal">{{item().toString()}};</span></div>'
-    setupTestEnvironment();
-    createTestComponent(template);
-    getComponent().equal = {} as any;
-    expect(() => detectChanges()).toThrowError(
-      '[qxFor][equal]: Provided input is not a function!'
-    );
-    await whenIdle();
-  });
-
   describe('Browser environment.', () => {
     beforeEach(() => setupTestEnvironment());
 
@@ -755,6 +744,28 @@ describe('QueuexForOf directive.', () => {
           expect(queryAll('span').map((el) => el.classList.contains('marker'))).toEqual([...Array(5)].map(() => false));
         });
 
+        it('Should detect value change in one of the embedded view along with data collection change.', async () => {
+          const template =
+            '<div *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let index = index">' +
+              '<span>{{item()}}</span>' +
+              '@if (index() == 0) { <span>{{value()}}</span> }' +
+              '<span>;</span>' +
+            '</div>';
+            createTestComponent(template);
+            getComponent().priorityLevel = priorityLevel;
+            getComponent().value.set('A');
+            getComponent().items.set([1, 2, 3]);
+
+            detectChanges();
+            await whenIdle();
+            expect(getTextContent()).toBe('1A;2;3;');
+
+            getComponent().value.set('B');
+            getComponent().items.set([1, 2, 3, 4]);
+            await whenIdle();
+            expect(getTextContent()).toBe('1B;2;3;4;');
+        });
+
         it('Should replace view if structure will change in immutable way and trackBy is set to \'item\'.', async () => {
           let list = [new Color('A', 'red'), new Color('B', 'green'), new Color('C', 'blue')];
           createTestComponent(TEMPLATE_WITH_PRIORITY);
@@ -816,7 +827,7 @@ describe('QueuexForOf directive.', () => {
           expect(queryAll('span').map((el) => el.classList.contains('marker'))).toEqual([false, true, true]);
         });
 
-        it('Should remove and create new view for updated structure in immutable way and if there is provided unique id to trackBy property.', async () => {
+        it('Should not remove and create new view for updated structure in immutable way and if there is provided unique id to trackBy property.', async () => {
           let list = [new Color('A', 'red'), new Color('B', 'green'), new Color('C', 'blue')];
           createTestComponent(TEMPLATE_WITH_PRIORITY);
           getComponent().priorityLevel = priorityLevel;
@@ -825,7 +836,7 @@ describe('QueuexForOf directive.', () => {
 
           detectChanges();
           await whenIdle();
-          expect(getTextContent()).toBe('(A|red);(B|green);(C|blue);')
+          expect(getTextContent()).toBe('(A|red);(B|green);(C|blue);');
           queryAll('span').forEach((el) => el.classList.add('marker'));
 
           list = list.slice();
@@ -834,6 +845,26 @@ describe('QueuexForOf directive.', () => {
           getComponent().items.set(list);
           await whenIdle();
           expect(getTextContent()).toBe('(C|purple);(A|red);(B|green);')
+          expect(queryAll('span').map((el) => el.classList.contains('marker'))).toEqual([true, true, true]);
+        });
+
+        it('Should detect object identity changed.', async () => {
+          let list = [new Color('A', 'red'), new Color('B', 'green'), new Color('C', 'blue')];
+          createTestComponent(TEMPLATE_WITH_PRIORITY);
+          getComponent().priorityLevel = priorityLevel;
+          getComponent().trackBy = 'item.id';
+          getComponent().items.set(list);
+
+          detectChanges();
+          await whenIdle();
+          expect(getTextContent()).toBe('(A|red);(B|green);(C|blue);');
+          queryAll('span').forEach((el) => el.classList.add('marker'));
+
+          list = list.slice();
+          list[1] = new Color('B', 'violet');
+          getComponent().items.set(list);
+          await whenIdle();
+          expect(getTextContent()).toBe('(A|red);(B|violet);(C|blue);');
           expect(queryAll('span').map((el) => el.classList.contains('marker'))).toEqual([true, true, true]);
         });
       });
@@ -949,265 +980,303 @@ describe('QueuexForOf directive.', () => {
     beforeEach(() => setupTestEnvironment({ serverPlatform: true }));
 
 
-    it('Should reflect initial elements.', async () => {
+    it('Should reflect initial elements.', () => {
         createTestComponent(TEMPLATE_WITH_PRIORITY);
         detectChanges();
         expect(getTextContent()).toBe('1;2;');
       });
 
-      it('Should reflect added elements.', async () => {
-        createTestComponent(TEMPLATE_WITH_PRIORITY);
+    it('Should reflect added elements.', () => {
+      createTestComponent(TEMPLATE_WITH_PRIORITY);
+      detectChanges();
+      expect(getTextContent()).toBe('1;2;');
+      getComponent().items.update((list) => [...list, 3])
+      detectChanges();
+      expect(getTextContent()).toBe('1;2;3;');
+    });
+
+    it('Should reflect removed items.', () => {
+      createTestComponent(TEMPLATE_WITH_PRIORITY);
+      detectChanges();
+      expect(getTextContent()).toBe('1;2;');
+      getComponent().items.set([1]);
+      detectChanges();
+      expect(getTextContent()).toBe('1;');
+    });
+
+    it('Should reflect moved items.', async () => {
+      createTestComponent(TEMPLATE_WITH_PRIORITY);
+      detectChanges();
+      expect(getTextContent()).toBe('1;2;');
+      getComponent().items.set([2, 1]);
+      detectChanges();
+      expect(getTextContent()).toBe('2;1;');
+    })
+
+    it('Should reflect a mix of all changes (additions/removals/moves).', () => {
+      createTestComponent();
+      getComponent().priorityLevel;
+      getComponent().items.set([0, 1, 2, 3, 4, 5]);
+      detectChanges();
+      expect(getTextContent()).toBe('0;1;2;3;4;5;');
+      getComponent().items.set([6, 2, 7, 0, 4, 8]);
+      detectChanges();
+      expect(getTextContent()).toBe('6;2;7;0;4;8;');
+    });
+
+    it('Should iterate over of array of objects.', () => {
+      createTestComponent(TEMPLATE_WITH_LIST);
+      getComponent().items.set([ { name:'Dag' }, { name: 'Kruchol' }]);
+      detectChanges();
+      expect(getTextContent()).toBe('Dag;Kruchol;')
+
+      getComponent().items.update((it) => [...it, { name: 'Ajciu' }]);
+      detectChanges();
+      expect(getTextContent()).toBe('Dag;Kruchol;Ajciu;');
+
+      const items = getComponent().items().slice();
+      items.splice(2, 1);
+      items.splice(0, 1);
+      getComponent().items.set(items);
+      detectChanges();
+      expect(getTextContent()).toBe('Kruchol;')
+    });
+
+    it('Should gracefully handle nulls.', () => {
+      createTestComponent(TEMPLATE_WITH_LIST);
+      getComponent().items.set(null!);
+      detectChanges();
+      expect(getTextContent()).toBe('');
+    });
+
+    it('Should gracefully handle ref changing to null and back.', () => {
+      createTestComponent();
+
+      detectChanges();
+      expect(getTextContent()).toBe('1;2;');
+
+      getComponent().items.set(null!);
+      detectChanges();
+      expect(getTextContent()).toBe('');
+
+      getComponent().items.set([1, 2, 3]);
+      detectChanges();
+      expect(getTextContent()).toBe('1;2;3;');
+    });
+
+    it('Should throw on non-iterable ref.', () => {
+      createTestComponent();
+      getComponent().items.set('hellYeah' as any);
+      expect(() => {
         detectChanges();
-        expect(getTextContent()).toBe('1;2;');
-        getComponent().items.update((list) => [...list, 3])
-        detectChanges();
-        expect(getTextContent()).toBe('1;2;3;');
-      });
+      }).toThrowError(
+        'Cannot find a differ supporting object \'hellYeah\' of type \'string\'!'
+      );
+    });
 
-      it('Should reflect removed items.', async () => {
-        createTestComponent(TEMPLATE_WITH_PRIORITY);
-        detectChanges();
-        expect(getTextContent()).toBe('1;2;');
-        getComponent().items.set([1]);
-        detectChanges();
-        expect(getTextContent()).toBe('1;');
-      });
+    it('Should throw on ref changing to string', () => {
+      createTestComponent();
+      detectChanges();
+      expect(getTextContent()).toBe('1;2;');
 
-      it('Should reflect moved items.', async () => {
-        createTestComponent(TEMPLATE_WITH_PRIORITY);
-        detectChanges();
-        expect(getTextContent()).toBe('1;2;');
-        getComponent().items.set([2, 1]);
-        detectChanges();
-        expect(getTextContent()).toBe('2;1;');
-      })
+      getComponent().items.set('hellYeah' as any);
+      expect(() => detectChanges()).toThrowError(
+        "Error trying to diff 'hellYeah' of type 'string'. Only arrays and iterables are allowed."
+      );
+    });
 
-      it('Should reflect a mix of all changes (additions/removals/moves).', async () => {
-        createTestComponent();
-        getComponent().priorityLevel;
-        getComponent().items.set([0, 1, 2, 3, 4, 5]);
-        detectChanges();
-        expect(getTextContent()).toBe('0;1;2;3;4;5;');
-        getComponent().items.set([6, 2, 7, 0, 4, 8]);
-        detectChanges();
-        expect(getTextContent()).toBe('6;2;7;0;4;8;');
-      });
+    it('Should work with duplicates.', () => {
+      createTestComponent();
+      const a = new Foo();
+      getComponent().items.set([a, a]);
+      detectChanges();
+      expect(getTextContent()).toBe('foo;foo;')
+    });
 
-      it('Should iterate over of array of objects.', async () => {
-        createTestComponent(TEMPLATE_WITH_LIST);
-        getComponent().items.set([ { name:'Dag' }, { name: 'Kruchol' }]);
-        detectChanges();
-        expect(getTextContent()).toBe('Dag;Kruchol;')
+    it('Should repeat over nested arrays.', () => {
+      const template =
+        '<div *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel">' +
+          '<div *qxFor="let subitem of item(); trackBy: trackBy; priority: priorityLevel">' +
+            '<span>{{subitem()}}-{{item()().length}};</span>' +
+          '</div>|' +
+        '</div>'
+      createTestComponent(template);
+      getComponent().items.set( [signal(['a']), signal(['b', 'c']) ])
 
-        getComponent().items.update((it) => [...it, { name: 'Ajciu' }]);
-        detectChanges();
-        expect(getTextContent()).toBe('Dag;Kruchol;Ajciu;');
+      detectChanges();
+      expect(getTextContent()).toBe('a-1;|b-2;c-2;|');
 
-        const items = getComponent().items().slice();
-        items.splice(2, 1);
-        items.splice(0, 1);
-        getComponent().items.set(items);
-        detectChanges();
-        expect(getTextContent()).toBe('Kruchol;')
-      });
+      getComponent().items.set([ signal(['e', 'f']), signal(['g']) ]);
+      detectChanges();
+      expect(getTextContent()).toBe('e-2;f-2;|g-1;|');
+    });
 
-      it('Should gracefully handle nulls.', async () => {
-        createTestComponent(TEMPLATE_WITH_LIST);
-        getComponent().items.set(null!);
-        detectChanges();
-        expect(getTextContent()).toBe('');
-      });
+    it('Should repeat over nested arrays with no intermediate element.', () => {
+      const template =
+        '<div *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel">' +
+          '<div *qxFor="let subitem of item(); trackBy: trackBy; priority: priorityLevel">' +
+            '<span>{{subitem()}}-{{item()().length}};</span>' +
+          '</div>' +
+        '</div>'
+      createTestComponent(template);
+      getComponent().items.set( [signal(['a']), signal(['b', 'c']) ]);
 
-      it('Should gracefully handle ref changing to null and back.', async () => {
-        createTestComponent();
+      detectChanges();
+      expect(getTextContent()).toBe('a-1;b-2;c-2;');
 
-        detectChanges();
-        expect(getTextContent()).toBe('1;2;');
+      getComponent().items.set([ signal(['e', 'f']), signal(['g']) ]);
+      detectChanges();
+      expect(getTextContent()).toBe('e-2;f-2;g-1;');
+    });
 
-        getComponent().items.set(null!);
-        detectChanges();
-        expect(getTextContent()).toBe('');
+    it('Should repeat over nested qxIf that are the last node in the ngFor template.', () => {
+      const template =
+        '<div *qxFor="let item of items; trackBy: trackBy; let i = index; priority: priorityLevel">' +
+          '<div>{{i()}}|</div>'+
+          '<div *qxIf="i | isEven; priority: priorityLevel">even|</div>' +
+        '</div>';
+      createTestComponent(template);
 
-        getComponent().items.set([1, 2, 3]);
-        detectChanges();
-        expect(getTextContent()).toBe('1;2;3;');
-      });
+      getComponent().items.set([1]);
+      detectChanges();
+      expect(getTextContent()).toBe('0|even|')
 
-      it('Should throw on non-iterable ref.', () => {
-        createTestComponent();
-        getComponent().items.set('hellYeah' as any);
-        expect(() => {
-          detectChanges();
-        }).toThrowError(
-          'Cannot find a differ supporting object \'hellYeah\' of type \'string\'!'
-        );
-      });
+      getComponent().items.set([1, 2]);
+      detectChanges();
+      expect(getTextContent()).toBe('0|even|1|');
 
-      it('Should throw on ref changing to string', () => {
-        createTestComponent();
-        detectChanges();
-        expect(getTextContent()).toBe('1;2;');
+      getComponent().items.set([1, 2, 3]);
+      detectChanges();
+      expect(getTextContent()).toBe('0|even|1|2|even|');
+    });
 
-        getComponent().items.set('hellYeah' as any);
-        expect(() => detectChanges()).toThrowError(
-          "Error trying to diff 'hellYeah' of type 'string'. Only arrays and iterables are allowed."
-        );
-      });
+    it('should allow of saving the collection', () => {
+      const template =
+        '<ul>' +
+          '<li *qxFor="let item of items as collection; trackBy: trackBy; priority: priorityLevel; index as i">'+
+            '{{i()}}/{{collection().length}} - {{item()}};' +
+          '</li>' +
+        '</ul>';
+      createTestComponent(template);
+      detectChanges();
 
-      it('Should work with duplicates.', async () => {
-        createTestComponent();
-        const a = new Foo();
-        getComponent().items.set([a, a]);
-        detectChanges();
-        expect(getTextContent()).toBe('foo;foo;')
-      });
+      expect(getTextContent()).toBe('0/2 - 1;1/2 - 2;');
 
-      it('Should repeat over nested arrays.', async () => {
-        const template =
-          '<div *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel">' +
-            '<div *qxFor="let subitem of item(); trackBy: trackBy; priority: priorityLevel">' +
-              '<span>{{subitem()}}-{{item()().length}};</span>' +
-            '</div>|' +
-          '</div>'
-        createTestComponent(template);
-        getComponent().items.set( [signal(['a']), signal(['b', 'c']) ])
-
-        detectChanges();
-        expect(getTextContent()).toBe('a-1;|b-2;c-2;|');
-
-        getComponent().items.set([ signal(['e', 'f']), signal(['g']) ]);
-        detectChanges();
-        expect(getTextContent()).toBe('e-2;f-2;|g-1;|');
-      });
-
-      it('Should repeat over nested arrays with no intermediate element.', async () => {
-        const template =
-          '<div *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel">' +
-            '<div *qxFor="let subitem of item(); trackBy: trackBy; priority: priorityLevel">' +
-              '<span>{{subitem()}}-{{item()().length}};</span>' +
-            '</div>' +
-          '</div>'
-        createTestComponent(template);
-        getComponent().items.set( [signal(['a']), signal(['b', 'c']) ]);
-
-        detectChanges();
-        expect(getTextContent()).toBe('a-1;b-2;c-2;');
-
-        getComponent().items.set([ signal(['e', 'f']), signal(['g']) ]);
-        detectChanges();
-        expect(getTextContent()).toBe('e-2;f-2;g-1;');
-      });
-
-      it('Should repeat over nested qxIf that are the last node in the ngFor template.', async () => {
-        const template =
-          '<div *qxFor="let item of items; trackBy: trackBy; let i = index; priority: priorityLevel">' +
-            '<div>{{i()}}|</div>'+
-            '<div *qxIf="i | isEven; priority: priorityLevel">even|</div>' +
-          '</div>';
-        createTestComponent(template);
-
-        getComponent().items.set([1]);
-        detectChanges();
-        expect(getTextContent()).toBe('0|even|')
-
-        getComponent().items.set([1, 2]);
-        detectChanges();
-        expect(getTextContent()).toBe('0|even|1|');
-
-        getComponent().items.set([1, 2, 3]);
-        detectChanges();
-        expect(getTextContent()).toBe('0|even|1|2|even|');
-      });
-
-      it('should allow of saving the collection', async () => {
-        const template =
-          '<ul>' +
-            '<li *qxFor="let item of items as collection; trackBy: trackBy; priority: priorityLevel; index as i">'+
-              '{{i()}}/{{collection().length}} - {{item()}};' +
-            '</li>' +
-          '</ul>';
-        createTestComponent(template);
-        detectChanges();
-
-        expect(getTextContent()).toBe('0/2 - 1;1/2 - 2;');
-
-        getComponent().items.set([1, 2, 3]);
-        detectChanges();
-        expect('0/3 - 1;0/3 - 2;0/3 - 3;');
-      });
+      getComponent().items.set([1, 2, 3]);
+      detectChanges();
+      expect('0/3 - 1;0/3 - 2;0/3 - 3;');
+    });
 
 
-      it('Should display indices correctly.', async () => {
-        // setupTestEnvironment({ serverPlatform: true })
-        const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let i = index">{{i()}}</span>';
-        createTestComponent(template);
-        getComponent().items.set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-        detectChanges();
-        expect(getTextContent()).toBe('0123456789');
+    it('Should display indices correctly.', () => {
+      // setupTestEnvironment({ serverPlatform: true })
+      const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let i = index">{{i()}}</span>';
+      createTestComponent(template);
+      getComponent().items.set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      detectChanges();
+      expect(getTextContent()).toBe('0123456789');
 
-        getComponent().items.set([1, 2, 6, 7, 4, 3, 5, 8, 9, 0]);
-        detectChanges();
-        expect(getTextContent()).toBe('0123456789');
-      });
+      getComponent().items.set([1, 2, 6, 7, 4, 3, 5, 8, 9, 0]);
+      detectChanges();
+      expect(getTextContent()).toBe('0123456789');
+    });
 
-      it('Should display count correctly', async () => {
-        const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let len = count">{{len()}}</span>';
-        createTestComponent(template);
-        getComponent().items.set([0, 1, 2]);
-        detectChanges();
-        expect(getTextContent()).toBe('333');
+    it('Should display count correctly', () => {
+      const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let len = count">{{len()}}</span>';
+      createTestComponent(template);
+      getComponent().items.set([0, 1, 2]);
+      detectChanges();
+      expect(getTextContent()).toBe('333');
 
-        getComponent().items.set([4, 3, 2, 1, 0, -1]);
-        detectChanges();
-        expect(getTextContent()).toBe('666666');
-      });
+      getComponent().items.set([4, 3, 2, 1, 0, -1]);
+      detectChanges();
+      expect(getTextContent()).toBe('666666');
+    });
 
-      it('Should display fist item correctly.', async () => {
-        const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let isFirst = first">{{isFirst()}}</span>';
-        createTestComponent(template);
-        getComponent().items.set([0, 1, 2]);
-        detectChanges();
-        expect(getTextContent()).toBe('truefalsefalse');
+    it('Should display fist item correctly.', () => {
+      const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let isFirst = first">{{isFirst()}}</span>';
+      createTestComponent(template);
+      getComponent().items.set([0, 1, 2]);
+      detectChanges();
+      expect(getTextContent()).toBe('truefalsefalse');
 
-        getComponent().items.set([2, 1]);
-        detectChanges();
-        expect(getTextContent()).toBe('truefalse');
-      });
+      getComponent().items.set([2, 1]);
+      detectChanges();
+      expect(getTextContent()).toBe('truefalse');
+    });
 
-      it('Should display fist item correctly.', async () => {
-        const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let isLast = last">{{isLast()}}</span>';
-        createTestComponent(template);
-        getComponent().items.set([0, 1, 2]);
-        detectChanges();
-        expect(getTextContent()).toBe('falsefalsetrue');
+    it('Should display fist item correctly.', () => {
+      const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let isLast = last">{{isLast()}}</span>';
+      createTestComponent(template);
+      getComponent().items.set([0, 1, 2]);
+      detectChanges();
+      expect(getTextContent()).toBe('falsefalsetrue');
 
-        getComponent().items.set([2, 1]);
-        detectChanges();
-        expect(getTextContent()).toBe('falsetrue');
-      });
+      getComponent().items.set([2, 1]);
+      detectChanges();
+      expect(getTextContent()).toBe('falsetrue');
+    });
 
-      it('Should display even items correctly', async () => {
-         const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let isEven = even">{{isEven()}}</span>';
-        createTestComponent(template);
-        getComponent().items.set([0, 1, 2]);
-        detectChanges();
-        expect(getTextContent()).toBe('truefalsetrue');
+    it('Should display even items correctly', () => {
+        const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let isEven = even">{{isEven()}}</span>';
+      createTestComponent(template);
+      getComponent().items.set([0, 1, 2]);
+      detectChanges();
+      expect(getTextContent()).toBe('truefalsetrue');
 
-        getComponent().items.set([2, 1]);
-        detectChanges();
-        expect(getTextContent()).toBe('truefalse');
-      });
+      getComponent().items.set([2, 1]);
+      detectChanges();
+      expect(getTextContent()).toBe('truefalse');
+    });
 
-      it('Should display odd items correctly', async () => {
-        const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let isOdd = odd">{{isOdd()}}</span>';
-        createTestComponent(template);
-        getComponent().items.set([0, 1, 2]);
-        detectChanges();
-        expect(getTextContent()).toBe('falsetruefalse');
+    it('Should display odd items correctly', () => {
+      const template = '<span *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let isOdd = odd">{{isOdd()}}</span>';
+      createTestComponent(template);
+      getComponent().items.set([0, 1, 2]);
+      detectChanges();
+      expect(getTextContent()).toBe('falsetruefalse');
 
-        getComponent().items.set([2, 1]);
-        detectChanges();
-        expect(getTextContent()).toBe('falsetrue');
-      });
+      getComponent().items.set([2, 1]);
+      detectChanges();
+      expect(getTextContent()).toBe('falsetrue');
+    });
+
+    it('Should detect value change in one of the embedded view along with data collection change.', () => {
+      const template =
+        '<div *qxFor="let item of items; trackBy: trackBy; priority: priorityLevel; let index = index">' +
+          '<span>{{item()}}</span>' +
+          '@if (index() == 0) { <span>{{value()}}</span> }' +
+          '<span>;</span>' +
+        '</div>';
+      createTestComponent(template);
+      getComponent().value.set('A');
+      getComponent().items.set([1, 2, 3]);
+
+      detectChanges();
+      expect(getTextContent()).toBe('1A;2;3;');
+
+      getComponent().value.set('B');
+      getComponent().items.set([1, 2, 3, 4]);
+      detectChanges();
+      expect(getTextContent()).toBe('1B;2;3;4;');
+    });
+
+    it('Should detect object identity changed.', () => {
+      let list = [new Color('A', 'red'), new Color('B', 'green'), new Color('C', 'blue')];
+      createTestComponent(TEMPLATE_WITH_PRIORITY);
+      getComponent().trackBy = 'item.id';
+      getComponent().items.set(list);
+
+      detectChanges();
+      expect(getTextContent()).toBe('(A|red);(B|green);(C|blue);');
+      queryAll('span').forEach((el) => el.classList.add('marker'));
+
+      list = list.slice();
+      list[1] = new Color('B', 'violet');
+      getComponent().items.set(list);
+      detectChanges();
+      expect(getTextContent()).toBe('(A|red);(B|violet);(C|blue);');
+      expect(queryAll('span').map((el) => el.classList.contains('marker'))).toEqual([true, true, true]);
+    });
   });
 });

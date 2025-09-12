@@ -212,23 +212,11 @@ export function priorityNameToNumber(priorityName: PriorityName, debugFn: Functi
  * @see {@link PriorityName}
  * @see {@link PriorityLevel}
  */
-export function priorityInputTransform(value: PriorityInput): PriorityLevel;
-/**
- * @description
- * Transforms priority names to it's raw numeric value.
- * @param value Priority name ('highest', 'high', 'normal', 'low', 'lowest') or priority numeric level (1, 2, 3, 4, 5).
- * @param debugFn a reference to the function making the assertion (used for the error message).
- * @returns Priority numeric level.
- * @see {@link PriorityInput}
- * @see {@link PriorityName}
- * @see {@link PriorityLevel}
- */
-export function priorityInputTransform(value: PriorityInput, debugFn: Function): PriorityLevel;
-export function priorityInputTransform(value: PriorityInput, debugFn: Function = priorityInputTransform): PriorityLevel {
+export function priorityInputTransform(value: PriorityInput): PriorityLevel {
   if (typeof value === 'number') {
     return coercePriority(value);
   } else {
-    return priorityNameToNumber(value, debugFn);
+    return priorityNameToNumber(value, priorityInputTransform);
   }
 }
 
@@ -241,26 +229,22 @@ export function priorityInputTransform(value: PriorityInput, debugFn: Function =
  * @see {@link PriorityLevel}
  * @see {@link priorityInputTransform}
  */
-export function advancePriorityInputTransform(value: PriorityInput | Signal<PriorityInput>): PriorityLevel | Signal<PriorityLevel>;
-/**
- * @description
- * Transforms priority names to it's raw numeric values or transforms signal to computed signal with the same manner.
- * @param value Priority name ('highest', 'high', 'normal', 'low', 'lowest') or priority numeric level (1, 2, 3, 4, 5) or signal providing the same values.
- * @param debugFn a reference to the function making the assertion (used for the error message).
- * @see {@link PriorityInput}
- * @see {@link PriorityName}
- * @see {@link PriorityLevel}
- * @see {@link priorityInputTransform}
- */
-export function advancePriorityInputTransform(value: PriorityInput | Signal<PriorityInput>, debugFn: Function): PriorityLevel | Signal<PriorityLevel>;
-export function advancePriorityInputTransform(
-  value: PriorityInput | Signal<PriorityInput>,
-  debugFn: Function = advancePriorityInputTransform
-): PriorityLevel | Signal<PriorityLevel> {
+export function advancePriorityInputTransform(value: PriorityInput | Signal<PriorityInput>): PriorityLevel | Signal<PriorityLevel> {
   if (isSignal(value)) {
-    return computed(() => priorityInputTransform(value(), debugFn))
+    return computed(() => {
+      const v =  value();
+      if (typeof v === 'number') {
+      return coercePriority(v);
+    } else {
+      return priorityNameToNumber(v, advancePriorityInputTransform);
+  }
+    })
   } else {
-    return priorityInputTransform(value);
+    if (typeof value === 'number') {
+      return coercePriority(value);
+    } else {
+      return priorityNameToNumber(value, advancePriorityInputTransform);
+    }
   }
 }
 

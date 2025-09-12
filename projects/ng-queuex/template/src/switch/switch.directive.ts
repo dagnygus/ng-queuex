@@ -169,7 +169,6 @@ class ClientCaseView implements CaseView {
       this._switchView.shouldEmitRenderEvent()
     } else if(!create && this._viewRef) {
       this._vcRef.clear();
-      this._viewRef.detectChanges();
       this._viewRef = null;
       this._switchView.shouldEmitRenderEvent();
     }
@@ -391,7 +390,7 @@ export function provideQueuexSwitchDefaultPriority(priority: PriorityName): Valu
 /**
  * @Directive QueuexSwitch
  *
- * `QueuexSwitch` (`[qxSwitch]`) is the core structural directive of the switch family, designed as a drop-in replacement for Angular’s `NgSwitch`.
+ * `QueuexSwitch` (`[qxSwitch]`) is the core structural directive of the switch family, designed as a drop-in replacement for Angular’s `NgSwitch` **(restricted to immutable objects)**.
  * It enables conditional rendering of templates based on the value of an expression, in combination with `QueuexSwitchCase` (`*qxSwitchCase`)
  * and `QueuexSwitchDefault` (`*qxSwitchDefault`).
  *
@@ -608,8 +607,7 @@ export class QueuexSwitchCase implements OnChanges, DoCheck, AfterContentChecked
  * - Assigned its own **isolated reactive context**, so signals read directly in the
  *   template can trigger local, fine-grained change detection.
  *
- * Only one `QueuexSwitchDefault` block is allowed per `QueuexSwitch` container. If present, it guarantees that the switch will always render some content,
- * even when no explicit case matches.
+ * If present, it guarantees that the switch will always render some content when no explicit case matches.
  *
  * @example
  * ```html
