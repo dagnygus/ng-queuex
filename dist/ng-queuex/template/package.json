@@ -1,0 +1,54 @@
+{
+  "name": "@ng-queuex/template",
+  "version": "0.0.1",
+  "description": "**Build Upon Signals Api** Reactive Concurrent Component Template Rendering. This package provides high performance directive to manage template control flow.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": {
+    "name": "Dag Nygard",
+    "email": "dagnygus@gmail.com"
+  },
+  "keywords": [
+    "angular",
+    "reactive",
+    "concurrent",
+    "scheduler",
+    "concurrent scheduler",
+    "signal",
+    "signals",
+    "performance",
+    "rendering",
+    "change detection",
+    "local change detection",
+    "zoneless",
+    "zone aware",
+    "template",
+    "reactive template"
+  ],
+  "peerDependencies": {
+    "@angular/common": "^20.1.0",
+    "@angular/core": "^20.1.0",
+    "@ng-queuex/core": "0.0.1"
+  },
+  "peerDependenciesMeta": {
+    "@ng-queuex/core": {
+      "optional": false
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false,
+  "module": "fesm2022/ng-queuex-template.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./fesm2022/ng-queuex-template.mjs"
+    }
+  }
+}

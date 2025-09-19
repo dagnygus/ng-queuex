@@ -45,7 +45,7 @@ Other utilities in this package remain safe to use in both environments.
 ### [@ng-queuex/template](./projects/ng-queuex/template/README.md)
 Signal-driven structural directives powered by the core scheduler.
 
-⚠️ **Note**: All directives are build upon signal APIs, so its usage is **restricted to immutable objects**.  
+⚠️ **Note**: All directives are built upon signal APIs, so its usage is **restricted to immutable objects**.  
 
 - `*qxIf` – granular alternative to `NgIf`.  
 - `*qxFor` – concurrent alternative to `NgForOf`.  
