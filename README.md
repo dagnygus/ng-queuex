@@ -1,59 +1,92 @@
-# @ngQueuex
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.0.
+![alt text](./ng_queuex_logo.png)
+# ng-queuex
 
-## Development server
+**Queuex** is an experimental ecosystem for Angular that introduces a React-inspired **concurrent scheduler**  
+and a set of **signal-driven structural directives** for fine-grained, isolated change detection.  
 
-To start a local development server, run:
+Unlike traditional Angular patterns (services, RxJS-heavy abstractions), Queuex provides a **minimal API**:  
+just a scheduler exposed in simple functional API and directives built directly on top of Angular’s Signal API.
+
+---
+
+## ✨ Why Queuex?
+
+Angular's default change detection is global, synchronous, and tied to the logical tree.  
+Queuex takes a different approach:
+
+- 🔹 **Minimal & functional API** – no services, no RxJS boilerplate, just functions and signals.  
+- 🔹 **Concurrent scheduler** – inspired by React, with priority levels and abortable tasks.  
+- 🔹 **Fine-grained change detection** – run detection only where it’s needed.  
+- 🔹 **Hydration-aware** – application stabilization (`ApplicationRef#onStable`) waits until the scheduler is idle.  
+- 🔹 **Server-side transparent** – on the server, all directives gracefully fall back to Angular’s native behavior.  
+
+---
+
+## 📦 Packages
+
+### [@ng-queuex/core](./projects/ng-queuex/core/README.md)
+Core utilities and the concurrent scheduler.
+
+⚠️ **Note**: Scheduling functions are **client-side only**.  
+On the server they intentionally throw, ensuring that developers provide explicit server side fallbacks (as demonstrated in `@ng-queuex/template`).  
+Other utilities in this package remain safe to use in both environments.
+
+
+- `scheduleTask()` – enqueue clean, abortable tasks.  
+- `detectChanges()` / `scheduleChangeDetection()` – enqueue dirty tasks with built-in coalescing.  
+- Designed to be minimal and functional: no Angular DI services, no RxJS.  
+- Hydration-aware: delays `ApplicationRef#onStable` until the scheduler is idle. 
+
+➡️ [Read more](projects/ng-queuex/core)
+
+---
+
+### [@ng-queuex/template](./projects/ng-queuex/template/README.md)
+Signal-driven structural directives powered by the core scheduler.
+
+⚠️ **Note**: All directives are build upon signal APIs, so its usage is **restricted to immutable objects**.  
+
+- `*qxIf` – granular alternative to `NgIf`.  
+- `*qxFor` – concurrent alternative to `NgForOf`.  
+- `*watch` – elegant property binding to DOM.  
+- `*qxSwitch`, `*qxSwitchCase`, `*qxSwitchDefault`.  
+- `*lazyView`, `*scheduledView`, `*reactiveView` – lazy rendering with different levels of isolation and scheduling.  
+- All directives are **SSR-friendly** with transparent fallbacks, and compatible with **Hydration**.
+
+➡️ [Read more](./projects/ng-queuex/template)
+
+---
+
+## 🚀 Getting Started
+
+Install the core package:
 
 ```bash
-ng serve
+npm install git+https://github.com/dagnygus/ng-queuex.git#main:dist/ng-queuex/core
+npm install git+https://github.com/dagnygus/ng-queuex.git#main:dist/ng-queuex/template
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🛠 Example
 
-## Code scaffolding
+```ts
+import { scheduleTest, Priority } from "@ng-queuex/core"
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+const abort = scheduleTask(() => {
+  console.log('running with highest priority.')
+}, Priority.Highest)
 
-```bash
-ng generate component component-name
+// Later, if needed
+abort();
+```
+```html
+<span *watch [textContent]="personName()"></span>
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🗺 Roadmap
 
-```bash
-ng generate --help
-```
+- ✅ Core scheduler (done) 
+- ✅ Template directives (done)
+- 🔄 Package dedicated for angular signals
+- 🔄 Virtual scrolling and virtualization
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

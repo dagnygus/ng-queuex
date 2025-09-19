@@ -25,20 +25,8 @@ import {
   isInConcurrentTaskContext,
   scheduleCallback
 } from "../scheduler/scheduler";
-import { Integrator, USAGE_EXAMPLE_IN_UNIT_TESTS } from "../environment/environment";
+import { INTEGRATION_NOT_COMPLETED_MESSAGE, INTEGRATION_NOT_PROVIDED_MESSAGE, Integrator, SERVER_SIDE_MESSAGE, USAGE_EXAMPLE_IN_UNIT_TESTS } from "../environment/environment";
 import { NG_DEV_MODE } from "../utils";
-
-type _ViewRef = ChangeDetectorRef & { _lView?: object };
-
-const INTEGRATION_NOT_PROVIDED_MESSAGE =
-  '"@ng-queuex/core" integration was not provided to Angular! ' +
-  'Use provideNgQueuexIntegration() function to in bootstrapApplication() function ' +
-  'to add crucial environment providers for integration.';
-
-const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowed!'
-const INTEGRATION_NOT_COMPLETED_MESSAGE =
-  '"@ng-queuex/core" integration for tests is not competed. To make sure that integration is finalized ' +
-  'use \'completeIntegrationForTest()\' function inside TestBed injection context as the example below shows:\n\n' + USAGE_EXAMPLE_IN_UNIT_TESTS
 
 const coalescingScopes = new WeakMap<object, SchedulerTask>();
 
@@ -54,11 +42,9 @@ export interface AbortTaskFunction {
    */
   (): void;
 
-  /**
-   * @description
-   * Sets a callback what will run when task gets aborted. If there already is a callback, it will be overridden.
-   */
-  (abortCallback: VoidFunction | null): void;
+
+  addAbortListener(listener: VoidFunction): void;
+  removeAbortListener(listener: VoidFunction): void;
 }
 
 /**
@@ -101,12 +87,15 @@ export interface AbortTaskFunction {
  *  }
  * ```
  * Change detection scheduled with higher priority will abort this one with lower. Regardless of whatever the task gets aborted by you or by internal
- * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * coalescing mechanism, you can always set abort listener or even remove it.
  * ```ts
  *  const abortTask = detectChanges(this._cdRef);
  *
- *  abortTask(() => {...}) // abort callback is now set;
- *  abortTask(() => {...}) // abort callback is overridden by new one;
+ *  const abortListener () => { console.log('onAbort'); }
+ *  abortTask.addAbortListener(abortListener);
+ *
+ *  //later
+ *  abortTask.removeAbortListener(abortListener);
  * ```
  *
  * @param cdRef A component `ChangeDetectorRef` or `ViewRef` of the embedded view.
@@ -164,12 +153,15 @@ export function detectChanges(cdRef: ChangeDetectorRef): AbortTaskFunction | nul
  *  }
  * ```
  * Change detection scheduled with higher priority will abort this one with lower. Regardless of whatever the task gets aborted by you or by internal
- * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * coalescing mechanism, you can always set abort listener or even remove it.
  * ```ts
  *  const abortTask = detectChanges(this._cdRef);
  *
- *  abortTask(() => {...}) // abort callback is now set;
- *  abortTask(() => {...}) // abort callback is overridden by new one;
+ *  const abortListener () => { console.log('onAbort'); }
+ *  abortTask.addAbortListener(abortListener);
+ *
+ *  //later
+ *  abortTask.removeAbortListener(abortListener);
  * ```
  *
  * @param cdRef A component `ChangeDetectorRef` or `ViewRef` of the embedded view.
@@ -244,21 +236,38 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel 
     coalescingScopes.delete(cdRef)
   })
 
-  function abortTask(cb?: VoidFunction | null): void {
+
+  const abortTask = function() {
     if (task) {
-      if (typeof cb === 'function') {
-        task.onAbort = cb;
-      } else if (cb === null) {
-        task.onAbort = noopFn;
-      } else {
-        task.callback = null;
-        task.status = TaskStatus.Aborted;
-        const onAbort = task.onAbort;
-        task = null;
-        onAbort();
-        coalescingScopes.delete(cdRef);
+      task.callback = null;
+      task.status = TaskStatus.Aborted;
+      const abortListeners = task.abortListeners;
+      task = null;
+      coalescingScopes.delete(cdRef)
+      if (abortListeners) {
+        while(abortListeners.length) {
+          abortListeners.shift()!();
+        }
       }
 
+    }
+  } as unknown as AbortTaskFunction;
+
+  abortTask.addAbortListener = function(listener) {
+    if (task) {
+      if (!task.abortListeners) {
+        task.abortListeners = []
+      }
+      task.abortListeners.push(listener);
+    }
+  }
+
+  abortTask.removeAbortListener = function(listener) {
+    if (task && task.abortListeners) {
+      const index = task.abortListeners.indexOf(listener);
+      if (index > -1) {
+        task.abortListeners.splice(index, 1);
+      }
     }
   }
 
@@ -329,12 +338,15 @@ export function detectChanges(cdRef: ChangeDetectorRef, priority: PriorityLevel 
  * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
  * mechanism can abort dirty tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
  * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
- * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * coalescing mechanism, you can always set abort listener or even remove it.
  * ```ts
  *  const abortTask = detectChanges(this._cdRef);
  *
- *  abortTask(() => {...}) // abort callback is now set;
- *  abortTask(() => {...}) // abort callback is overridden by new one;
+ *  const abortListener () => { console.log('onAbort'); }
+ *  abortTask.addAbortListener(abortListener);
+ *
+ *  //later
+ *  abortTask.removeAbortListener(abortListener);
  * ```
  *
  * @param callback Concurrent task callback.
@@ -416,12 +428,15 @@ export function scheduleChangeDetection(callback: VoidFunction): AbortTaskFuncti
  * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
  * mechanism can abort tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
  * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
- * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * coalescing mechanism, you can always set abort listener or even remove it.
  * ```ts
- *  const abortTask = scheduleChangeDetection(...);
+ *  const abortTask = detectChanges(this._cdRef);
  *
- *  abortTask(() => {...}) // abort callback is now set;
- *  abortTask(() => {...}) // abort callback is overridden by new one;
+ *  const abortListener () => { console.log('onAbort'); }
+ *  abortTask.addAbortListener(abortListener);
+ *
+ *  //later
+ *  abortTask.removeAbortListener(abortListener);
  * ```
  *
  * @param callback Concurrent task callback.
@@ -504,12 +519,15 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
  * mechanism can abort tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
  * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
- * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * coalescing mechanism, you can always set abort listener or even remove it.
  * ```ts
- *  const abortTask = scheduleChangeDetection(...);
+ *  const abortTask = detectChanges(this._cdRef);
  *
- *  abortTask(() => {...}) // abort callback is now set;
- *  abortTask(() => {...}) // abort callback is overridden by new one;
+ *  const abortListener () => { console.log('onAbort'); }
+ *  abortTask.addAbortListener(abortListener);
+ *
+ *  //later
+ *  abortTask.removeAbortListener(abortListener);
  * ```
  *
  * @param callback Concurrent task callback.
@@ -592,17 +610,20 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
  * mechanism can abort tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
  * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
- * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * coalescing mechanism, you can always set abort listener or even remove it.
  * ```ts
- *  const abortTask = scheduleChangeDetection(...);
+ *  const abortTask = detectChanges(this._cdRef);
  *
- *  abortTask(() => {...}) // abort callback is now set;
- *  abortTask(() => {...}) // abort callback is overridden by new one;
+ *  const abortListener () => { console.log('onAbort'); }
+ *  abortTask.addAbortListener(abortListener);
+ *
+ *  //later
+ *  abortTask.removeAbortListener(abortListener);
  * ```
  *
  * @param callback Concurrent task callback.
  * @param priority Task priority.
- * @param cdRef A object of type `ChangeDetectorRef` what will be potentially consumed in callbacks body or null.
+ * @param cdRef An object of type `ChangeDetectorRef` what will be potentially consumed in callbacks body or null.
  * @returns Abort task function if task was successfully scheduled. Null if change detection was coalesced.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
@@ -682,17 +703,20 @@ export function scheduleChangeDetection(callback: VoidFunction, priority: Priori
  * There is nothing to prevent you to use multiple `ChangeDetectionRef` objects in callbacks body, but remember that internal coalescing
  * mechanism can abort tasks for you. See description of `detectChanges()` function. If you want do add teardown logic to task abortion
  * see the description of `AbortTaskFunction` interface. Regardless of whatever the task gets aborted by you or by internal
- * coalescing mechanism, you can always set abort callback what will be call when task gets aborted.
+ * coalescing mechanism, you can always set abort listener or even remove it.
  * ```ts
- *  const abortTask = scheduleChangeDetection(...);
+ *  const abortTask = detectChanges(this._cdRef);
  *
- *  abortTask(() => {...}) // abort callback is now set;
- *  abortTask(() => {...}) // abort callback is overridden by new one;
+ *  const abortListener () => { console.log('onAbort'); }
+ *  abortTask.addAbortListener(abortListener);
+ *
+ *  //later
+ *  abortTask.removeAbortListener(abortListener);
  * ```
  *
  * @param callback Concurrent task callback.
  * @param priority Task priority.
- * @param cdRef A object of type `ChangeDetectorRef` what will be potentially consumed in callbacks body or null.
+ * @param cdRef An object of type `ChangeDetectorRef` what will be potentially consumed in callbacks body or null.
  * @returns Abort task function if task was successfully scheduled. Null if change detection was coalesced.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.
@@ -765,7 +789,6 @@ export function scheduleChangeDetection(
   }
 
   task.beforeExecute = function() {
-    task!.onAbort = noopFn;
     task = null;
   }
 
@@ -777,26 +800,38 @@ export function scheduleChangeDetection(
     }
   });
 
-
-
-  function abortTask(cb?: VoidFunction | null) {
+  const abortTask = function() {
     if (task) {
-      if (typeof cb === 'function') {
-        task.onAbort = cb;
-      } else if (cb === null) {
-        task.onAbort = noopFn;
-      } else {
-        task.callback = null;
-        task.status = TaskStatus.Aborted;
-        // task.scopeToHandle = null; // When scheduler will have implement caching, then we can uncomment that line.
-        const onAbort = task.onAbort;
-        task = null;
-        onAbort();
-        if (cdRef) {
-          coalescingScopes.delete(cdRef);
+      task.callback = null;
+      task.status = TaskStatus.Aborted;
+      const abortListeners = task.abortListeners;
+      task = null;
+      if (cdRef) {
+        coalescingScopes.delete(cdRef);
+      }
+      if (abortListeners) {
+        while(abortListeners.length) {
+          abortListeners.shift()!();
         }
       }
+    }
+  } as unknown as AbortTaskFunction;
 
+  abortTask.addAbortListener = function(listener) {
+    if (task) {
+      if (!task.abortListeners) {
+        task.abortListeners = []
+      }
+      task.abortListeners.push(listener);
+    }
+  }
+
+  abortTask.removeAbortListener = function(listener) {
+    if (task && task.abortListeners) {
+      const index = task.abortListeners.indexOf(listener);
+      if (index > -1) {
+        task.abortListeners.splice(index, 1);
+      }
     }
   }
 
@@ -864,21 +899,39 @@ export function scheduleTask(callback: VoidFunction, priority: Priority = 3 /* P
 
   task.beforeExecute = function() { task = null; }
 
-  return function(cb?: VoidFunction | null) {
+  const abortTask = function() {
     if (task) {
-      if (typeof cb === 'function') {
-        task.onAbort = cb;
-      } else if (cb === null) {
-        task.onAbort = noopFn;
-      } else {
-        task.callback = null;
-        task.status = TaskStatus.Aborted;
-        const onAbort = task.onAbort;
-        task = null;
-        onAbort();
+      task.callback = null;
+      task.status = TaskStatus.Aborted;
+      const abortListeners = task.abortListeners;
+      task = null;
+      if (abortListeners) {
+        while(abortListeners.length) {
+          abortListeners.shift()!();
+        }
       }
     }
-  };
+  } as unknown as AbortTaskFunction;
+
+  abortTask.addAbortListener = function(listener) {
+    if (task) {
+      if (!task.abortListeners) {
+        task.abortListeners = []
+      }
+      task.abortListeners.push(listener);
+    }
+  }
+
+  abortTask.removeAbortListener = function(listener) {
+    if (task && task.abortListeners) {
+      const index = task.abortListeners.indexOf(listener);
+      if (index > -1) {
+        task.abortListeners.splice(index, 1);
+      }
+    }
+  }
+
+  return abortTask
 }
 
 /**
@@ -886,7 +939,7 @@ export function scheduleTask(callback: VoidFunction, priority: Priority = 3 /* P
  * Tries to invoke `cdRef.detectChanges()` method synchronously, unless internal coalescing system will prevent this action.
  * To learn more, see descriptions of `scheduleChangeDetection()` and `detectChanges()` functions.
  *
- * @param cdRef a component `ChangeDetectorRef` or `ViewRef` of embedded view.
+ * @param cdRef A component `ChangeDetectorRef` or `ViewRef` of embedded view.
  * @returns true if succeeded, other wise it was coalesced with concurrent task.
  * @throws `Error` if integration was not provided.
  * @throws `Error` if is server environment.

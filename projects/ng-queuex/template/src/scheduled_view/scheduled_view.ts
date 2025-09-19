@@ -78,7 +78,7 @@ export class QueuexScheduledView implements DoCheck, OnDestroy {
   private _isServer = isPlatformServer(inject(PLATFORM_ID));
 
   /**
-   * A priority for concurrent scheduler to manage local change detection. It can be set as numeric value (1-5) or as
+   * A priority for concurrent scheduler to create view and manage local change detection. It can be set as numeric value (1-5) or as
    * string literal with valid options: `'highest' | 'high' | 'normal' | 'low' | 'lowest'`. Default is normal (3).
    *
    * This input also accepts the signal of the previously mentioned values.

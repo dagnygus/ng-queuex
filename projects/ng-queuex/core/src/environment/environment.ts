@@ -39,7 +39,17 @@ export const USAGE_EXAMPLE_IN_UNIT_TESTS =
   '});\n' +
   'afterEach(() => {\n' +
   ' TestBed.resetTestingModule(); //Dispose integration between tests\n' +
-  '});'
+  '});';
+
+export const INTEGRATION_NOT_PROVIDED_MESSAGE =
+  '"@ng-queuex/core" integration was not provided to Angular! ' +
+  'Use provideNgQueuexIntegration() function to in bootstrapApplication() function ' +
+  'to add crucial environment providers for integration.';
+
+export const SERVER_SIDE_MESSAGE = 'Scheduling concurrent tasks on server is not allowed!'
+export const INTEGRATION_NOT_COMPLETED_MESSAGE =
+  '"@ng-queuex/core" integration for tests is not competed. To make sure that integration is finalized ' +
+  'use \'completeIntegrationForTest()\' function inside TestBed injection context as the example below shows:\n\n' + USAGE_EXAMPLE_IN_UNIT_TESTS
 
 const COMMON_MESSAGE =
 '"@ng-queuex/core" is design for projects with standalone angular application where there ' +
@@ -245,7 +255,13 @@ export function completeIntegrationForTest(): void {
  * @see {@link provideNgQueuexIntegration}
  */
 export function assertNgQueuexIntegrated(message?: string): void {
-  if (Integrator.instance) { return; }
-  message = message ?? 'assertNgQueuexIntegrationProvided(): assertion failed';
+  if (Integrator.instance) {
+    if (Integrator.instance.uncompleted) {
+      message = message ?? 'assertNgQueuexIntegrationProvided(): assertion failed! Integration not completed.';
+      throw new Error(message);
+    }
+    return;
+  }
+  message = message ?? 'assertNgQueuexIntegrationProvided(): assertion failed! Integration not provided.';
   throw new Error(message);
 }

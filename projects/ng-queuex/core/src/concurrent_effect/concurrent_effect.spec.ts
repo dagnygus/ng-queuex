@@ -1,9 +1,9 @@
 import { SIGNAL, Watch } from "@angular/core/primitives/signals";
 import { noopFn, PriorityLevel } from "../scheduler/scheduler_utils";
 import { concurrentEffect } from "./concurrent_effect";
-import { DestroyRef, EffectRef, Injector, runInInjectionContext, signal } from "@angular/core";
+import { DestroyRef, EffectRef, Injector, PLATFORM_ID, runInInjectionContext, signal } from "@angular/core";
 import { fakeAsync, flush, TestBed } from "@angular/core/testing";
-import { completeIntegrationForTest, provideNgQueuexIntegration } from "../environment/environment";
+import { completeIntegrationForTest, INTEGRATION_NOT_COMPLETED_MESSAGE, INTEGRATION_NOT_PROVIDED_MESSAGE, provideNgQueuexIntegration, SERVER_SIDE_MESSAGE } from "../environment/environment";
 import { whenIdle } from "../core";
 
 function expectWatcherDestroyed(effectRef: any) {
@@ -131,6 +131,30 @@ describe('Testing concurrentEffect() function.', () => {
 
     watcher.destroy();
   }));
+
+  it('Should throw error if ng-queuex integration is not provided', () => {
+    TestBed.resetTestingModule();
+    expect(() => concurrentEffect(() => {}, { manualCleanup: true }))
+      .toThrowError('concurrentEffect(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+  });
+
+  it('Should throw error if is used on server', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [provideNgQueuexIntegration(), { provide: PLATFORM_ID, useValue: 'server' }]
+    }).runInInjectionContext(() => completeIntegrationForTest());
+    expect(() => concurrentEffect(() => {}, { manualCleanup: true }))
+      .toThrowError('concurrentEffect(): ' + SERVER_SIDE_MESSAGE);
+  });
+
+  it('Should throw error if integration is not completed.', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [provideNgQueuexIntegration()]
+    }).runInInjectionContext(() => {});
+    expect(() => concurrentEffect(() => {}, { manualCleanup: true }))
+      .toThrowError('concurrentEffect(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE);
+  })
 
   it('Should schedule and run effect if signal changed.', async () => {
     const log: string[] = [];

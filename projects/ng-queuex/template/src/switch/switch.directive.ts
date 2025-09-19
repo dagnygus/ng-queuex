@@ -433,7 +433,7 @@ export function provideQueuexSwitchDefaultPriority(priority: PriorityName): Valu
  * ### Outputs
  * ```ts
  * //Emits event when at least one of templates gets created or destroyed.
- * render: OutputEmitterRef<any>;
+ * readonly render: OutputEmitterRef<any>;
  * ```
  *
  */
@@ -476,7 +476,7 @@ export class QueuexSwitch implements OnChanges, OnInit, AfterContentChecked, OnD
    *
    * The `render` emits the latest value causing the view to update.
    */
-  render = output<any>();
+  readonly render = output<any>();
 
   constructor() {
     assertNgQueuexIntegrated('[qxSwitch]: Assertion failed! "@ng-queuex/core" integration not provided.');

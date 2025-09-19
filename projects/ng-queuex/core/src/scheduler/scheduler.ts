@@ -262,7 +262,7 @@ export function scheduleCallback(
     isClean: true,
     onExecutedListeners: null,
     internalOnExecutedListeners: null,
-    onAbort: noopFn,
+    abortListeners: null,
     // cleanup: taskCleanup <-- Maybe if there will be implemented caching, then there is good reason to cleanup after task was executed, setting scopeToHandle to null;
   };
 
@@ -294,7 +294,7 @@ export function scheduleCallback(
  *
  * @param attempts - The number of times to check for queue emptiness. Minimum is 5.
  * @returns A Promise that resolves when the system appears to be idle.
- * @throws Error if supported test runner was not detected (jasmine/jest).
+ * @throws `Error` if supported test runner was not detected (jasmine/jest).
  *
  * @example
  * ```ts

@@ -16,7 +16,7 @@ export interface SchedulerTask {
   isClean: boolean;
   onExecutedListeners: VoidFunction[] | null;
   internalOnExecutedListeners: VoidFunction[] | null;
-  onAbort: VoidFunction;
+  abortListeners: VoidFunction[] | null;
   // cleanup: VoidFunction;
 }
 
@@ -176,14 +176,16 @@ export function coercePriority(priority: number): Priority {
  * Converts Priority name to corresponding numeric value ('highest' => 1, 'high' => 2, 'normal' => 3, 'low' => 4, 'lowest' => 5).
  * @param priorityName A name of priority ('highest', 'high', 'normal', 'low', 'lowest').
  * @returns Numeric value of priority (1, 2, 3, 4, 5).
+ * @throws Error in invalid priority name is provided.
  */
 export function priorityNameToNumber(priorityName: PriorityName): PriorityLevel;
 /**
  * @description
  * Converts Priority name to corresponding numeric value ('highest' => 1, 'high' => 2, 'normal' => 3, 'low' => 4, 'lowest' => 5).
  * @param priorityName A name of priority ('highest', 'high', 'normal', 'low', 'lowest').
- * @param debugFn a reference to the function making the assertion (used for the error message).
+ * @param debugFn A reference to the function making the assertion (used for the error message).
  * @returns Numeric value of priority (1, 2, 3, 4, 5).
+ * @throws Error in invalid priority name is provided.
  */
 export function priorityNameToNumber(priorityName: PriorityName, debugFn: Function): PriorityLevel;
 export function priorityNameToNumber(priorityName: PriorityName, debugFn: Function = priorityNameToNumber): PriorityLevel {

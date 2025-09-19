@@ -1,4 +1,5 @@
 export * from "./instructions/instructions";
+export type * from "./instructions/instructions";
 export {
   assertInConcurrentTaskContext,
   assertInConcurrentCleanTaskContext,

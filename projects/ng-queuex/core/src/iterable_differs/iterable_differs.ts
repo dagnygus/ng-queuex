@@ -27,10 +27,10 @@ export interface QueuexIterableChanges<T> {
 
   /**
    * Provide changes to handler by iterating through all records (`IterableChangeRecord`).
-   * @param handler An object whats handle changes.
+   * @param handler An object that handles changes.
    * @see {@link IterableChangeRecord}
    */
-  applyOperations(handler: QueuexIterableChangeOperationHandler<T>): void
+  applyOperations(handler: QueuexIterableChangeOperationHandler<T>): void;
 
   /**
    * A current state collection length, reflecting items count.
@@ -69,7 +69,7 @@ export interface QueuexIterableChangeOperationHandler<T> {
    *  1) 'b' is removed,
    *  2) 'c' moved from index 2 to 1.
    * During change providing , when on target array you remove second element, third one will already change position,
-   * so there is no need to made that change. However if target state relies current item position, this hook can provide that handling.
+   * so there is no need to made that change. However if target state relies on current item position, this hook can provide that handling.
    * @param record Unchanged record.
    * @param changed True if identity has changed, otherwise false.
    */
@@ -87,6 +87,9 @@ export interface QueuexIterableDifferFactory {
   create<T>(trackByFn: TrackByFunction<T>): QueuexIterableDiffer<T>
 }
 
+/**
+ * A repository of different iterable diffing strategies.
+ */
 @Injectable({ providedIn: 'root', useFactory: () => new QueuexIterableDiffers([new DefaultQueuexIterableDifferFactory]) })
 export class QueuexIterableDiffers {
 
@@ -104,7 +107,7 @@ export class QueuexIterableDiffers {
   /**
    * Takes an array of {@link QueuexIterableDifferFactory} and returns a provider used to extend the
    * inherited {@link QueuexIterableDiffers} instance with the provided factories and return a new
-   * {@link IterableDiffers} instance.
+   * {@link QueuexIterableDiffers} instance.
    *
    * @usageNotes
    * ### Example

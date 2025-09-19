@@ -53,6 +53,10 @@ export function provideQueuexLazyViewDefaultPriority(priority: PriorityName): Va
  * </section>
  * ```
  *
+ * ### Server side fallback
+ *
+ * On server this directive is simply transparent.
+ *
  * ### Inputs
  *
  * ```ts

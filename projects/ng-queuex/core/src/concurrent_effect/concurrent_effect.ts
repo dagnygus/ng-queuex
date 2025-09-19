@@ -3,6 +3,7 @@ import { assertInInjectionContext, assertNotInReactiveContext, DestroyRef, Effec
 import { createWatch, Watch } from "@angular/core/primitives/signals";
 import { scheduleTask } from "../instructions/instructions";
 import { NG_DEV_MODE } from '../utils';
+import { INTEGRATION_NOT_COMPLETED_MESSAGE, INTEGRATION_NOT_PROVIDED_MESSAGE, Integrator, SERVER_SIDE_MESSAGE } from '../environment/environment';
 
 /**
  * Options to configure a concurrent effect created via `concurrentEffect()`.
@@ -75,11 +76,7 @@ class EffectRefImpl implements EffectRef {
  * Creates a concurrent effect — a reactive computation scheduled and coordinated
  * by the concurrent scheduler from `ng-queuex/core`.
  *
- * Unlike Angular’s built-in `effect()`, this variant introduces:
- * - **Priority-based scheduling** (`highest` → `lowest`),
- * - **Optional manual cleanup**, giving full control over lifecycle,
- * - **Integration with Angular's `DestroyRef`**, for automatic disposal,
- * - **Signal write allowance**, if explicitly enabled.
+ * Unlike Angular’s built-in `effect()`, this variant introduces: **Priority-based scheduling** (`highest` → `lowest`),
  *
  * The effect body is executed through a `Watch` that is detached from Angular’s
  * change detection cycles. Its execution is triggered by the scheduler at the
@@ -99,8 +96,13 @@ class EffectRefImpl implements EffectRef {
  * - `allowSignalWrites`: Enables writes to signals inside the effect.
  *   Defaults to `false`.
  *
- * @returns {EffectRef} A reference handle that allows manual destruction
+ * @returns {@link EffectRef} A reference handle that allows manual destruction
  * of the effect via `effectRef.destroy()`.
+ *
+ * @throws If is used in reactive context.
+ * @throws `Error` if integration was not provided.
+ * @throws `Error` if is server environment.
+ * @throws `Error` if integration for unit test is not completed.
  *
  * @example
  * ```ts
@@ -114,7 +116,18 @@ class EffectRefImpl implements EffectRef {
  * ```
  */
 export function concurrentEffect(effectFn: (onCleanup: EffectCleanupRegisterFn) => void, options?: ConcurrentEffectOptions): EffectRef {
-  NG_DEV_MODE && assertNotInReactiveContext(concurrentEffect);
+  if (NG_DEV_MODE) {
+    assertNotInReactiveContext(concurrentEffect);
+    if (Integrator.instance === null) {
+      throw new Error('concurrentEffect(): ' + INTEGRATION_NOT_PROVIDED_MESSAGE);
+    }
+    if (Integrator.instance.isServer) {
+      throw new Error('concurrentEffect(): ' + SERVER_SIDE_MESSAGE);
+    }
+    if (Integrator.instance.uncompleted) {
+      throw new Error('concurrentEffect(): ' + INTEGRATION_NOT_COMPLETED_MESSAGE)
+    }
+  }
 
   const priorityLevel = priorityNameToNumber(options?.priority ?? 'normal');
   const manualCleanup = options?.manualCleanup ?? false;
