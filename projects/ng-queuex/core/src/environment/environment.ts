@@ -19,9 +19,8 @@ import {
   provideEnvironmentInitializer,
   reflectComponentType,
 } from "@angular/core";
-import { isTaskQueueEmpty, setOnIdle } from "../scheduler/scheduler";
+import { internalIsTaskQueueEmpty, setOnIdle } from "../scheduler/scheduler";
 import { TestBed } from "@angular/core/testing";
-import { ɵglobal } from "@angular/core";
 
 declare const ngDevMode: boolean | undefined;
 declare const jest: any;
@@ -129,7 +128,7 @@ export class Integrator implements OnDestroy {
       }
     }
 
-    if (++this.bootstrapCount >= this.appRef.components.length && isTaskQueueEmpty()) {
+    if (++this.bootstrapCount >= this.appRef.components.length && internalIsTaskQueueEmpty()) {
         // During bootstrap there was not scheduled any concurrent task.
         // That means that internal onIdle hook will not be invoke, so we need to cleanup
         // angular pending task manually. That will stabilize application and do rest of the cleanup.

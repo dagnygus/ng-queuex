@@ -429,6 +429,10 @@ export function isTaskQueueEmpty(): boolean {
   return taskQueue.length === 0;
 }
 
+export function internalIsTaskQueueEmpty(): boolean {
+  return taskQueue.length === 0;
+}
+
 export function getQueueLength(): number {
   return taskQueue.length;
 }
