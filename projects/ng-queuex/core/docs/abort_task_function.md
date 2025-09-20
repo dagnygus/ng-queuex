@@ -2,7 +2,8 @@
 ```ts
 interface AbortTaskFunction {
   (): void
-  (abortCallback: VoidFunction | null): void
+  addAbortListener(listener: VoidFunction): void;
+  removeAbortListener(listener: VoidFunction): void;
 }
 ```
 ### Description

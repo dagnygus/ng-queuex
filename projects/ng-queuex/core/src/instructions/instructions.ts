@@ -41,8 +41,6 @@ export interface AbortTaskFunction {
    * Aborting task call.
    */
   (): void;
-
-
   addAbortListener(listener: VoidFunction): void;
   removeAbortListener(listener: VoidFunction): void;
 }

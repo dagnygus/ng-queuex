@@ -6,7 +6,17 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "jest"
+    "test": "jest",
+    "build:core": "ng build @ng-queuex/core",
+    "build:template": "ng build @ng-queuex/template",
+    "build:all": "npm run build:core && npm run build:template",
+
+    "pack:core": "cd dist/ng-queuex/core && npm pack && copy *.tgz ..\\..\\.. && del *.tgz",
+    "pack:template": "cd dist/ng-queuex/template && npm pack && copy *.tgz ..\\..\\.. && del *.tgz",
+
+    "pack:all": "npm run pack:core && npm run pack:template",
+
+    "release": "npm run build:all && npm run pack:all"
   },
   "prettier": {
     "overrides": [

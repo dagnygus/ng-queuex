@@ -397,7 +397,7 @@ class ServerQueuexForOfView {
  * ```ts
  * // A collection of data for display.
  * *@Input({ required: true })
- *  set qxForOf(data: QueuexForOfInput<T, U> )
+ *  set qxForOf(data: QueuexForOfInput<T, U> | Signal<QueuexForOfInput<T, U>> )
  *
  * //A priority for concurrent scheduler to manage views.
  * *@Input({ transform: advancePriorityInputTransform })
@@ -410,7 +410,7 @@ class ServerQueuexForOfView {
  *
  * //A hook what will be used in browser where at least one view gets created, destroyed or moved
  * *@Input()
- * qxForRenderCallback: ((data: QueuexForOfInput<T, U>) => void) | null;
+ * qxForOfRenderCallback: ((data: QueuexForOfInput<T, U>) => void) | null;
  * ```
  *
  * ### Context variables
@@ -497,9 +497,9 @@ class QueuexForOf {
     }
     /**
      * A callback what will be called when at least one of the template gets created, removed or moved. This enables developers to perform actions when rendering has been done.
-     * The `qxForRenderCallback` is useful in situations where you rely on specific DOM properties like the dimensions of an item after it got rendered.
+     * The `qxForOfRenderCallback` is useful in situations where you rely on specific DOM properties like the dimensions of an item after it got rendered.
      *
-     * The `qxForRenderCallback` emits the latest value causing the view to update.
+     * The `qxForOfRenderCallback` emits the latest value causing the view to update.
      */
     qxForRenderCallback = null;
     constructor() {
@@ -1159,6 +1159,10 @@ function provideQueuexLazyViewDefaultPriority(priority) {
  * </section>
  * ```
  *
+ * ### Server side fallback
+ *
+ * On server this directive is simply transparent.
+ *
  * ### Inputs
  *
  * ```ts
@@ -1712,7 +1716,7 @@ function provideQueuexSwitchDefaultPriority(priority) {
  * ### Outputs
  * ```ts
  * //Emits event when at least one of templates gets created or destroyed.
- * render: OutputEmitterRef<any>;
+ * readonly render: OutputEmitterRef<any>;
  * ```
  *
  */

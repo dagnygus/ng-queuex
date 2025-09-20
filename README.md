@@ -38,7 +38,7 @@ Other utilities in this package remain safe to use in both environments.
 - Designed to be minimal and functional: no Angular DI services, no RxJS.  
 - Hydration-aware: delays `ApplicationRef#onStable` until the scheduler is idle. 
 
-➡️ [Read more](projects/ng-queuex/core)
+➡️ [Read more](./projects/ng-queuex/core/README.md)
 
 ---
 
@@ -54,7 +54,7 @@ Signal-driven structural directives powered by the core scheduler.
 - `*lazyView`, `*scheduledView`, `*reactiveView` – lazy rendering with different levels of isolation and scheduling.  
 - All directives are **SSR-friendly** with transparent fallbacks, and compatible with **Hydration**.
 
-➡️ [Read more](./projects/ng-queuex/template)
+➡️ [Read more](./projects/ng-queuex/template/README.md)
 
 ---
 
@@ -63,8 +63,8 @@ Signal-driven structural directives powered by the core scheduler.
 Install the core package:
 
 ```bash
-npm install git+https://github.com/dagnygus/ng-queuex.git#main:dist/ng-queuex/core
-npm install git+https://github.com/dagnygus/ng-queuex.git#main:dist/ng-queuex/template
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.1/ng-queuex-core-0.0.1.tgz
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.1/ng-queuex-template-0.0.1.tgz
 ```
 
 ## 🛠 Example
@@ -82,6 +82,11 @@ abort();
 ```html
 <span *watch [textContent]="personName()"></span>
 ```
+
+## 📖 Public API
+
+[@ng-queuex/core](./projects/ng-queuex/core/README.md)
+[@ng-queuex/template](./projects/ng-queuex/template/README.md)
 
 ## 🗺 Roadmap
 
