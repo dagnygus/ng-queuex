@@ -85,7 +85,7 @@ abort();
 
 ## 📖 Public API
 
-[@ng-queuex/core](./projects/ng-queuex/core/README.md)
+[@ng-queuex/core](./projects/ng-queuex/core/README.md)<br>
 [@ng-queuex/template](./projects/ng-queuex/template/README.md)
 
 ## 🗺 Roadmap
