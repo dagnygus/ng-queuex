@@ -3,7 +3,7 @@
 function value<T>(initialValue: T | Signal<T>): ValueRef<T>;
 function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef): ValueRef<T>;
 function value<T>(initialValue: T | Signal<T>, debugName: string | undefined): ValueRef<T>;
-function value<T>(initialValue: T | Signal<T>, debugName: string | undefined): ValueRef<T>;
+function value<T>(initialValue: T | Signal<T>, destroyRef: DestroyRef, debugName: string | undefined): ValueRef<T>;
 ```
 
 ### Description
