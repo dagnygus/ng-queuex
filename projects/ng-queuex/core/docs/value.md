@@ -27,4 +27,4 @@ it rebinds the `ValueRef` to a new value or to another signal.
   - destroyRef (optional) - The object that implements `DestroyRef` abstract class.
   - debugName - Optional developer-friendly label for debugging purposes.
 **Throws:** Error if is used in reactive context and if is not in reactive context when destroyRef is not provided.<br>
-**Returns:** A [ValueRef](./value_ref) object.
+**Returns:** A [ValueRef](./value_ref.md) object.
