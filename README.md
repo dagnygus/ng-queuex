@@ -1,5 +1,8 @@
 
-![alt text](./ng_queuex_logo.png)
+⚠️ Heads up: currently working on a critical bug that prevents bootstrap in some setups.  
+Please hold on for the next patch release 🙏
+
+<!-- ![alt text](./ng_queuex_logo.png)
 # ng-queuex
 
 **Queuex** is an experimental ecosystem for Angular that introduces a React-inspired **concurrent scheduler**  
@@ -96,4 +99,4 @@ abort();
 - ✅ Template directives (done)
 - 🔄 Package dedicated for angular signals
 - 🔄 Virtual scrolling and virtualization
-
+ -->

@@ -541,6 +541,9 @@ function isTaskQueueEmpty() {
     }
     return taskQueue.length === 0;
 }
+function internalIsTaskQueueEmpty() {
+    return taskQueue.length === 0;
+}
 function getQueueLength() {
     return taskQueue.length;
 }
@@ -774,7 +777,7 @@ class Integrator {
                     'Use a standalone component instead.' + COMMON_MESSAGE);
             }
         }
-        if (++this.bootstrapCount >= this.appRef.components.length && isTaskQueueEmpty()) {
+        if (++this.bootstrapCount >= this.appRef.components.length && internalIsTaskQueueEmpty()) {
             // During bootstrap there was not scheduled any concurrent task.
             // That means that internal onIdle hook will not be invoke, so we need to cleanup
             // angular pending task manually. That will stabilize application and do rest of the cleanup.

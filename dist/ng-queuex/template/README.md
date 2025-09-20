@@ -13,11 +13,11 @@ It provides a set of SSR-friendly, highly-performant primitives designed for fin
 
 ## 📦 Installation
 ```bash
-npm install git+https://github.com/dagnygus/ng-queuex.git#main:dist/ng-queuex/template
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.1/ng-queuex-template-0.0.1.tgz
 ```
 This package depends on `@ng-queuex/core`, so make sure you have it installed as well:
 ```bash
-npm install git+https://github.com/dagnygus/ng-queuex.git#main:dist/ng-queuex/core
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.1/ng-queuex-core-0.0.1.tgz
 ```
 
 ## 🚀 Getting Started
