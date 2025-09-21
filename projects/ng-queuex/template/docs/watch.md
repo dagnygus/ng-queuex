@@ -1,6 +1,6 @@
 # QueuexWatch class
 
-## Selector: `'[ng-template[watch]]'`
+## Selector: `'ng-template[watch]'`
 
 ## Description
 
