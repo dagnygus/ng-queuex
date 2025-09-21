@@ -131,7 +131,7 @@ Each directive comes with its own README inside the package:
   - [*qxSwitchDefault](./docs/switch_default.md)
   - [*lazyView](./docs/lazy_view.md)
   - [*scheduledView](./docs/scheduled_view.md)
-  - [*reactiveView](./docs/reactiveView.md)
+  - [*reactiveView](./docs/reactive_view.md)
 
 ## 🧪 Testing
 Every directive in that package relies deeply on concurrent scheduler from `@ng-queuex/core`.
