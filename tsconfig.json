@@ -49,6 +49,12 @@
     },
     {
       "path": "./projects/ng-queuex/template/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/sample-app/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/sample-app/tsconfig.spec.json"
     }
   ],
 }

@@ -99,6 +99,11 @@ export class Integrator implements OnDestroy {
   }
 
   public integrateWithAngular(): void {
+    if (this.isServer) {
+      this.uncompleted = false;
+      return
+    }
+
     this.pendingNgTaskCleanup = this.pendingNgTasks.add();
     setOnIdle(() => {
       this.pendingNgTaskCleanup?.();
@@ -114,6 +119,7 @@ export class Integrator implements OnDestroy {
   }
 
   public onBootstrap(cmpRef: ComponentRef<unknown>): void {
+    if (this.isServer) { return; }
     if (this.bootstrapCount >= 1) {
       throw new Error(
       'provideNgQueuexIntegration(): Multiple components were bootstrapped, which is not allowed! ' + COMMON_MESSAGE

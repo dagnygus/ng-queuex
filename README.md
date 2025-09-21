@@ -1,8 +1,4 @@
-
-⚠️ Heads up: currently working on a critical bug that prevents bootstrap in some setups.  
-Please hold on for the next patch release 🙏
-
-<!-- ![alt text](./ng_queuex_logo.png)
+![alt text](./ng_queuex_logo.png)
 # ng-queuex
 
 **Queuex** is an experimental ecosystem for Angular that introduces a React-inspired **concurrent scheduler**  
@@ -66,10 +62,10 @@ Signal-driven structural directives powered by the core scheduler.
 Install the main packages:
 
 ```bash
-npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.1/ng-queuex-core-0.0.1.tgz
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.2/ng-queuex-core-0.0.2.tgz
 ```
 ```bash
-npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.1/ng-queuex-template-0.0.1.tgz
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.2/ng-queuex-template-0.0.2.tgz
 ```
 
 ## 🛠 Example
@@ -99,4 +95,4 @@ abort();
 - ✅ Template directives (done)
 - 🔄 Package dedicated for angular signals
 - 🔄 Virtual scrolling and virtualization
- -->
+

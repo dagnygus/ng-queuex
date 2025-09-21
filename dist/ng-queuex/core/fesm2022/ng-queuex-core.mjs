@@ -754,6 +754,10 @@ class Integrator {
             'bootstrap (e.g. platformBrowserDynamic().bootstrapModule(AppModule)).');
     }
     integrateWithAngular() {
+        if (this.isServer) {
+            this.uncompleted = false;
+            return;
+        }
         this.pendingNgTaskCleanup = this.pendingNgTasks.add();
         setOnIdle(() => {
             this.pendingNgTaskCleanup?.();
@@ -768,6 +772,9 @@ class Integrator {
         this.uncompleted = false;
     }
     onBootstrap(cmpRef) {
+        if (this.isServer) {
+            return;
+        }
         if (this.bootstrapCount >= 1) {
             throw new Error('provideNgQueuexIntegration(): Multiple components were bootstrapped, which is not allowed! ' + COMMON_MESSAGE);
         }
