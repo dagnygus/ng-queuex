@@ -95,16 +95,15 @@ describe('Testing concurrentEffect() function.', () => {
   });
 
   it('Should not throw error if is in injection context.', () => {
-    const destroyRef = new TestDestroyRef()
-    const injector = Injector.create({ providers: [{ provide: DestroyRef, useValue: destroyRef }] });
+    const injector = Injector.create({ providers: [] });
     expect(() => {
       let watcher: EffectRef | undefined
       try {
         runInInjectionContext(injector, () => {
-          watcher =  concurrentEffect(() => {}, { destroyRef})
+          watcher =  concurrentEffect(() => {}, { destroyRef: injector.get(DestroyRef) })
         })
       } finally {
-        destroyRef.destroy();
+        injector.destroy();
         expectWatcherDestroyed(watcher);
       }
     }).not.toThrowError();
