@@ -63,7 +63,7 @@ describe('Testing concurrentEffect() function.', () => {
       }
     }).toThrowError(
       'NG0203: concurrentEffect() can only be used within an injection context such as a constructor, a factory function, a field initializer, or a ' +
-      'function used with `runInInjectionContext`. Find more at https://angular.dev/errors/NG0203'
+      'function used with `runInInjectionContext`. Find more at https://v20.angular.dev/errors/NG0203'
     );
   });
 

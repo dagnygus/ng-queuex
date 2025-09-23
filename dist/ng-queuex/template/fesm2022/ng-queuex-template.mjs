@@ -526,10 +526,10 @@ class QueuexForOf {
     static ngTemplateContextGuard(dir, ctx) {
         return true;
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexForOf, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.1.0", type: QueuexForOf, isStandalone: true, selector: "ng-template[qxFor]", inputs: { qxForPriority: ["qxForPriority", "qxForPriority", advancePriorityInputTransform], qxForOf: "qxForOf", qxForTrackBy: "qxForTrackBy", qxForRenderCallback: "qxForRenderCallback" }, ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexForOf, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.3.1", type: QueuexForOf, isStandalone: true, selector: "ng-template[qxFor]", inputs: { qxForPriority: ["qxForPriority", "qxForPriority", advancePriorityInputTransform], qxForOf: "qxForOf", qxForTrackBy: "qxForTrackBy", qxForRenderCallback: "qxForRenderCallback" }, ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexForOf, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexForOf, decorators: [{
             type: Directive,
             args: [{ selector: 'ng-template[qxFor]' }]
         }], ctorParameters: () => [], propDecorators: { qxForPriority: [{
@@ -1069,10 +1069,10 @@ class QueuexIf {
     static ngTemplateContextGuard(dir, ctx) {
         return true;
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexIf, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.1.0", type: QueuexIf, isStandalone: true, selector: "ng-template[qxIf]", inputs: { qxIfRenderCallback: "qxIfRenderCallback", qxIf: "qxIf", qxIfPriority: ["qxIfPriority", "qxIfPriority", advancePriorityInputTransform], qxIfThen: "qxIfThen", qxIfElse: "qxIfElse" }, ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexIf, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.3.1", type: QueuexIf, isStandalone: true, selector: "ng-template[qxIf]", inputs: { qxIfRenderCallback: "qxIfRenderCallback", qxIf: "qxIf", qxIfPriority: ["qxIfPriority", "qxIfPriority", advancePriorityInputTransform], qxIfThen: "qxIfThen", qxIfElse: "qxIfElse" }, ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexIf, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexIf, decorators: [{
             type: Directive,
             args: [{ selector: 'ng-template[qxIf]' }]
         }], ctorParameters: () => [], propDecorators: { qxIfRenderCallback: [{
@@ -1216,10 +1216,10 @@ class QueuexLazyView {
         this._abortTask?.();
         this._renderCbAbortTask?.();
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexLazyView, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.1.0", type: QueuexLazyView, isStandalone: true, selector: "ng-template[lazyView]", inputs: { priority: ["lazyView", "priority", priorityInputTransform], lazyViewRenderCallback: "lazyViewRenderCallback" }, ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexLazyView, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.3.1", type: QueuexLazyView, isStandalone: true, selector: "ng-template[lazyView]", inputs: { priority: ["lazyView", "priority", priorityInputTransform], lazyViewRenderCallback: "lazyViewRenderCallback" }, ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexLazyView, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexLazyView, decorators: [{
             type: Directive,
             args: [{ selector: 'ng-template[lazyView]' }]
         }], ctorParameters: () => [], propDecorators: { priority: [{
@@ -1380,10 +1380,10 @@ class QueuexReactiveView {
         this._renderCbAbortTask?.();
         this._watcher?.destroy();
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexReactiveView, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.1.0", type: QueuexReactiveView, isStandalone: true, selector: "ng-template[reactiveView]", inputs: { priority: ["reactiveView", "priority", advancePriorityInputTransform], reactiveViewRenderCallback: "reactiveViewRenderCallback" }, ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexReactiveView, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.3.1", type: QueuexReactiveView, isStandalone: true, selector: "ng-template[reactiveView]", inputs: { priority: ["reactiveView", "priority", advancePriorityInputTransform], reactiveViewRenderCallback: "reactiveViewRenderCallback" }, ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexReactiveView, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexReactiveView, decorators: [{
             type: Directive,
             args: [{ selector: 'ng-template[reactiveView]' }]
         }], ctorParameters: () => [], propDecorators: { priority: [{
@@ -1773,8 +1773,8 @@ class QueuexSwitch {
     ngOnDestroy() {
         this._view.dispose();
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexSwitch, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.1.0", type: QueuexSwitch, isStandalone: true, selector: "[qxSwitch]:not(ng-template)", inputs: { priority: ["priority", "priority", advancePriorityInputTransform], qxSwitch: "qxSwitch" }, outputs: { render: "render" }, providers: [{
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexSwitch, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "16.1.0", version: "20.3.1", type: QueuexSwitch, isStandalone: true, selector: "[qxSwitch]:not(ng-template)", inputs: { priority: ["priority", "priority", advancePriorityInputTransform], qxSwitch: "qxSwitch" }, outputs: { render: "render" }, providers: [{
                 provide: SwitchView,
                 useFactory: () => {
                     if (isPlatformServer(inject(PLATFORM_ID))) {
@@ -1786,7 +1786,7 @@ class QueuexSwitch {
                 }
             }], usesOnChanges: true, ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexSwitch, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexSwitch, decorators: [{
             type: Directive,
             args: [{
                     selector: '[qxSwitch]:not(ng-template)',
@@ -1883,10 +1883,10 @@ class QueuexSwitchCase {
     ngOnDestroy() {
         this._caseView.dispose();
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexSwitchCase, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.1.0", type: QueuexSwitchCase, isStandalone: true, selector: "ng-template[qxSwitchCase]", inputs: { qxSwitchCase: "qxSwitchCase" }, usesOnChanges: true, ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexSwitchCase, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.3.1", type: QueuexSwitchCase, isStandalone: true, selector: "ng-template[qxSwitchCase]", inputs: { qxSwitchCase: "qxSwitchCase" }, usesOnChanges: true, ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexSwitchCase, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexSwitchCase, decorators: [{
             type: Directive,
             args: [{ selector: 'ng-template[qxSwitchCase]' }]
         }], ctorParameters: () => [], propDecorators: { qxSwitchCase: [{
@@ -1933,10 +1933,10 @@ class QueuexSwitchDefault {
     ngOnDestroy() {
         this._view.dispose();
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexSwitchDefault, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.1.0", type: QueuexSwitchDefault, isStandalone: true, selector: "ng-template[qxSwitchDefault]", ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexSwitchDefault, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.3.1", type: QueuexSwitchDefault, isStandalone: true, selector: "ng-template[qxSwitchDefault]", ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexSwitchDefault, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexSwitchDefault, decorators: [{
             type: Directive,
             args: [{ selector: 'ng-template[qxSwitchDefault]' }]
         }], ctorParameters: () => [] });
@@ -2073,10 +2073,10 @@ class QueuexWatch {
             }
         }
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexWatch, deps: [], target: i0.ɵɵFactoryTarget.Directive });
-    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.1.0", type: QueuexWatch, isStandalone: true, selector: "ng-template[watch]", ngImport: i0 });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexWatch, deps: [], target: i0.ɵɵFactoryTarget.Directive });
+    static ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "20.3.1", type: QueuexWatch, isStandalone: true, selector: "ng-template[watch]", ngImport: i0 });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexWatch, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexWatch, decorators: [{
             type: Directive,
             args: [{ selector: 'ng-template[watch]', standalone: true }]
         }], ctorParameters: () => [] });

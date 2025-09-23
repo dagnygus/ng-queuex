@@ -799,10 +799,10 @@ class Integrator {
         Integrator.instance = null;
         setOnIdle(null);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: Integrator, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: Integrator, providedIn: 'root' });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: Integrator, deps: [], target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: Integrator, providedIn: 'root' });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: Integrator, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: Integrator, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root' }]
         }], ctorParameters: () => [] });
@@ -1902,10 +1902,10 @@ class QueuexIterableDiffers {
         }
         return new QueuexIterableDiffers(factories);
     }
-    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexIterableDiffers, deps: "invalid", target: i0.ɵɵFactoryTarget.Injectable });
-    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexIterableDiffers, providedIn: 'root', useFactory: () => new QueuexIterableDiffers([new DefaultQueuexIterableDifferFactory]) });
+    static ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexIterableDiffers, deps: "invalid", target: i0.ɵɵFactoryTarget.Injectable });
+    static ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexIterableDiffers, providedIn: 'root', useFactory: () => new QueuexIterableDiffers([new DefaultQueuexIterableDifferFactory]) });
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.1.0", ngImport: i0, type: QueuexIterableDiffers, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "20.3.1", ngImport: i0, type: QueuexIterableDiffers, decorators: [{
             type: Injectable,
             args: [{ providedIn: 'root', useFactory: () => new QueuexIterableDiffers([new DefaultQueuexIterableDifferFactory]) }]
         }], ctorParameters: () => [{ type: undefined }] });

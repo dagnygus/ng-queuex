@@ -13,11 +13,11 @@ It provides a set of SSR-friendly, highly-performant primitives designed for fin
 
 ## 📦 Installation
 ```bash
-npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.1/ng-queuex-template-0.0.1.tgz
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.3/ng-queuex-template-0.0.3.tgz
 ```
 This package depends on `@ng-queuex/core`, so make sure you have it installed as well:
 ```bash
-npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.1/ng-queuex-core-0.0.1.tgz
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.3/ng-queuex-core-0.0.3.tgz
 ```
 
 ## 🚀 Getting Started
@@ -131,7 +131,7 @@ Each directive comes with its own README inside the package:
   - [*qxSwitchDefault](./docs/switch_default.md)
   - [*lazyView](./docs/lazy_view.md)
   - [*scheduledView](./docs/scheduled_view.md)
-  - [*reactiveView](./docs/reactiveView.md)
+  - [*reactiveView](./docs/reactive_view.md)
 
 ## 🧪 Testing
 Every directive in that package relies deeply on concurrent scheduler from `@ng-queuex/core`.

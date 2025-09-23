@@ -19,7 +19,7 @@ At its core, `@ng-queuex/core` lets you:
 ## Installation
 
 ```bash
-npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.1/ng-queuex-core-0.0.1.tgz
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.3/ng-queuex-core-0.0.3.tgz
 ```
 
 ## Getting started
