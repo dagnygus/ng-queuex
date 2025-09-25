@@ -45,7 +45,7 @@ const SUBSCRIPTION_NODE: Partial<SubscriptionNode> = /* @__PURE__ */ (() => {
   return {
     ...REACTIVE_NODE,
     consumerIsAlwaysLive: true,
-    consumerAllowSignalWrites: false,
+    consumerAllowSignalWrites: true,
     consumerMarkedDirty: (node: SubscriptionNode) => {
       node.prevHook = setPostSignalSetFn(node.hook)
     },
