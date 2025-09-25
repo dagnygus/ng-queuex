@@ -2,7 +2,7 @@ import * as i0 from '@angular/core';
 import { isSignal, computed, ɵglobal as _global, inject, ApplicationRef, PendingTasks, PLATFORM_ID, Injector, NgModuleRef, reflectComponentType, Injectable, makeEnvironmentProviders, provideEnvironmentInitializer, APP_BOOTSTRAP_LISTENER, assertInInjectionContext, EnvironmentInjector, signal, assertNotInReactiveContext, DestroyRef } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { createWatch, setPostSignalSetFn, setActiveConsumer } from '@angular/core/primitives/signals';
+import { REACTIVE_NODE, consumerDestroy, setPostSignalSetFn, isInNotificationPhase, consumerPollProducersForChange, consumerBeforeComputation, setActiveConsumer, consumerAfterComputation, consumerMarkDirty, createWatch } from '@angular/core/primitives/signals';
 
 var TaskStatus;
 (function (TaskStatus) {
@@ -1982,13 +1982,75 @@ function sharedSignal(initialValue, debugName) {
     return signalRef;
 }
 
+function hook(node) {
+    this.node = node;
+    this.run();
+}
+const SYNC_WATCH_NODE = /* @__PURE__ */ (() => {
+    return {
+        ...REACTIVE_NODE,
+        consumerIsAlwaysLive: true,
+        consumerAllowSignalWrites: false,
+        consumerMarkedDirty: (node) => {
+            node.prevHook = setPostSignalSetFn(node.hook);
+        },
+        run() {
+            try {
+                setPostSignalSetFn(this.prevHook);
+                if (this.prevHook) {
+                    const prevHook = this.prevHook;
+                    prevHook(this.node);
+                }
+            }
+            finally {
+                if (this.fn === null) {
+                    // trying to run a destroyed watch is noop
+                    return;
+                }
+                if (isInNotificationPhase()) {
+                    throw new Error(NG_DEV_MODE
+                        ? 'Schedulers cannot synchronously execute watches while scheduling.'
+                        : '');
+                }
+                this.dirty = false;
+                if (this.version > 0 && !consumerPollProducersForChange(this)) {
+                    return;
+                }
+                this.version++;
+                if (this.version <= 0) {
+                    this.version = 2;
+                }
+                const prevConsumer = consumerBeforeComputation(this);
+                try {
+                    const value = this.source();
+                    const fn = this.fn;
+                    const prevConsumer = setActiveConsumer(null);
+                    try {
+                        fn(value);
+                    }
+                    finally {
+                        setActiveConsumer(prevConsumer);
+                    }
+                }
+                finally {
+                    consumerAfterComputation(this, prevConsumer);
+                }
+            }
+        },
+        destroy() {
+            this.destroyed = true;
+            consumerDestroy(this);
+            this.fn = null;
+        },
+    };
+})();
 const BASE_VALUE_REF = {
     set(value) {
-        if (this.__watcher__) {
-            this.__watcher__.destroy();
+        if (this.__node__) {
+            this.__node__.destroy();
         }
         if (isSignal(value)) {
-            this.__watcher__ = watchSignal(value, (v) => this.__value__ = v);
+            this.__node__ = watchSignal(value, (v) => this.__value__ = v);
             return;
         }
         this.__value__ = value;
@@ -1997,32 +2059,14 @@ const BASE_VALUE_REF = {
         return this.__value__;
     }
 };
-function watchSignal(source, callback) {
-    let prevHook = null;
-    let node = null;
-    const hook = (n) => {
-        node = n;
-        watcher.run();
-    };
-    const watcher = createWatch(() => {
-        setPostSignalSetFn(prevHook);
-        if (prevHook) {
-            prevHook(node);
-        }
-        const value = source();
-        const prevConsumer = setActiveConsumer(null);
-        try {
-            callback(value);
-        }
-        finally {
-            setActiveConsumer(prevConsumer);
-        }
-    }, () => {
-        prevHook = setPostSignalSetFn(hook);
-    }, true);
-    watcher.notify();
-    watcher.run();
-    return watcher;
+function watchSignal(source, effectFn) {
+    const node = Object.create(SYNC_WATCH_NODE);
+    node.hook = hook.bind(node);
+    node.fn = effectFn;
+    node.source = source;
+    consumerMarkDirty(node);
+    node.run();
+    return node;
 }
 function value(initialValue, arg2, arg3) {
     (NG_DEV_MODE) &&
@@ -2045,15 +2089,15 @@ function value(initialValue, arg2, arg3) {
     }
     const ref = Object.create(BASE_VALUE_REF);
     ref.__value__ = undefined;
-    ref.__watcher__ = null;
+    ref.__node__ = null;
     ref.set(initialValue);
     if (NG_DEV_MODE) {
         ref.toString = () => `[ValueRef.value: ${ref.__value__}]`;
         ref.debugName = debugName;
     }
     destroyRef.onDestroy(() => {
-        if (ref.__watcher__) {
-            ref.__watcher__.destroy();
+        if (ref.__node__) {
+            ref.__node__.destroy();
         }
     });
     return ref;

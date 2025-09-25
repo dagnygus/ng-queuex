@@ -89,10 +89,13 @@ const BASE_NG_ITERABLE_ITEM_NODE =
             throw new Error(`Schedulers cannot synchronously execute watches while scheduling.`);
         }
         this.dirty = false;
-        if (this.hasRun && !consumerPollProducersForChange(this)) {
+        if (this.version > 0 && !consumerPollProducersForChange(this)) {
             return;
         }
-        this.hasRun = true;
+        this.version++;
+        if (this.version <= 0) {
+            this.version = 1;
+        }
         if (this.viewRef) {
             const prevConsumer = consumerBeforeComputation(this);
             try {
@@ -120,7 +123,6 @@ function createItemNode(context, forOfView) {
     node.viewRef = null;
     node.destroyed = false;
     node.scheduled = false;
-    node.hasRun = false;
     node.dirty = false;
     return node;
 }
@@ -658,10 +660,13 @@ const BASE_THEN_QUEUEX_EFFECT_NODE =
             throw new Error(`Schedulers cannot synchronously execute watches while scheduling.`);
         }
         this.dirty = false;
-        if (this.hasRun && !consumerPollProducersForChange(this)) {
+        if (this.version > 0 && !consumerPollProducersForChange(this)) {
             return;
         }
-        this.hasRun = true;
+        this.version++;
+        if (this.version <= 0) {
+            this.version = 1;
+        }
         const viewRef = this.view.thenViewRef;
         if (viewRef) {
             const prevConsumer = consumerBeforeComputation(this);
@@ -745,10 +750,13 @@ const BASE_ELSE_QUEUEX_EFFECT_NODE =
             throw new Error(`Schedulers cannot synchronously execute watches while scheduling.`);
         }
         this.dirty = false;
-        if (this.hasRun && !consumerPollProducersForChange(this)) {
+        if (this.version > 0 && !consumerPollProducersForChange(this)) {
             return;
         }
-        this.hasRun = true;
+        this.version++;
+        if (this.version <= 0) {
+            this.version = 1;
+        }
         const viewRef = this.view.elseViewRef;
         if (viewRef) {
             const prevConsumer = consumerBeforeComputation(this);
@@ -775,7 +783,6 @@ function createThenNode(view) {
     node.abortTask = null;
     node.destroyed = false;
     node.scheduled = false;
-    node.hasRun = false;
     node.dirty = false;
     node.tmpRef = null;
     node.renderCbShouldRun = false;
@@ -787,7 +794,6 @@ function createElseNode(view) {
     node.abortTask = null;
     node.destroyed = false;
     node.scheduled = false;
-    node.hasRun = false;
     node.dirty = false;
     node.tmpRef = null;
     node.renderCbShouldRun = false;
