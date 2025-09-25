@@ -152,6 +152,36 @@
           }
         }
       }
+    },
+    "@ng-queuex/signals": {
+      "projectType": "library",
+      "root": "projects/ng-queuex/signals",
+      "sourceRoot": "projects/ng-queuex/signals/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ng-queuex/signals/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ng-queuex/signals/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "projects/ng-queuex/signals/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
   }
 }
