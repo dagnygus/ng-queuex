@@ -1,6 +1,17 @@
 import { assertInInjectionContext, assertNotInReactiveContext, DestroyRef, inject, isSignal, Signal } from "@angular/core";
-import { ReactiveHookFn, ReactiveNode, createWatch, setPostSignalSetFn, setActiveConsumer, Watch } from "@angular/core/primitives/signals";
+import { ReactiveHookFn, ReactiveNode, setPostSignalSetFn, setActiveConsumer, REACTIVE_NODE, isInNotificationPhase, consumerPollProducersForChange, consumerBeforeComputation, consumerAfterComputation, consumerDestroy, consumerMarkDirty } from "@angular/core/primitives/signals";
 import { NG_DEV_MODE } from "../utils";
+
+interface SyncWatchNode extends ReactiveNode {
+  hook: ReactiveHookFn;
+  prevHook: ReactiveHookFn | null;
+  node: ReactiveNode | null;
+  destroyed: boolean
+  source: Signal<any>
+  fn: Function | null
+  run(): void;
+  destroy(): void;
+}
 
 /**
  * Represents reference to value directly provided by `set` method or
@@ -26,15 +37,83 @@ export interface ValueRef<T> {
 }
 
 interface InternalValueRef<T> extends ValueRef<T> {
-  __watcher__: Watch | null;
+  __node__: SyncWatchNode | null;
   __value__: T;
 }
 
+function hook(this: SyncWatchNode, node: ReactiveNode) {
+  this.node = node
+  this.run();
+}
+
+const SYNC_WATCH_NODE: Partial<SyncWatchNode> = /* @__PURE__ */ (() => {
+  return {
+    ...REACTIVE_NODE,
+    consumerIsAlwaysLive: true,
+    consumerAllowSignalWrites: false,
+    consumerMarkedDirty: (node: SyncWatchNode) => {
+      node.prevHook = setPostSignalSetFn(node.hook)
+    },
+    run(this: SyncWatchNode) {
+      try {
+        setPostSignalSetFn(this.prevHook);
+        if (this.prevHook) {
+            const prevHook = this.prevHook;
+            prevHook(this.node!);
+          }
+      } finally {
+        if (this.fn === null) {
+          // trying to run a destroyed watch is noop
+          return;
+        }
+
+        if (isInNotificationPhase()) {
+          throw new Error(
+            NG_DEV_MODE
+              ? 'Schedulers cannot synchronously execute watches while scheduling.'
+              : '',
+          );
+        }
+
+        this.dirty = false;
+        if (this.version > 0 && !consumerPollProducersForChange(this)) {
+          return;
+        }
+
+        this.version++;
+
+        if (this.version <= 0) {
+          this.version = 2 as any
+        }
+
+        const prevConsumer = consumerBeforeComputation(this);
+        try {
+          const value = this.source();
+          const fn = this.fn;
+          const prevConsumer = setActiveConsumer(null);
+          try {
+            fn(value);
+          } finally {
+            setActiveConsumer(prevConsumer);
+          }
+        } finally {
+          consumerAfterComputation(this, prevConsumer);
+        }
+      }
+    },
+    destroy(this: SyncWatchNode) {
+      this.destroyed = true;
+      consumerDestroy(this);
+      this.fn = null;
+    },
+  };
+})();
+
 const BASE_VALUE_REF = {
   set(this: InternalValueRef<any>, value: any | Signal<any>) {
-    if (this.__watcher__) { this.__watcher__.destroy(); }
+    if (this.__node__) { this.__node__.destroy(); }
     if (isSignal(value)) {
-      this.__watcher__ = watchSignal(value, (v) => this.__value__ = v);
+      this.__node__ = watchSignal(value, (v) => this.__value__ = v);
       return;
     }
     this.__value__ = value;
@@ -44,36 +123,16 @@ const BASE_VALUE_REF = {
   }
 }
 
-export function watchSignal<T>(source: Signal<T>, callback: (arg: T) => void): Watch {
-  let prevHook: ReactiveHookFn | null = null;
-  let node: ReactiveNode | null = null;
-  const hook: ReactiveHookFn = (n) => {
-    node = n;
-    watcher.run();
-  }
-  const watcher = createWatch(
-    () => {
-      setPostSignalSetFn(prevHook);
-      if (prevHook) {
-        prevHook(node!);
-      }
-      const value = source();
-      const prevConsumer = setActiveConsumer(null);
-      try {
-        callback(value);
-      } finally {
-        setActiveConsumer(prevConsumer);
-      }
-    },
-    () => {
-      prevHook = setPostSignalSetFn(hook);
-    },
-    true
-  );
-  watcher.notify();
-  watcher.run();
+export function watchSignal<T>(source: Signal<T>, effectFn: (value: T) => void): SyncWatchNode {
+  const node = Object.create(SYNC_WATCH_NODE);
+  node.hook = hook.bind(node);
+  node.fn = effectFn;
+  node.source = source;
 
-  return watcher;
+  consumerMarkDirty(node);
+  node.run();
+
+  return node
 }
 
 /**
@@ -188,7 +247,7 @@ export function value<T>(initialValue: T | Signal<T>, arg2?: any, arg3?: any): V
 
   const ref = Object.create(BASE_VALUE_REF) as InternalValueRef<T>;
   ref.__value__ = undefined!;
-  ref.__watcher__ = null;
+  ref.__node__ = null;
   ref.set(initialValue);
 
   if (NG_DEV_MODE) {
@@ -198,8 +257,8 @@ export function value<T>(initialValue: T | Signal<T>, arg2?: any, arg3?: any): V
 
 
   destroyRef.onDestroy(() => {
-    if(ref.__watcher__) {
-      ref.__watcher__.destroy();
+    if(ref.__node__) {
+      ref.__node__.destroy();
     }
   });
 

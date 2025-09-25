@@ -53,7 +53,6 @@ interface QxIfView<T = unknown> {
 }
 
 interface QueuexIfEffectNode<T = unknown> extends ReactiveNode {
-  hasRun: boolean;
   view: ClientQxIfView;
   scheduled: boolean;
   destroyed: boolean;
@@ -136,10 +135,14 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
       }
 
       this.dirty = false;
-      if (this.hasRun && !consumerPollProducersForChange(this)) {
+      if (this.version > 0 && !consumerPollProducersForChange(this)) {
       return;
       }
-      this.hasRun = true;
+      this.version++
+
+      if (this.version <= 0) {
+        this.version = 1 as any;
+      }
 
       const viewRef = this.view.thenViewRef;
 
@@ -229,10 +232,14 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
       }
 
       this.dirty = false;
-      if (this.hasRun && !consumerPollProducersForChange(this)) {
+      if (this.version > 0 && !consumerPollProducersForChange(this)) {
       return;
       }
-      this.hasRun = true;
+      this.version++;
+
+      if (this.version <= 0) {
+        this.version = 1 as any;
+      }
 
       const viewRef = this.view.elseViewRef;
 
@@ -259,7 +266,6 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
     node.abortTask = null;
     node.destroyed = false;
     node.scheduled = false;
-    node.hasRun = false
     node.dirty = false;
     node.tmpRef = null;
     node.renderCbShouldRun = false
@@ -272,7 +278,6 @@ const BASE_THEN_QUEUEX_EFFECT_NODE: Omit<QueuexIfEffectNode, 'view' | 'destroyed
     node.abortTask = null;
     node.destroyed = false;
     node.scheduled = false;
-    node.hasRun = false;
     node.dirty = false;
     node.tmpRef = null;
     node.renderCbShouldRun = false

@@ -13,7 +13,6 @@ import {
   InjectionToken,
   Injector,
   Input,
-  NgModule,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -187,7 +186,7 @@ class ClientCaseView implements CaseView {
       () => this._watcher!.run(),
       this._switchView.priority,
       this._viewRef
-    )
+    );
   }
 
 }

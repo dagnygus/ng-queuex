@@ -3,7 +3,6 @@ import {
   assertNotInReactiveContext,
   computed,
   Directive,
-  DoCheck,
   effect,
   EmbeddedViewRef,
   inject,
@@ -13,11 +12,9 @@ import {
   OnDestroy,
   OnInit,
   PLATFORM_ID,
-  signal,
   Signal,
   TemplateRef,
   TrackByFunction,
-  ValueEqualityFn,
   ValueProvider,
   ViewContainerRef,
   ViewRef,
@@ -109,7 +106,6 @@ export type QueuexForOfInput<T, U extends NgIterable<T> = NgIterable<T>> = U & N
 const QX_FOR_OF_DEFAULT_PRIORITY = new InjectionToken<PriorityLevel>('QX_FOR_OF_DEFAULT_PRIORITY', { factory: () => 3 /* Priority.Normal */ });
 
 interface NgIterableItemNode<T, U extends NgIterable<T> = NgIterable<T>> extends ReactiveNode {
-  hasRun: boolean
   scheduled: boolean;
   destroyed: boolean;
   forOfView: ClientQueuexForOfView<T, U>;
@@ -194,10 +190,14 @@ const BASE_NG_ITERABLE_ITEM_NODE: Omit<NgIterableItemNode<any>, OmitFromNode> =
       }
 
       this.dirty = false;
-      if (this.hasRun && !consumerPollProducersForChange(this)) {
+      if (this.version > 0 && !consumerPollProducersForChange(this)) {
       return;
       }
-      this.hasRun = true;
+      this.version++;
+
+      if (this.version <= 0) {
+        this.version = 1 as any;
+      }
 
       if (this.viewRef) {
         const prevConsumer = consumerBeforeComputation(this);
@@ -227,7 +227,6 @@ function createItemNode<T, U extends NgIterable<T> = NgIterable<T>>(
   node.viewRef = null;
   node.destroyed = false;
   node.scheduled = false;
-  node.hasRun = false;
   node.dirty = false;
 
   return node;

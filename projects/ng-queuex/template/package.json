@@ -1,6 +1,6 @@
 {
   "name": "@ng-queuex/template",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "**Build Upon Signals Api** Reactive Concurrent Component Template Rendering. This package provides high performance directive to manage template control flow.",
   "publishConfig": {
     "access": "public"
@@ -27,9 +27,9 @@
     "reactive template"
   ],
   "peerDependencies": {
-    "@angular/common": "^20.1.0",
-    "@angular/core": "^20.1.0",
-    "@ng-queuex/core": "0.0.3"
+    "@angular/common": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@ng-queuex/core": "0.0.4"
   },
   "peerDependenciesMeta": {
     "@ng-queuex/core": {
