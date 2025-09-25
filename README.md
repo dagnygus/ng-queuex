@@ -62,10 +62,10 @@ Signal-driven structural directives powered by the core scheduler.
 Install the main packages:
 
 ```bash
-npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.3/ng-queuex-core-0.0.4.tgz
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.4/ng-queuex-core-0.0.4.tgz
 ```
 ```bash
-npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.3/ng-queuex-template-0.0.4.tgz
+npm install https://github.com/dagnygus/ng-queuex/releases/download/v0.0.4/ng-queuex-template-0.0.4.tgz
 ```
 
 ## 🛠 Example
