@@ -10,7 +10,7 @@ export function assertInReactiveContextXorInCleanupScope(message: string): void 
     throw new Error(message);
   }
 
-  if (!(getActiveConsumer() && CleanupScope.current())) {
+  if (!(getActiveConsumer() || CleanupScope.current())) {
     throw new Error(message);
   }
 }

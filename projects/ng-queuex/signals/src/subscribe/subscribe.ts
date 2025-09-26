@@ -121,9 +121,28 @@ const SUBSCRIPTION_NODE: Partial<SubscriptionNode> = /* @__PURE__ */ (() => {
   };
 })();
 
-
-
-export function subscribe<T>(source: Signal<T>, effectFn: (value: T) => void, destroyRef: DestroyRef | null = null): UnsubscribeFunction {
+/**
+ * An effect for observing single signal in synchronous way. This function can be used only
+ * in injection context or cleanup scope. If current stack frame is in both at the same time,
+ * cleanup logic will be attached to cleanup scope. Whoever if current stack frame is not in
+ * required context, then 'DestroyRef' object is required as third argument.
+ *
+ * @param source A source signal to observe.
+ * @param next A callback that will be used when source signal change.
+ */
+export function subscribe<T>(source: Signal<T>, next: (value: T) => void): UnsubscribeFunction
+/**
+ * An effect for observing single signal in synchronous way. This function can be used only
+ * in injection context or in cleanup scope. If current stack frame is in both at the same time,
+ * cleanup logic will be attached to cleanup scope. Whoever if current stack frame is not in
+ * required contexts, then 'DestroyRef' object is required as third argument.
+ *
+ * @param source A source signal to observe.
+ * @param next A callback that will be used when source signal change.
+ * @param destroyRef An object of type `DestroyRef`
+ */
+export function subscribe<T>(source: Signal<T>, next: (value: T) => void, destroyRef: DestroyRef): UnsubscribeFunction
+export function subscribe<T>(source: Signal<T>, next: (value: T) => void, destroyRef: DestroyRef | null = null): UnsubscribeFunction {
   NG_DEV_MODE && assertNotInReactiveContext(subscribe);
 
   const cleanupScope = CleanupScope.current();
@@ -134,7 +153,7 @@ export function subscribe<T>(source: Signal<T>, effectFn: (value: T) => void, de
 
   const node = Object.create(SUBSCRIPTION_NODE) as SubscriptionNode;
   node.hook = hook.bind(node);
-  node.fn = effectFn;
+  node.fn = next;
   node.source = source;
   node.teardownLogics = [];
 

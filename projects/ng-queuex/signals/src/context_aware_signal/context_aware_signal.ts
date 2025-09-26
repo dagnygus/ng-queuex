@@ -1,59 +1,84 @@
-import { producerAccessed, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn, signalUpdateFn } from "@angular/core/primitives/signals";
+import { producerAccessed, producerIncrementEpoch, runPostProducerCreatedFn, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn } from "@angular/core/primitives/signals";
 import { CleanupScope } from "../cleanup_scope/cleanup_scope";
 import { assertInReactiveContextXorInCleanupScope, NG_DEV_MODE } from "../utils";
 import { Signal } from "@angular/core";
 
+export const enum ContextAwareSignalStatus {
+  Preparing = 0,
+  Prepared = 1,
+  Unprepared = 2
+}
+
 export interface ContextAwareSignalNode<T> extends SignalNode<T> {
   scopeRefCount: number;
-  prepared: boolean;
+  status: ContextAwareSignalStatus
   increaseScopeRefCount: VoidFunction;
   decreaseScopeRefCount: VoidFunction;
   init: VoidFunction;
   deinit: VoidFunction;
-  onInit: (set: (value: T) => void, update: (fn: (value: T) => T) => void) => void;
+  onInit: (set: (value: T) => void, update: (updater: (value: T) => T) => void) => void;
   onDeinit: VoidFunction
   __consumers__: unknown
+}
 
+// for node.decreaseScopeRefCount = decreaseScopeRefCount.bind(node)
+function decreaseScopeRefCount(this: ContextAwareSignalNode<any>) {
+  if (--this.scopeRefCount === 0 && this.__consumers__ == null) {
+    this.deinit();
+  }
 }
 
 const CONTEXT_AWARE_SIGNAL_NODE: Partial<ContextAwareSignalNode<any>> = /* @__PURE__ */(() => ({
   ...SIGNAL_NODE,
+
   increaseScopeRefCount(this: ContextAwareSignalNode<any>) {
-    this.scopeRefCount++;
-  },
-  decreaseScopeRefCount(this: ContextAwareSignalNode<any>) {
-    if (this.__consumers__ == null && --this.scopeRefCount === 0) {
-      this.deinit();
+    if (++this.scopeRefCount === 1 && this.__consumers__ == null) {
+      this.init();
     }
   },
   init(this: ContextAwareSignalNode<any>) {
-    if (NG_DEV_MODE && this.prepared) {
+    if (NG_DEV_MODE && this.status === ContextAwareSignalStatus.Prepared) {
       throw new Error('InternalError:[node.init()] Context aware node is already prepared!');
     }
+    this.status = ContextAwareSignalStatus.Preparing;
 
-    const signalSet = (value: any) => {
-      if (NG_DEV_MODE && !this.prepared) {
-        throw new Error('Unprepared signals can not be updated!');
+    const node = this;
+    const signalSet = function(value: any) {
+      if (NG_DEV_MODE && node.status === ContextAwareSignalStatus.Unprepared) {
+        throw new Error('Unprepared signal can not be updated!');
       }
-      signalSetFn(this, value);
+
+      if (node.status === ContextAwareSignalStatus.Preparing) {
+        node.value = value 
+        return
+      }
+
+      signalSetFn(node, value);
     }
 
-    const signalUpdate = (fn: (value: any) => any) => {
-      if (NG_DEV_MODE && !this.prepared) {
-        throw new Error('Unprepared signals can not be updated!');
+    const signalUpdate = function(updater: (value: any) => any) {
+      if (NG_DEV_MODE && node.status === ContextAwareSignalStatus.Unprepared) {
+        throw new Error('Unprepared signal can not be updated!');
       }
-      signalUpdateFn(this, fn);
+
+      if (node.status === ContextAwareSignalStatus.Preparing) {
+        const newValue = updater(node.value);
+        node.value = newValue
+        return
+      }
+
+      signalSetFn(node, updater(node.value));
     }
 
     this.onInit(signalSet, signalUpdate);
-    this.prepared = true;
+    this.status = ContextAwareSignalStatus.Prepared;
   },
   deinit(this: ContextAwareSignalNode<any>) {
-    if (NG_DEV_MODE && !this.prepared) {
+    if (NG_DEV_MODE && this.status === ContextAwareSignalStatus.Unprepared) {
       throw new Error('InternalError:[node.deinit()] Context aware node is already unprepared!');
     }
     this.onDeinit()
-    this.prepared = false;
+    this.status =  ContextAwareSignalStatus.Unprepared;
   }
 }))();
 
@@ -62,9 +87,15 @@ Object.defineProperty(CONTEXT_AWARE_SIGNAL_NODE, 'consumers', {
     return this.__consumers__;
   },
   set(this: ContextAwareSignalNode<any>, value: unknown) {
-    this.__consumers__ = value
-    if (value == null && this.scopeRefCount === 0) {
-      this.deinit();
+    const prevValue = this.__consumers__;
+    this.__consumers__ = value;
+
+    if (this.scopeRefCount === 0) {
+      if (prevValue == null && value != null) {
+        this.init();
+      } else if (prevValue != null && value == null) {
+        this.deinit();
+      }
     }
   }
 })
@@ -79,12 +110,14 @@ export function createContextAwareSignal<T>(
   const node = Object.create(CONTEXT_AWARE_SIGNAL_NODE) as ContextAwareSignalNode<T>;
   node.value = initialValue;
   node.scopeRefCount = 0;
-  node.prepared = false
+  node.status = ContextAwareSignalStatus.Unprepared
   node.__consumers__ = undefined;
   node.onInit = onInit;
   node.onDeinit = onDeinit;
+  node.decreaseScopeRefCount = decreaseScopeRefCount.bind(node);
 
   const signalGetter = function() {
+
     NG_DEV_MODE && assertInReactiveContextXorInCleanupScope(errorMessage ? errorMessage : '');
 
     producerAccessed(node);
@@ -96,12 +129,12 @@ export function createContextAwareSignal<T>(
       scope.add(node.decreaseScopeRefCount.bind(node));
     }
 
-    node.init()
-
     return node.value;
   } as Signal<T>;
 
   signalGetter[SIGNAL] = node;
+
+  runPostProducerCreatedFn(node);
 
   return signalGetter;
 }
