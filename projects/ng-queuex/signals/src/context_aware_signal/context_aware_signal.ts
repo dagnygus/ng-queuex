@@ -1,6 +1,6 @@
-import { getActiveConsumer, producerAccessed, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn, signalUpdateFn } from "@angular/core/primitives/signals";
+import { producerAccessed, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn, signalUpdateFn } from "@angular/core/primitives/signals";
 import { CleanupScope } from "../cleanup_scope/cleanup_scope";
-import { NG_DEV_MODE } from "../utils";
+import { assertInReactiveContextXorInCleanupScope, NG_DEV_MODE } from "../utils";
 import { Signal } from "@angular/core";
 
 export interface ContextAwareSignalNode<T> extends SignalNode<T> {
@@ -12,8 +12,6 @@ export interface ContextAwareSignalNode<T> extends SignalNode<T> {
   deinit: VoidFunction;
   onInit: (set: (value: T) => void, update: (fn: (value: T) => T) => void) => void;
   onDeinit: VoidFunction
-  set: (value: T) => void;
-  update: (fn: (value: T) => T) => void;
   __consumers__: unknown
 
 }
@@ -23,15 +21,39 @@ const CONTEXT_AWARE_SIGNAL_NODE: Partial<ContextAwareSignalNode<any>> = /* @__PU
   increaseScopeRefCount(this: ContextAwareSignalNode<any>) {
     this.scopeRefCount++;
   },
+  decreaseScopeRefCount(this: ContextAwareSignalNode<any>) {
+    if (this.__consumers__ == null && --this.scopeRefCount === 0) {
+      this.deinit();
+    }
+  },
   init(this: ContextAwareSignalNode<any>) {
-    if (this.prepared) { return; }
-    this.onInit(this.set.bind(this), this.update.bind(this));
+    if (NG_DEV_MODE && this.prepared) {
+      throw new Error('InternalError:[node.init()] Context aware node is already prepared!');
+    }
+
+    const signalSet = (value: any) => {
+      if (NG_DEV_MODE && !this.prepared) {
+        throw new Error('Unprepared signals can not be updated!');
+      }
+      signalSetFn(this, value);
+    }
+
+    const signalUpdate = (fn: (value: any) => any) => {
+      if (NG_DEV_MODE && !this.prepared) {
+        throw new Error('Unprepared signals can not be updated!');
+      }
+      signalUpdateFn(this, fn);
+    }
+
+    this.onInit(signalSet, signalUpdate);
     this.prepared = true;
   },
   deinit(this: ContextAwareSignalNode<any>) {
-    if (this.prepared) {
-      this.onDeinit()
+    if (NG_DEV_MODE && !this.prepared) {
+      throw new Error('InternalError:[node.deinit()] Context aware node is already unprepared!');
     }
+    this.onDeinit()
+    this.prepared = false;
   }
 }))();
 
@@ -50,7 +72,8 @@ Object.defineProperty(CONTEXT_AWARE_SIGNAL_NODE, 'consumers', {
 export function createContextAwareSignal<T>(
   initialValue: T,
   onInit: (set: (value: T) => void, update: (fn: (value: T) => T) => void) => void,
-  onDeinit: () => void
+  onDeinit: () => void,
+  errorMessage?: string | undefined,
 ): Signal<T> {
 
   const node = Object.create(CONTEXT_AWARE_SIGNAL_NODE) as ContextAwareSignalNode<T>;
@@ -61,54 +84,22 @@ export function createContextAwareSignal<T>(
   node.onInit = onInit;
   node.onDeinit = onDeinit;
 
-  node.decreaseScopeRefCount = (function(this: ContextAwareSignalNode<any>) {
-    if (this.__consumers__ == null && --this.scopeRefCount === 0) {
-      this.deinit();
-    }
-  }).bind(node);
+  const signalGetter = function() {
+    NG_DEV_MODE && assertInReactiveContextXorInCleanupScope(errorMessage ? errorMessage : '');
 
-  node.set = function(this: ContextAwareSignalNode<any>, value) {
-    if (NG_DEV_MODE && !this.prepared) {
-      throw new Error('Unprepared signals can not be updated!')
-    }
-    signalSetFn(this, value);
-  }
-
-  node.update = function(this: ContextAwareSignalNode<any>, fn) {
-    if (NG_DEV_MODE && !this.prepared) {
-      throw new Error('Unprepared signals can not be updated!')
-    }
-    signalUpdateFn(this, fn);
-  }
-
-  const signalGetter = (function(this: ContextAwareSignalNode<any>) {
-    if (NG_DEV_MODE) {
-      if (getActiveConsumer() && CleanupScope.current()) {
-        throw new Error(
-          'Context aware signal can not be accessed in reactive context and cleanup scope at the same time!'
-        );
-      }
-
-      if (!(getActiveConsumer() && CleanupScope.current())) {
-        throw new Error(
-          'Context aware signal can be accessed in reactive context or in cleanup scope (but not at the same time)!'
-        );
-      }
-    }
-
-    producerAccessed(this);
+    producerAccessed(node);
 
     const scope = CleanupScope.current();
 
     if (scope) {
-      this.increaseScopeRefCount();
-      scope.add(this.decreaseScopeRefCount);
+      node.increaseScopeRefCount();
+      scope.add(node.decreaseScopeRefCount.bind(node));
     }
 
-    this.init()
+    node.init()
 
-    return this.value;
-  }).bind(node) as Signal<T>;
+    return node.value;
+  } as Signal<T>;
 
   signalGetter[SIGNAL] = node;
 
