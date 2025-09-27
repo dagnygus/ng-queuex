@@ -34,9 +34,12 @@ describe('Testing context aware signal', () => {
       'A',
       () => {},
       () => {},
-      'XYZ'
     )
-    expect(() => log.push(source())).toThrowError('XYZ');
+    expect(() => log.push(source())).toThrowError(
+      'Signal created by createContextAwareSignal() can not read outside required context. It ' +
+      'This signal can only be used appropriately in a reactive context like effect() or ' +
+      'component template. It can be also used in cleanup scope provided by signalPipe().'
+    );
     expect(log).toEqual([]);
   });
 
@@ -75,12 +78,15 @@ describe('Testing context aware signal', () => {
       'A',
       () => {},
       () => {},
-      'XYZ'
     );
     const scope = createTestCleanupScope();
     const consumer = runInReactiveContext(() => {
       scope.run(() => {
-        expect(() => log.push(source())).toThrowError('XYZ');
+        expect(() => log.push(source())).toThrowError(
+          'Signal created by createContextAwareSignal() can not read outside required context. It ' +
+          'This signal can only be used appropriately in a reactive context like effect() or ' +
+          'component template. It can be also used in cleanup scope provided by signalPipe().'
+        );
       });
     })
     expect(log).toEqual([]);

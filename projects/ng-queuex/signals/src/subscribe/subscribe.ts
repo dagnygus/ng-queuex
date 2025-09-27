@@ -130,7 +130,7 @@ const SUBSCRIPTION_NODE: Partial<SubscriptionNode> = /* @__PURE__ */ (() => {
  * @param source A source signal to observe.
  * @param next A callback that will be used when source signal change.
  */
-export function subscribe<T>(source: Signal<T>, next: (value: T) => void): UnsubscribeFunction
+export function subscribe<T>(source: Signal<T>, next: (value: T) => void): UnsubscribeFunction;
 /**
  * An effect for observing single signal in synchronous way. This function can be used only
  * in injection context or in cleanup scope. If current stack frame is in both at the same time,
@@ -141,7 +141,7 @@ export function subscribe<T>(source: Signal<T>, next: (value: T) => void): Unsub
  * @param next A callback that will be used when source signal change.
  * @param destroyRef An object of type `DestroyRef`
  */
-export function subscribe<T>(source: Signal<T>, next: (value: T) => void, destroyRef: DestroyRef): UnsubscribeFunction
+export function subscribe<T>(source: Signal<T>, next: (value: T) => void, destroyRef: DestroyRef | null): UnsubscribeFunction;
 export function subscribe<T>(source: Signal<T>, next: (value: T) => void, destroyRef: DestroyRef | null = null): UnsubscribeFunction {
   NG_DEV_MODE && assertNotInReactiveContext(subscribe);
 

@@ -49,7 +49,7 @@ const CONTEXT_AWARE_SIGNAL_NODE: Partial<ContextAwareSignalNode<any>> = /* @__PU
       }
 
       if (node.status === ContextAwareSignalStatus.Preparing) {
-        node.value = value 
+        node.value = value
         return
       }
 
@@ -104,7 +104,8 @@ export function createContextAwareSignal<T>(
   initialValue: T,
   onInit: (set: (value: T) => void, update: (fn: (value: T) => T) => void) => void,
   onDeinit: () => void,
-  errorMessage?: string | undefined,
+  debugFn: Function = createContextAwareSignal,
+  debugName?: string | undefined
 ): Signal<T> {
 
   const node = Object.create(CONTEXT_AWARE_SIGNAL_NODE) as ContextAwareSignalNode<T>;
@@ -118,7 +119,11 @@ export function createContextAwareSignal<T>(
 
   const signalGetter = function() {
 
-    NG_DEV_MODE && assertInReactiveContextXorInCleanupScope(errorMessage ? errorMessage : '');
+    NG_DEV_MODE && assertInReactiveContextXorInCleanupScope(
+      'Signal created by ' + debugFn.name + '() can not read outside required context. It ' +
+      'This signal can only be used appropriately in a reactive context like effect() or ' +
+      'component template. It can be also used in cleanup scope provided by signalPipe().'
+    );
 
     producerAccessed(node);
 
@@ -126,7 +131,7 @@ export function createContextAwareSignal<T>(
 
     if (scope) {
       node.increaseScopeRefCount();
-      scope.add(node.decreaseScopeRefCount.bind(node));
+      scope.add(node.decreaseScopeRefCount);
     }
 
     return node.value;
@@ -135,6 +140,11 @@ export function createContextAwareSignal<T>(
   signalGetter[SIGNAL] = node;
 
   runPostProducerCreatedFn(node);
+
+  if (NG_DEV_MODE) {
+    signalGetter.toString = () => `[Signal: ${signalGetter()}]`;
+    node.debugName = debugName
+  }
 
   return signalGetter;
 }
