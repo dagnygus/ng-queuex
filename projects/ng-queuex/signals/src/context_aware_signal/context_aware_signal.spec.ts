@@ -72,28 +72,6 @@ describe('Testing context aware signal', () => {
     scope.cleanup();
   });
 
-  it('Should throw an error if signal is read in reactive context and cleanup scope at the same time.', () => {
-    const log: string[] = [];
-    const source = createContextAwareSignal(
-      'A',
-      () => {},
-      () => {},
-    );
-    const scope = createTestCleanupScope();
-    const consumer = runInReactiveContext(() => {
-      scope.run(() => {
-        expect(() => log.push(source())).toThrowError(
-          'Signal created by createContextAwareSignal() can not read outside required context. It ' +
-          'This signal can only be used appropriately in a reactive context like effect() or ' +
-          'component template. It can be also used in cleanup scope provided by signalPipe().'
-        );
-      });
-    })
-    expect(log).toEqual([]);
-    scope.cleanup();
-    consumerDestroy(consumer);
-  });
-
   it('Should run onInit when signal is read in first reactive context.', () => {
     const log: string[] = [];
     const source = createContextAwareSignal(

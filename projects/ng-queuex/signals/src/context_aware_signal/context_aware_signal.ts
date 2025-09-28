@@ -1,6 +1,6 @@
 import { producerAccessed, producerIncrementEpoch, runPostProducerCreatedFn, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn } from "@angular/core/primitives/signals";
 import { CleanupScope } from "../cleanup_scope/cleanup_scope";
-import { assertInReactiveContextXorInCleanupScope, NG_DEV_MODE } from "../utils";
+import { assertInReactiveContextOrInCleanupScope, NG_DEV_MODE } from "../shared";
 import { Signal } from "@angular/core";
 
 export const enum ContextAwareSignalStatus {
@@ -117,9 +117,9 @@ export function createContextAwareSignal<T>(
   node.onDeinit = onDeinit;
   node.decreaseScopeRefCount = decreaseScopeRefCount.bind(node);
 
-  const signalGetter = function() {
+  const signalFn = function() {
 
-    NG_DEV_MODE && assertInReactiveContextXorInCleanupScope(
+    NG_DEV_MODE && assertInReactiveContextOrInCleanupScope(
       'Signal created by ' + debugFn.name + '() can not read outside required context. It ' +
       'This signal can only be used appropriately in a reactive context like effect() or ' +
       'component template. It can be also used in cleanup scope provided by signalPipe().'
@@ -137,14 +137,14 @@ export function createContextAwareSignal<T>(
     return node.value;
   } as Signal<T>;
 
-  signalGetter[SIGNAL] = node;
+  signalFn[SIGNAL] = node;
 
   runPostProducerCreatedFn(node);
 
   if (NG_DEV_MODE) {
-    signalGetter.toString = () => `[Signal: ${signalGetter()}]`;
+    signalFn.toString = () => `[Signal: ${signalFn()}]`;
     node.debugName = debugName
   }
 
-  return signalGetter;
+  return signalFn;
 }

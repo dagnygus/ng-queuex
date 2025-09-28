@@ -1,6 +1,6 @@
 import { assertInInjectionContext, assertNotInReactiveContext, DestroyRef, inject, Injector, Signal } from "@angular/core";
 import { ReactiveHookFn, ReactiveNode, REACTIVE_NODE, setPostSignalSetFn, consumerDestroy, consumerPollProducersForChange, consumerAfterComputation, consumerBeforeComputation, isInNotificationPhase, consumerMarkDirty, setActiveConsumer } from "@angular/core/primitives/signals";
-import { NG_DEV_MODE } from "../utils";
+import { NG_DEV_MODE } from "../shared";
 import { CleanupScope } from "../cleanup_scope/cleanup_scope";
 
 interface SubscriptionNode extends ReactiveNode {
@@ -130,7 +130,7 @@ const SUBSCRIPTION_NODE: Partial<SubscriptionNode> = /* @__PURE__ */ (() => {
  * @param source A source signal to observe.
  * @param next A callback that will be used when source signal change.
  */
-export function subscribe<T>(source: Signal<T>, next: (value: T) => void): UnsubscribeFunction;
+export function subscribe<T>(source: Signal<T>, next: (value: Exclude<T, undefined>) => void): UnsubscribeFunction;
 /**
  * An effect for observing single signal in synchronous way. This function can be used only
  * in injection context or in cleanup scope. If current stack frame is in both at the same time,
@@ -141,8 +141,8 @@ export function subscribe<T>(source: Signal<T>, next: (value: T) => void): Unsub
  * @param next A callback that will be used when source signal change.
  * @param destroyRef An object of type `DestroyRef`
  */
-export function subscribe<T>(source: Signal<T>, next: (value: T) => void, destroyRef: DestroyRef | null): UnsubscribeFunction;
-export function subscribe<T>(source: Signal<T>, next: (value: T) => void, destroyRef: DestroyRef | null = null): UnsubscribeFunction {
+export function subscribe<T>(source: Signal<T>, next: (value: Exclude<T, undefined>) => void, destroyRef: DestroyRef | null): UnsubscribeFunction;
+export function subscribe<T>(source: Signal<T>, next: (value: Exclude<T, undefined>) => void, destroyRef: DestroyRef | null = null): UnsubscribeFunction {
   NG_DEV_MODE && assertNotInReactiveContext(subscribe);
 
   const cleanupScope = CleanupScope.current();
