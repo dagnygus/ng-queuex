@@ -99,7 +99,7 @@ describe('Testing merge function.', () => {
     const options: JoinSignalCreationOptions = { cleanupStrategy: 'injection' };
 
     it('Should throw error if is created outside injection context', () => {
-      expect(merge([])).toThrowError();
+      expect(() => (merge([], options))).toThrowError();
     });
 
     it('Should gracefully be readable in reactive context', () => {

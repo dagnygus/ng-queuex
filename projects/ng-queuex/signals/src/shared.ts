@@ -1,10 +1,14 @@
 import { getActiveConsumer } from "@angular/core/primitives/signals";
 import { CleanupScope } from "./cleanup_scope/cleanup_scope";
-import { DestroyRef, isSignal } from "@angular/core";
+import { DestroyRef, isSignal, Signal } from "@angular/core";
 
 declare const ngDevMode: boolean | undefined;
 
-export const NG_DEV_MODE = typeof ngDevMode === 'undefined' || !!ngDevMode
+export const NG_DEV_MODE = typeof ngDevMode === 'undefined' || !!ngDevMode;
+export const DEFAULT_CLEANUP_STRATEGY: 'reactive' | 'injection' = 'reactive';
+
+export type UnwrapSignal<T> = T extends Signal<infer V> ? V : never;
+export type NotUndefinedIfPossible<T> = [Exclude<T, undefined>] extends [never] ? undefined : Exclude<T, undefined>;
 
 export function assertInReactiveContextOrInCleanupScope(message: string): void {
   if (!(getActiveConsumer() || CleanupScope.current())) {

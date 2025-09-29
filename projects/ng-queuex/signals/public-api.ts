@@ -1,2 +1,2 @@
 
-export const SOME = 'SOME';
+export * from './src/signals';
