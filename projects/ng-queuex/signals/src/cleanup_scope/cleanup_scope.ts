@@ -1,4 +1,4 @@
-import { DestroyRef, type Injector } from "@angular/core";
+import { DestroyRef, Injector } from "@angular/core";
 
 declare const jasmine: any;
 declare const jest: any;
@@ -22,6 +22,11 @@ let cleanupScope: CleanupScope | null = null;
  *
  */
 export abstract class CleanupScope {
+
+  /**
+   * An injector related to root cleanup scope.
+   */
+  abstract readonly injector: Injector
 
   /**
    * runs provided callback in cleanup scope.
@@ -91,7 +96,9 @@ export class DefaultCleanupScope implements CleanupScope {
   _allowCleanup = true;
   _errorMessage?: string
 
-  constructor() {}
+  constructor(public _injector: Injector) {}
+
+  get injector(): Injector { return this._injector; }
 
   run<T>(callback: () => T): T {
     const prevScope = cleanupScope;
@@ -142,7 +149,7 @@ export class DefaultCleanupScope implements CleanupScope {
   }
 
   createChild(): CleanupScope {
-    const child = new DefaultCleanupScope();
+    const child = new DefaultCleanupScope(this._injector);
     this._listeners.push(function() {
       child.cleanup();
     });
@@ -151,9 +158,11 @@ export class DefaultCleanupScope implements CleanupScope {
 }
 
 /**
- * An interface what describes a cleanup scope for test.
+ * An interface what describes a cleanup scope for test. Initially related injector to test cleanup scope
+ * is Angular's NullInjector.
  */
 export interface TestCleanupScope extends CleanupScope {
+
   /**
    * Returns an array of child cleanup scopes.
    */
@@ -169,7 +178,7 @@ class TestCleanupScopeImpl extends DefaultCleanupScope implements TestCleanupSco
   private _children: TestCleanupScope[] = []
 
   constructor(private onCleanup?: VoidFunction | null | undefined) {
-    super();
+    super(Injector.NULL);
   }
 
   children(): TestCleanupScope[] {
@@ -219,11 +228,14 @@ export function createTestCleanupScope(options?: CreateTestCleanupOptions): Test
   }
   const injector = options?.injector;
   const onCleanup = options?.onCleanup;
-  const scope = new TestCleanupScopeImpl();
+  const scope = new TestCleanupScopeImpl(onCleanup);
+  if (injector) {
+    scope._injector = injector;
+  }
 
   if (injector) {
     injector.get(DestroyRef).onDestroy(() => scope.cleanup());
   }
 
-  return new TestCleanupScopeImpl(onCleanup);
+  return scope;
 }

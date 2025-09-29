@@ -1,10 +1,10 @@
-import { ɵglobal } from "@angular/core"
+import { Injector, ɵglobal } from "@angular/core"
 import { CleanupScope, createTestCleanupScope, DefaultCleanupScope } from "./cleanup_scope";
 
 describe('Testing DefaultCleanupScope class.', () => {
   it('Should run added teardown logic when CleanupScope#cleanup() runs.', () => {
     const log: string[] = [];
-    const scope = new DefaultCleanupScope();
+    const scope = new DefaultCleanupScope(Injector.NULL);
     scope.add(() => log.push('a'));
     scope.cleanup();
     expect(log).toEqual(['a']);
@@ -13,7 +13,7 @@ describe('Testing DefaultCleanupScope class.', () => {
 
   it('Should run multiple added teardown logics when CleanupScope#cleanup() runs.', () => {
     const log: string[] = [];
-    const scope = new DefaultCleanupScope();
+    const scope = new DefaultCleanupScope(Injector.NULL);
     scope.add(() => log.push('a'));
     scope.add(() => log.push('b'));
     scope.cleanup();
@@ -23,7 +23,7 @@ describe('Testing DefaultCleanupScope class.', () => {
 
   it('Should not run removed teardown logic when CleanupScope#cleanup() runs.', () => {
     const log: string[] = [];
-    const scope = new DefaultCleanupScope();
+    const scope = new DefaultCleanupScope(Injector.NULL);
 
     scope.add(() => log.push('a'));
 
@@ -52,7 +52,7 @@ describe('Testing DefaultCleanupScope class.', () => {
 
   it('Method CleanupScope.current() should return scope object if is used in function body provided to CleanupScope#run() method.', () => {
     let returnedScope: CleanupScope | null = null;
-    const scope = new DefaultCleanupScope();
+    const scope = new DefaultCleanupScope(Injector.NULL);
     scope.run(() => {
       returnedScope = CleanupScope.current();
     })
@@ -61,7 +61,7 @@ describe('Testing DefaultCleanupScope class.', () => {
 
   it('Method CleanupScope.assertCurrent() should return scope object if is used in function body provided to CleanupScope#run() method.', () => {
     let returnedScope: CleanupScope | null = null;
-    const scope = new DefaultCleanupScope();
+    const scope = new DefaultCleanupScope(Injector.NULL);
     scope.run(() => {
       returnedScope = CleanupScope.assertCurrent();
     })
@@ -70,7 +70,7 @@ describe('Testing DefaultCleanupScope class.', () => {
 
   it('Parent scope should clean child scope.', () => {
     const log: string[] = [];
-    const scope = new DefaultCleanupScope();
+    const scope = new DefaultCleanupScope(Injector.NULL);
     scope.add(() => log.push('a'));
 
     const childScope = scope.createChild();
@@ -82,7 +82,7 @@ describe('Testing DefaultCleanupScope class.', () => {
 
   it('Child scope should clean parent scope.', () => {
     let log: string[] = [];
-    const scope = new DefaultCleanupScope();
+    const scope = new DefaultCleanupScope(Injector.NULL);
 
     scope.add(() => log.push('a'));
 
@@ -97,7 +97,7 @@ describe('Testing DefaultCleanupScope class.', () => {
   });
 
   it('Should throw error if cleanup is disallowed.', () => {
-    const scope = new DefaultCleanupScope();
+    const scope = new DefaultCleanupScope(Injector.NULL);
     scope._allowCleanup = false;
     scope._errorMessage = 'XYZ';
     expect(() => scope.cleanup()).toThrowError('XYZ');

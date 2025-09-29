@@ -1,0 +1,33 @@
+import { inject, Injectable, PendingTasks } from "@angular/core";
+
+@Injectable({ providedIn: 'root' })
+export class NgTimers {
+  private _pendingTasks = inject(PendingTasks);
+
+  setTimeout(cb: VoidFunction, delay?: number): VoidFunction {
+    const taskCleanup = this._pendingTasks.add();
+    let timeoutId: any = setTimeout(() => {
+      cb();
+      taskCleanup();
+      timeoutId = undefined;
+    }, delay);
+    return function () {
+      if (typeof timeoutId === 'undefined') { return; }
+      clearTimeout(timeoutId);
+      taskCleanup();
+    }
+  }
+
+  setInterval(cb: VoidFunction, timeout?: number) {
+    const taskCleanup = this._pendingTasks.add();
+    let intervalId: any = setInterval(() => {
+      cb();
+      taskCleanup();
+    }, timeout);
+
+    return function () {
+      clearInterval(intervalId);
+      taskCleanup();
+    }
+  }
+}

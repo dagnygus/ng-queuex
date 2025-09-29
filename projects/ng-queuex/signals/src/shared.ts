@@ -49,20 +49,6 @@ export class ReusableDestroyRef implements DestroyRef {
       }
     }
   }
-
-  private _flushCallbacks(): void {
-    try {
-      while(this._callbacks.length) {
-        this._callbacks.shift()!();
-      }
-    } finally {
-      if (this._callbacks.length) {
-        this._flushCallbacks();
-      }
-    }
-  }
-
-
 }
 
 /**
