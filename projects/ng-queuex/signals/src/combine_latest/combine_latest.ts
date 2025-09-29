@@ -50,6 +50,7 @@ export function combineLatest<const S extends readonly Signal<any>[]>(sources: [
  *   console.log(n, str, b);
  * });
  * ```
+ * @see {@link JoinSignalCreationOptions}
  */
 export function combineLatest<const S extends readonly Signal<any>[]>(sources: [...S], options: JoinSignalCreationOptions | undefined): Signal<{ [K in keyof S]: UnwrapSignal<S[K]> }>;
 /**
@@ -96,6 +97,7 @@ export function combineLatest<O extends Record<string, Signal<any>>>(sources: O)
  *   console.log(num, str);
  * });
  * ```
+ * @see {@link JoinSignalCreationOptions}
  */
 export function combineLatest<O extends Record<string, Signal<any>>>(sources: O, options: JoinSignalCreationOptions | undefined): Signal<{ [K in keyof O]: UnwrapSignal<O[K]> }>;
 export function combineLatest(sources: any, options?: JoinSignalCreationOptions): Signal<any> {

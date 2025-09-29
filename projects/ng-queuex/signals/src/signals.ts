@@ -6,3 +6,7 @@ export * from './subscribe/subscribe';
 export type * from './subscribe/subscribe';
 export * from './merge/merge';
 export * from './combine_latest/combine_latest';
+export * from './interval/interval';
+export type * from './interval/interval';
+export * from './timeout/timeout';
+export type * from './timeout/timeout';

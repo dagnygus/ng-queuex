@@ -19,15 +19,17 @@ export class NgTimers {
   }
 
   setInterval(cb: VoidFunction, timeout?: number) {
-    const taskCleanup = this._pendingTasks.add();
+    let taskCleanup: VoidFunction | null = this._pendingTasks.add();
     let intervalId: any = setInterval(() => {
       cb();
-      taskCleanup();
+      taskCleanup?.();
+      taskCleanup = null;
     }, timeout);
 
     return function () {
       clearInterval(intervalId);
-      taskCleanup();
+      taskCleanup?.();
+      taskCleanup = null
     }
   }
 }
