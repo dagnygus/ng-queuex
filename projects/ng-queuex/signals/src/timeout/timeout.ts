@@ -91,14 +91,10 @@ export function timeout<T>(delayOrAt: number | Date, callback: (value?: T) => T,
   const injector = CleanupScope.current()?.injector ?? options?.injector ?? inject(Injector);
   const ngTimers = injector.get(NgTimers);
   const initialValue = options?.initialValue;
-  let ms: number;
+  let ms = typeof delayOrAt === 'number' ? delayOrAt : Date.now() - delayOrAt.getTime();
+
   let timeoutCleanup: VoidFunction = null!;
 
-  if (typeof delayOrAt === 'number') {
-    ms = delayOrAt;
-  } else {
-    ms = delayOrAt.getTime() - Date.now();
-  }
 
   ms = Math.min(0, ms);
 

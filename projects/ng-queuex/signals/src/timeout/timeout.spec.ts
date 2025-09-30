@@ -48,4 +48,17 @@ describe('Testing timeout function.', () => {
     });
   }));
 
+  it('Should change value when time will reach provided date.', fakeAsync(() => {
+    TestBed.runInInjectionContext(() => {
+      const log: number[] = [];
+      const date = new Date();
+      date.setSeconds(date.getSeconds() + 1);
+      const source = timeout(date, (value) => ++value, { initialValue: 0 });
+      subscribe(source, (value) => log.push(value), destroyRef);
+      expect(log).toEqual([0]);
+      flush();
+      expect(log).toEqual([0, 1]);
+    });
+  }));
+
 });

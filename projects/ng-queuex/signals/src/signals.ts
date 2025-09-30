@@ -10,3 +10,5 @@ export * from './interval/interval';
 export type * from './interval/interval';
 export * from './timeout/timeout';
 export type * from './timeout/timeout';
+export * from './timer/timer';
+export type * from './timer/timer';
