@@ -31,6 +31,8 @@ export function timer(delay: number, period: number): Signal<undefined | number>
  * and it can only be read in reactive context like effect() or component template.
  * @param delay time in milliseconds after which the signal will change.
  * @param options A timer creation options.
+ *
+ * @see {@link CreateTimerOptions}
  */
 export function timer(delay: number, options: { period: number } & CreateTimerOptions | undefined): Signal<undefined | number>;
 /**
@@ -39,6 +41,8 @@ export function timer(delay: number, options: { period: number } & CreateTimerOp
  * and it can only be read in reactive context like effect() or component template.
  * @param delay time in milliseconds after which the signal will change.
  * @param options A timer creation options.
+ *
+ * @see {@link CreateTimerOptions}
  */
 export function timer(delay: number, options: CreateTimerOptions | undefined): Signal<undefined | 0>;
 /**
@@ -62,16 +66,20 @@ export function timer(startAt: Date, period: number): Signal<undefined | 0>;
  * and it can only be read in reactive context like effect() or component template.
  * @param delay time in milliseconds after which the signal will change.
  * @param options A timer creation options.
+ *
+ * @see {@link CreateTimerOptions}
  */
-export function timer(startAt: Date, options: CreateTimerOptions | undefined): Signal<undefined | 0>;
+export function timer(startAt: Date, options: { period: number } & CreateTimerOptions | undefined): Signal<undefined | number>;
 /**
  * Creates a signal that will wait for exact date before changing its value. If a period is provided to options, then the timer will change
  * its value incrementally from 0, otherwise will change to zero. This signal can be created only in injection context unless injector is provided to options
  * and it can only be read in reactive context like effect() or component template.
  * @param delay time in milliseconds after which the signal will change.
  * @param options A timer creation options.
+ *
+ * @see {@link CreateTimerOptions}
  */
-export function timer(startAt: Date, options: { period: number } & CreateTimerOptions | undefined): Signal<undefined | number>;
+export function timer(startAt: Date, options: CreateTimerOptions | undefined): Signal<undefined | 0>;
 export function timer(delayOrStartAt: number | Date, periodOrOptions?: number | CreateTimerOptions | undefined): Signal<undefined | number> {
   const options = periodOrOptions != null && typeof periodOrOptions === 'object' ? periodOrOptions : undefined;
   const period = typeof periodOrOptions === 'number' ? periodOrOptions : options?.period;

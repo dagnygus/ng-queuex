@@ -12,3 +12,5 @@ export * from './timeout/timeout';
 export type * from './timeout/timeout';
 export * from './timer/timer';
 export type * from './timer/timer';
+export * from './from_async/from_async';
+export type * from './from_async/from_async';

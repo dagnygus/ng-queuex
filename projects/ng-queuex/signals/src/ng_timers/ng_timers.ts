@@ -32,4 +32,21 @@ export class NgTimers {
       taskCleanup = null
     }
   }
+
+  scheduleMicrotask(cb: VoidFunction): VoidFunction {
+    const taskCleanup = this._pendingTasks.add();
+    let canceled = false
+
+    queueMicrotask(() => {
+      cb();
+      canceled = true;
+      taskCleanup();
+    })
+
+    return function() {
+      if (canceled) { return; }
+      taskCleanup();
+      canceled = true;
+    }
+  }
 }
