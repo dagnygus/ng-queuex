@@ -170,36 +170,18 @@ export function fromAsync(asyncSource: any, arg?: string | ((e: any) => void) | 
 function fromAsync_1<T>(asyncSource: () => PromiseLike<T>, onError: ((e: any) => void) | null, debugName: string | undefined): Signal<T | undefined> {
   const valueSource = signal<T | undefined>(undefined, debugName ? { debugName } : undefined);
   let unprepared = true
-  let cleanupScopes: CleanupScope[] | null = [];
 
   return computed(() => {
-    const cleanupScope = CleanupScope.current();
-    if (cleanupScope && cleanupScopes && !cleanupScopes.includes(cleanupScope)) {
-      cleanupScopes.push(cleanupScope);
-      const localCleanupScopes = cleanupScopes;
-      cleanupScope.add(() => {
-        const index = localCleanupScopes.indexOf(cleanupScope);
-        if (index > -1) {
-          localCleanupScopes.splice(index, 1);
-        }
-      })
-    }
-
     if (unprepared) {
+      unprepared = false;
       const consumer = setActiveConsumer(null);
       try {
-        unprepared = false;
         asyncSource().then(
           (value) => {
             valueSource.set(value);
-            cleanupScopes = null;
           },
           (e) => {
             onError?.(e);
-            for (let i = 0; i < cleanupScopes!.length; i++) {
-              cleanupScopes![i].cleanup();
-            }
-            cleanupScopes = null;
           }
         );
       } finally {
@@ -213,44 +195,24 @@ function fromAsync_1<T>(asyncSource: () => PromiseLike<T>, onError: ((e: any) =>
 
 function fromAsync_2<T>(asyncSource: PromiseLike<T>, onError: ((e: any) => void) | null, debugName: string | undefined): Signal<T | undefined> {
   const valueSource = signal<T | undefined>(undefined, debugName ? { debugName } : undefined);
-  let cleanupScopes: CleanupScope[] | null = [];
 
   asyncSource.then(
     (value: T) => {
       valueSource.set(value);
-      cleanupScopes = null
     },
     (e) => {
       onError?.(e);
-      for (let i = 0; i < cleanupScopes!.length; i++) {
-        cleanupScopes![i].cleanup();
-      }
-      cleanupScopes = null;
     }
   )
 
-  return computed(() => {
-    const cleanupScope = CleanupScope.current();
-    if (cleanupScope && cleanupScopes && !cleanupScopes.includes(cleanupScope)) {
-      cleanupScopes.push(cleanupScope);
-      const localCleanupScopes = cleanupScopes;
-      cleanupScope.add(() => {
-        const index = localCleanupScopes.indexOf(cleanupScope);
-        if (index > -1) {
-          localCleanupScopes.splice(index, 1);
-        }
-      })
-    }
+  return valueSource.asReadonly();
 
-    return valueSource();
-  });
 }
 
 function fromAsync_3<T>(asyncSource: Subscribable<T>, onError: ((e: any) => void) | null, debugName: string | undefined): Signal<T | undefined> {
   let subscription: Unsubscribable = null!;
-  let cleanupScopes: CleanupScope[] | null = [];
 
-  const valueSource = createContextAwareSignal<T | undefined>(
+  return createContextAwareSignal<T | undefined>(
     undefined,
     (set) => {
       subscription = asyncSource.subscribe({
@@ -259,16 +221,6 @@ function fromAsync_3<T>(asyncSource: Subscribable<T>, onError: ((e: any) => void
         },
         error(e) {
           onError?.(e);
-          for (let i = 0; i < cleanupScopes!.length; i++) {
-            cleanupScopes![i].cleanup();
-          }
-          cleanupScopes = null;
-        },
-        complete() {
-          for (let i = 0; i < cleanupScopes!.length; i++) {
-            cleanupScopes![i].cleanup();
-          }
-          cleanupScopes = null;
         }
       })
     },
@@ -278,20 +230,4 @@ function fromAsync_3<T>(asyncSource: Subscribable<T>, onError: ((e: any) => void
     fromAsync,
     debugName
   );
-
-  return computed(() => {
-    const cleanupScope = CleanupScope.current();
-    if (cleanupScope && cleanupScopes && !cleanupScopes.includes(cleanupScope)) {
-      cleanupScopes.push(cleanupScope);
-      const localCleanupScopes = cleanupScopes;
-      cleanupScope.add(() => {
-        const index = localCleanupScopes.indexOf(cleanupScope);
-        if (index > -1) {
-          localCleanupScopes.splice(index, 1);
-        }
-      })
-    }
-
-    return valueSource();
-  })
 }

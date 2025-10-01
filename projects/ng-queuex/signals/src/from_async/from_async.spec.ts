@@ -135,17 +135,6 @@ describe('Testing fromAsync() function.', () => {
       expect(log).toEqual([err])
     });
 
-    it('Should clean cleanup scope when promise rejects', () => {
-      const log: string[] = [];
-      const scope = createTestCleanupScope({ onCleanup: () => log.push('A') });
-      const promise = new FakePromise();
-      const err = new Error();
-      const source = fromAsync(promise);
-      scope.run(() => source());
-      promise.reject(err);
-      expect(log).toEqual(['A']);
-    });
-
   });
 
   describe('With function returning promise.', () => {
@@ -169,17 +158,6 @@ describe('Testing fromAsync() function.', () => {
       const err = new Error();
       promise.reject(err)
       expect(log).toEqual([err])
-    });
-
-    it('Should clean cleanup scope when promise rejects', () => {
-      const log: string[] = [];
-      const scope = createTestCleanupScope({ onCleanup: () => log.push('A') });
-      const promise = new FakePromise();
-      const err = new Error();
-      const source = fromAsync(() => promise);
-      scope.run(() => source());
-      promise.reject(err);
-      expect(log).toEqual(['A']);
     });
 
   });
@@ -209,26 +187,5 @@ describe('Testing fromAsync() function.', () => {
       subject.error(err);
       expect(log).toEqual([err]);
     });
-
-    it('Should clean cleanup scope when observable emits error', () => {
-      const log: string [] = [];
-      const scope = createTestCleanupScope({ onCleanup: () => log.push('A') });
-      const subject = new Subject();
-      const source = fromAsync(subject);
-      scope.run(() => source())
-      const err = new Error();
-      subject.error(err);
-      expect(log).toEqual(['A']);
-    });
-
-    it('Should clean cleanup scope when observable completes', () => {
-      const log: string[] = [];
-      const scope = createTestCleanupScope({ onCleanup: () => log.push('A') });
-      const subject = new Subject();
-      const source = fromAsync(subject);
-      scope.run(() => source())
-      subject.complete();
-      expect(log).toEqual(['A']);
-    })
   });
 });
