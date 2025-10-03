@@ -92,13 +92,13 @@ export function interval(periodOrOptions: number | CreateIntervalOptions, from?:
 
   const outputSignal = createContextAwareSignal<number>(
     undefined!,
-    (set, update) => {
+    function(set, update) {
       set(localFrom);
       intervalCleanup = ngTimers.setInterval(() => {
         update((prev) => !localToDefined ? ++prev : ++prev > localTo! ? localFrom : prev)
       }, period)
     },
-    () => {
+     function() {
       intervalCleanup();
     },
     interval,

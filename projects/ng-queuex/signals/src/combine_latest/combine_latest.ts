@@ -123,7 +123,7 @@ function combineLatestForReactiveContext(sources: any, debugName?: string | unde
 
   const outputSignal = createContextAwareSignal<any>(
     undefined,
-    (set, update) => {
+    function(set, update) {
       const consumer = setActiveConsumer(null);
       let output: any;
 
@@ -172,7 +172,7 @@ function combineLatestForReactiveContext(sources: any, debugName?: string | unde
         initialized = true
       }
     },
-    () => {
+    function() {
       destroyRef.destroy();
       initialized = false;
     },

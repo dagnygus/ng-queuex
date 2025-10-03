@@ -110,7 +110,7 @@ function mergeForReactiveContext(sources: Signal<any>[], debugName?: string | un
 
   const outputSignal = createContextAwareSignal<any>(
     undefined,
-    (set) => {
+    function(set) {
       const consumer = setActiveConsumer(null);
       try {
         for (let i = 0; i < sources.length; i++) {

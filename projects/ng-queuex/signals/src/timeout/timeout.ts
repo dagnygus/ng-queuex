@@ -101,7 +101,7 @@ export function timeout<T>(delayOrAt: number | Date, callback: (value?: T) => T,
 
   const outupSignal = createContextAwareSignal(
     initialValue,
-    (set) => {
+    function(set) {
       timeoutCleanup = ngTimers.setTimeout(() => {
         set(callback(initialValue));
       })

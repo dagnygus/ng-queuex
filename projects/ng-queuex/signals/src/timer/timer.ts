@@ -95,7 +95,7 @@ export function timer(delayOrStartAt: number | Date, periodOrOptions?: number | 
 
   const outputSignal = createContextAwareSignal<undefined | number>(
     undefined,
-    (set, update) => {
+    function(set, update) {
       timeoutCleanup = ngTimers.setTimeout(() => {
         set(0);
         if (typeof period === 'number') {
@@ -105,7 +105,7 @@ export function timer(delayOrStartAt: number | Date, periodOrOptions?: number | 
         }
       }, ms)
     },
-    () => {
+    function() {
       timeoutCleanup();
       intervalCleanup?.();
     },
