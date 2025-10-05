@@ -6,7 +6,7 @@ import { createTestCleanupScope, subscribe } from '../signals';
 describe('Testing interval function.', () => {
 
   let injector: DestroyableInjector;
-  let destroyRef: DestroyRef
+  let destroyRef: DestroyRef;
 
   beforeEach(() => {
     injector = Injector.create({ providers: [] });

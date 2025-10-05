@@ -1,7 +1,44 @@
-import { producerAccessed, producerIncrementEpoch, runPostProducerCreatedFn, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn } from "@angular/core/primitives/signals";
+import { producerAccessed, runPostProducerCreatedFn, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn } from "@angular/core/primitives/signals";
 import { CleanupScope } from "../cleanup_scope/cleanup_scope";
 import { assertInReactiveContextOrInCleanupScope, NG_DEV_MODE } from "../shared";
 import { Signal } from "@angular/core";
+
+/**
+ * Options for creating a context-aware signal via `contextual()`.
+ *
+ * A contextual signal initializes automatically when the first reactive consumer appears
+ * (e.g., an `effect()` or a component template), and deinitializes when the last consumer is removed.
+ * This allows creating signals that manage their own lifecycle — for example, subscribing to data sources
+ * or performing cleanup when no longer in use.
+ */
+export interface CreateContextualSignalOptions<T> {
+
+  /**
+   * The initial value of the signal, used until the first initialization occurs.
+   * This acts as a default value accessible before the signal becomes active.
+   */
+  initialValue: T;
+
+  /**
+   * Called automatically when the signal becomes active (first reactive consumer connects).
+   * Can be used to start subscriptions, timers, HTTP requests, etc.
+   *
+   * @param set - Sets a new value for the signal.
+   * @param update - Updates the signal based on its current value.
+   */
+  onInit: (set: (value: T) => void, update: (updater: (value: T) => T) => void) => void;
+
+  /**
+   * Called automatically when the last reactive consumer disconnects.
+   * Useful for cleaning up resources like subscriptions or pending async operations.
+   */
+  onDeinit: () => void;
+
+  /**
+   * Optional human-readable name for Angular development tools.
+   */
+  debugName?: string | undefined;
+}
 
 export const enum ContextAwareSignalStatus {
   Preparing = 0,
@@ -147,4 +184,27 @@ export function createContextAwareSignal<T>(
   }
 
   return signalFn;
+}
+
+/**
+ * Creates a contextual signal — a signal that is only initialized
+ * when it has active reactive consumers (e.g. inside `effect()` or templates).
+ *
+ * - Initializes on first consumer attach.
+ * - Deinitializes when the last consumer detaches.
+ * - Re-initializes if consumers appear again.
+ *
+ * Useful for signals tied to lifecycle or cleanup strategies.
+ * This signal can be read only in reactive context, otherwise will throw error.
+ * @param options A contextual creation options of type {@link CreateContextualSignalOptions}.
+ * @returns A context aware signal.
+ */
+export function contextual<T>(options: CreateContextualSignalOptions<T>): Signal<T> {
+  return createContextAwareSignal(
+    options.initialValue,
+    options.onInit,
+    options.onDeinit,
+    contextual,
+    options.debugName
+  )
 }
