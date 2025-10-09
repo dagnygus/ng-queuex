@@ -13,36 +13,36 @@ describe('Testing fromSse() function.', () => {
   let destroyRef: DestroyRef;
 
   class FakeEventSource {
-  url: string;
-  readyState = 0;
-  onmessage?: (ev: MessageEvent) => void;
-  onerror?: (ev: Event) => void;
-  onopen?: () => void;
+    url: string;
+    readyState = 0;
+    onmessage?: (ev: MessageEvent) => void;
+    onerror?: (ev: Event) => void;
+    onopen?: () => void;
 
-  constructor(url: string) {
-    if (url === INVALID_URL) {
-      throw new TypeError('Failed to construct \'EventSource\': Invalid URL');
+    constructor(url: string) {
+      if (url === INVALID_URL) {
+        throw new TypeError('Failed to construct \'EventSource\': Invalid URL');
+      }
+      this.url = url;
+      fakeEventSource = this;
     }
-    this.url = url;
-    fakeEventSource = this;
-  }
 
-  emitMessage(data: any) {
-    this.onmessage?.({ data } as MessageEvent);
-  }
+    emitMessage(data: any) {
+      this.onmessage?.({ data } as MessageEvent);
+    }
 
-  emitError(error: any) {
-    this.onerror?.(error as Event);
-  }
+    emitError(error: any) {
+      this.onerror?.(error as Event);
+    }
 
-  emitOpen() {
-    this.onopen?.();
-  }
+    emitOpen() {
+      this.onopen?.();
+    }
 
-  close() {
-    this.readyState = 2;
+    close() {
+      this.readyState = 2;
+    }
   }
-}
 
 
   beforeEach(() => {
