@@ -1,8 +1,8 @@
 import { assertInInjectionContext, inject, Injector, Signal } from "@angular/core";
-import { NG_DEV_MODE } from "../shared";
+import { NG_DEV_MODE } from "../common";
 import { CleanupScope } from "../signals";
 import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
-import { NgTimers } from "../ng_timers/ng_timers";
+import { Schedulers } from "../schedulers/schedulers";
 
 export interface CreateTimerOptions {
   period?: number;
@@ -87,7 +87,7 @@ export function timer(delayOrStartAt: number | Date, periodOrOptions?: number | 
   NG_DEV_MODE && !CleanupScope.current() && !options?.injector && assertInInjectionContext(timer);
 
   const injector = CleanupScope.current()?.injector ?? options?.injector ?? inject(Injector);
-  const ngTimers = injector.get(NgTimers);
+  const schedulers = injector.get(Schedulers);
   const ms = typeof delayOrStartAt === 'number' ? delayOrStartAt : Date.now() - delayOrStartAt.getTime();
 
   let timeoutCleanup: VoidFunction = null!;
@@ -96,10 +96,10 @@ export function timer(delayOrStartAt: number | Date, periodOrOptions?: number | 
   const outputSignal = createContextAwareSignal<undefined | number>(
     undefined,
     function(set, update) {
-      timeoutCleanup = ngTimers.setTimeout(() => {
+      timeoutCleanup = schedulers.setTimeout(() => {
         set(0);
         if (typeof period === 'number') {
-          intervalCleanup = ngTimers.setInterval(() => {
+          intervalCleanup = schedulers.setInterval(() => {
             update((value) => ++value!);
           }, period);
         }

@@ -1,5 +1,5 @@
 import { assertInInjectionContext, DestroyRef, inject, signal, Signal } from '@angular/core';
-import { DEFAULT_CLEANUP_STRATEGY, JoinSignalCreationOptions, NG_DEV_MODE, NotUndefinedIfPossible, ReusableDestroyRef, UnwrapSignal } from '../shared';
+import { DEFAULT_CLEANUP_STRATEGY, JoinSignalCreationOptions, NG_DEV_MODE, NotUndefinedIfPossible, ReusableDestroyRef, UnwrapSignal } from '../common';
 import { createContextAwareSignal } from '../context_aware_signal/context_aware_signal';
 import { subscribe } from '../subscribe/subscribe';
 import { setActiveConsumer } from '@angular/core/primitives/signals';

@@ -1,7 +1,7 @@
 import { assertInInjectionContext, inject, Injector, Signal } from "@angular/core";
 import { CleanupScope } from "../signals";
-import { NG_DEV_MODE } from "../shared";
-import { NgTimers } from "../ng_timers/ng_timers";
+import { NG_DEV_MODE } from "../common";
+import { Schedulers } from "../schedulers/schedulers";
 import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
 
 /**
@@ -72,7 +72,7 @@ export function interval(periodOrOptions: number | CreateIntervalOptions, from?:
   NG_DEV_MODE && !CleanupScope.current() && !options?.injector && assertInInjectionContext(interval);
 
   const injector = CleanupScope.current()?.injector ?? options?.injector ?? inject(Injector);
-  const ngTimers = injector.get(NgTimers);
+  const schedulers = injector.get(Schedulers);
 
   const period = Math.min(options?.period ?? periodOrOptions as number, 0);
   const localFrom = Math.round(options?.from ?? from ?? 0);
@@ -94,7 +94,7 @@ export function interval(periodOrOptions: number | CreateIntervalOptions, from?:
     undefined!,
     function(set, update) {
       set(localFrom);
-      intervalCleanup = ngTimers.setInterval(() => {
+      intervalCleanup = schedulers.setInterval(() => {
         update((prev) => !localToDefined ? ++prev : ++prev > localTo! ? localFrom : prev)
       }, period)
     },

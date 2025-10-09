@@ -1,25 +1,30 @@
 import { inject, Injectable, PendingTasks } from "@angular/core";
 
 @Injectable({ providedIn: 'root' })
-export class NgTimers {
-  private _pendingTasks = inject(PendingTasks);
+export class Schedulers {
+
+  private readonly _pendingTasks = inject(PendingTasks);
 
   setTimeout(cb: VoidFunction, delay?: number): VoidFunction {
-    const taskCleanup = this._pendingTasks.add();
+    delay = Math.floor(delay && delay < 0 ? 0 : delay ?? 0);
+    const taskCleanup = delay === 0  ? this._pendingTasks.add() : null;
+
     let timeoutId: any = setTimeout(() => {
       cb();
-      taskCleanup();
+      taskCleanup?.();
       timeoutId = undefined;
     }, delay);
     return function () {
       if (typeof timeoutId === 'undefined') { return; }
       clearTimeout(timeoutId);
-      taskCleanup();
+      taskCleanup?.();
     }
   }
 
   setInterval(cb: VoidFunction, timeout?: number) {
-    let taskCleanup: VoidFunction | null = this._pendingTasks.add();
+    timeout = Math.floor(timeout && timeout < 0 ? 0 : timeout ?? 0);
+    let taskCleanup = timeout === 0 ? this._pendingTasks.add() : null;
+
     let intervalId: any = setInterval(() => {
       cb();
       taskCleanup?.();
@@ -38,6 +43,7 @@ export class NgTimers {
     let canceled = false
 
     queueMicrotask(() => {
+      if (canceled) { return; }
       cb();
       canceled = true;
       taskCleanup();

@@ -84,3 +84,14 @@ export class ReusableDestroyRef implements DestroyRef {
 }
 
 
+export function getDefaultOnErrorHandler(onError: ((err: any) => void) | undefined): (err: any) => void {
+  return function (err) {
+    if (onError) {
+      onError(err)
+      if (err instanceof Event) { return; }
+      console.error(err);
+    } else {
+      console.error(err);
+    }
+  }
+}

@@ -1,6 +1,6 @@
 export { contextual } from './context_aware_signal/context_aware_signal'
 export type { CreateContextualSignalOptions } from './context_aware_signal/context_aware_signal'
-export type { JoinSignalCreationOptions } from './shared';
+export type { JoinSignalCreationOptions } from './common';
 export * from './subscribe/subscribe';
 export { CleanupScope, createTestCleanupScope } from './cleanup_scope/cleanup_scope';
 export type * from './cleanup_scope/cleanup_scope';
@@ -18,3 +18,7 @@ export * from './from_async/from_async';
 export type * from './from_async/from_async';
 export * from './from_http/from_http';
 export type * from './from_http/from_http';
+export * from './from_sse/from_sse';
+export type * from './from_sse/from_sse';
+export * from './from_websocket/from_websocket';
+export type * from './from_websocket/from_websocket';

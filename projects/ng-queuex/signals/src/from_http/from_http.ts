@@ -1,5 +1,7 @@
-import { Signal } from "@angular/core";
+import { assertInInjectionContext, inject, Injector, PendingTasks, Signal } from "@angular/core";
 import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
+import { getDefaultOnErrorHandler, NG_DEV_MODE } from "../common";
+import { CleanupScope } from "../signals";
 
 
 /**
@@ -76,6 +78,11 @@ export interface CreateFromHttpOptions {
   retryOnError?: number;
 
   /**
+   * An injector to be used when fromHttp() function is used outside injection context.
+   */
+  injector?: Injector;
+
+  /**
    * Optional name for debugging or logging purposes.
    */
   debugName?: string;
@@ -131,7 +138,17 @@ export interface FromHttpResponse {
   url: string
 }
 
-class FromHttpResponseError extends Error {
+/**
+ * Represents an HTTP error response produced by {@link fromHttp}.
+ *
+ * This error is thrown only when the server responds with
+ * a non-successful HTTP status code (≥ 400).
+ *
+ * Unlike network or transport errors (e.g. `TypeError`, `DOMException`),
+ * this indicates that the request was completed and a response
+ * was received, but the response itself represents a failure.
+ */
+export class FromHttpResponseError extends Error {
   constructor(
     response: Response
   ) {
@@ -202,6 +219,8 @@ export function fromHttp<T>(url: string | URL): Signal<T>;
  *   body, response handling, and retry behavior. See {@link CreateFromHttpOptions}.
  * @returns A `Signal<T | undefined>` representing the body of current state of the HTTP response.
  *
+ * @see {@link CreateFromHttpOptions}
+ *
  * @example
  * ```ts
  * // Basic GET request
@@ -242,6 +261,7 @@ export function fromHttp<T>(
     referrer?: string;
     referrerPolicy?: ReferrerPolicy;
     retryOnError?: number;
+    injector?: Injector;
     debugName?: string;
     onError?: (err: any) => void;
   }
@@ -266,6 +286,9 @@ export function fromHttp<T>(
  *   body, response handling, and retry behavior. See {@link CreateFromHttpOptions}.
  * @returns A `Signal<(FromHttpResponse & { body: T })  | undefined>` representing the current state of the HTTP response.
  *
+ * @see {@link CreateFromHttpOptions}
+ * @see {@link FromHttpResponse}
+ *
  * @example
  * ```ts
  * // Basic GET request
@@ -306,6 +329,7 @@ export function fromHttp<T>(
     referrer?: string;
     referrerPolicy?: ReferrerPolicy;
     retryOnError?: number;
+    injector?: Injector;
     debugName?: string;
     onError?: (err: any) => void;
   }
@@ -330,6 +354,8 @@ export function fromHttp<T>(
  *   body, response handling, and retry behavior. See {@link CreateFromHttpOptions}.
  * @returns A `Signal<string | undefined>` representing the body of current state of the HTTP response.
  *
+ * @see {@link CreateFromHttpOptions}
+ *
  * @example
  * ```ts
  * // Basic GET request
@@ -370,6 +396,7 @@ export function fromHttp(
     referrer?: string;
     referrerPolicy?: ReferrerPolicy;
     retryOnError?: number;
+    injector?: Injector;
     debugName?: string;
     onError?: (err: any) => void;
   }
@@ -394,6 +421,9 @@ export function fromHttp(
  *   body, response handling, and retry behavior. See {@link CreateFromHttpOptions}.
  * @returns A `Signal<(FromHttpResponse & { body: string })  | undefined>` representing the current state of the HTTP response.
  *
+ * @see {@link CreateFromHttpOptions}
+ * @see {@link FromHttpResponse}
+ *
  * @example
  * ```ts
  * // Basic GET request
@@ -434,6 +464,7 @@ export function fromHttp(
     referrer?: string;
     referrerPolicy?: ReferrerPolicy;
     retryOnError?: number;
+    injector?: Injector;
     debugName?: string;
     onError?: (err: any) => void;
   }
@@ -458,6 +489,8 @@ export function fromHttp(
  *   body, response handling, and retry behavior. See {@link CreateFromHttpOptions}.
  * @returns A `Signal<Blob | undefined>` representing the body of current state of the HTTP response.
  *
+ * @see {@link CreateFromHttpOptions}
+ *
  * @example
  * ```ts
  * // Basic GET request
@@ -498,6 +531,7 @@ export function fromHttp(
     referrer?: string;
     referrerPolicy?: ReferrerPolicy;
     retryOnError?: number;
+    injector?: Injector;
     debugName?: string;
     onError?: (err: any) => void;
   }
@@ -522,6 +556,9 @@ export function fromHttp(
  *   body, response handling, and retry behavior. See {@link CreateFromHttpOptions}.
  * @returns A `Signal<(FromHttpResponse & { body: Blob })  | undefined>` representing the current state of the HTTP response.
  *
+ * @see {@link CreateFromHttpOptions}
+ * @see {@link FromHttpResponse}
+ *
  * @example
  * ```ts
  * // Basic GET request
@@ -562,6 +599,7 @@ export function fromHttp(
     referrer?: string;
     referrerPolicy?: ReferrerPolicy;
     retryOnError?: number;
+    injector?: Injector;
     debugName?: string;
     onError?: (err: any) => void;
   }
@@ -585,6 +623,8 @@ export function fromHttp(
  * @param options - Optional configuration that defines the request method, headers,
  *   body, response handling, and retry behavior. See {@link CreateFromHttpOptions}.
  * @returns A `Signal<ArrayBuffer | undefined>` representing the body of current state of the HTTP response.
+ *
+ * @see {@link CreateFromHttpOptions}
  *
  * @example
  * ```ts
@@ -626,6 +666,7 @@ export function fromHttp(
     referrer?: string;
     referrerPolicy?: ReferrerPolicy;
     retryOnError?: number;
+    injector?: Injector;
     debugName?: string;
     onError?: (err: any) => void;
   }
@@ -649,6 +690,9 @@ export function fromHttp(
  * @param options - Optional configuration that defines the request method, headers,
  *   body, response handling, and retry behavior. See {@link CreateFromHttpOptions}.
  * @returns A `Signal<(FromHttpResponse & { body: ArrayBuffer })  | undefined>` representing the current state of the HTTP response.
+ *
+ * @see {@link CreateFromHttpOptions}
+ * @see {@link FromHttpResponse}
  *
  * @example
  * ```ts
@@ -690,11 +734,17 @@ export function fromHttp(
     referrer?: string;
     referrerPolicy?: ReferrerPolicy;
     retryOnError?: number;
+    injector?: Injector;
     debugName?: string;
     onError?: (err: any) => void;
   }
 ): Signal<(FromHttpResponse & { body: ArrayBuffer }) | undefined>;
 export function fromHttp(url: string | URL, options?: CreateFromHttpOptions): Signal<any> {
+
+  NG_DEV_MODE && !CleanupScope.current() && !options?.injector && assertInInjectionContext(fromHttp);
+
+  const injector = CleanupScope.current()?.injector ?? options?.injector ?? inject(Injector);
+  const pendingTasks = injector.get(PendingTasks);
   const method = options?.method ?? 'GET'
   const credentials = options?.credentials;
   const headers = options?.headers ? { ...options.headers } : undefined;
@@ -708,7 +758,7 @@ export function fromHttp(url: string | URL, options?: CreateFromHttpOptions): Si
   const referrerPolicy = options?.referrerPolicy;
   const observe = options?.observe ?? 'body';
   const debugName = options?.debugName;
-  const onError = options?.onError;
+  const onError = getDefaultOnErrorHandler(options?.onError);
   let retriesLeft = options?.retryOnError ?? 0;
   let abortController: AbortController | null = new AbortController();
 
@@ -724,6 +774,7 @@ export function fromHttp(url: string | URL, options?: CreateFromHttpOptions): Si
 
   async function fetchData(set: (arg: any) => void): Promise<void> {
     let lastError: any;
+    const pendingTask = pendingTasks.add();
     while (true) {
       try {
         const response = await fetch(buildUrl(), {
@@ -742,8 +793,6 @@ export function fromHttp(url: string | URL, options?: CreateFromHttpOptions): Si
         if (response.status >= 400) {
           throw new FromHttpResponseError(response);
         }
-
-        abortController = null;
 
         let data: any;
 
@@ -766,6 +815,8 @@ export function fromHttp(url: string | URL, options?: CreateFromHttpOptions): Si
             break;
         }
 
+        abortController = null;
+
         if (observe === 'body') {
           set(data)
         } else {
@@ -787,21 +838,27 @@ export function fromHttp(url: string | URL, options?: CreateFromHttpOptions): Si
           set(responseData);
         }
 
-        return;
+        break;
 
       } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          break;
+        }
+        if (err instanceof SyntaxError) {
+          retriesLeft = 0;
+        }
         lastError = err;
+
         if (--retriesLeft > 0) {
           continue;
         }
-        if (onError) {
-          onError(lastError);
-          return;
-        }
-        console.error(lastError);
-        return;
+
+        onError(lastError);
+        break;
+
       }
     }
+    pendingTask();
   }
 
   return createContextAwareSignal(

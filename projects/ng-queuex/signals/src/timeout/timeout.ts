@@ -1,7 +1,7 @@
 import { assertInInjectionContext, inject, Injector, Signal } from "@angular/core";
 import { CleanupScope } from "../signals";
-import { NG_DEV_MODE } from "../shared";
-import { NgTimers } from "../ng_timers/ng_timers";
+import { NG_DEV_MODE } from "../common";
+import { Schedulers } from "../schedulers/schedulers";
 import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
 
 /**
@@ -89,7 +89,7 @@ export function timeout<T>(delayOrAt: number | Date, callback: (value?: T) => T,
   NG_DEV_MODE && !CleanupScope.current() && !options?.injector && assertInInjectionContext(timeout);
 
   const injector = CleanupScope.current()?.injector ?? options?.injector ?? inject(Injector);
-  const ngTimers = injector.get(NgTimers);
+  const schedulers = injector.get(Schedulers);
   const initialValue = options?.initialValue;
   let ms = typeof delayOrAt === 'number' ? delayOrAt : Date.now() - delayOrAt.getTime();
 
@@ -102,7 +102,7 @@ export function timeout<T>(delayOrAt: number | Date, callback: (value?: T) => T,
   const outupSignal = createContextAwareSignal(
     initialValue,
     function(set) {
-      timeoutCleanup = ngTimers.setTimeout(() => {
+      timeoutCleanup = schedulers.setTimeout(() => {
         set(callback(initialValue));
       })
     },

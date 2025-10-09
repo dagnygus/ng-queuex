@@ -1,6 +1,6 @@
 import { producerAccessed, runPostProducerCreatedFn, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn } from "@angular/core/primitives/signals";
 import { CleanupScope } from "../cleanup_scope/cleanup_scope";
-import { assertInReactiveContextOrInCleanupScope, NG_DEV_MODE } from "../shared";
+import { assertInReactiveContextOrInCleanupScope, NG_DEV_MODE } from "../common";
 import { Signal } from "@angular/core";
 
 /**
