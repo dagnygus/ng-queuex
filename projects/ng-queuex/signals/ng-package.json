@@ -3,5 +3,7 @@
   "dest": "../../../dist/ng-queuex/signals",
   "lib": {
     "entryFile": "public-api.ts"
-  }
+  },
+  "assets": [],
+  "allowedNonPeerDependencies": []
 }

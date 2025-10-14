@@ -1,9 +1,9 @@
 import { assertInInjectionContext, DestroyRef, inject, signal, Signal } from '@angular/core';
-import { DEFAULT_CLEANUP_STRATEGY, JoinSignalCreationOptions, NG_DEV_MODE, NotUndefinedIfPossible, ReusableDestroyRef, UnwrapSignal } from '../common';
 import { createContextAwareSignal } from '../context_aware_signal/context_aware_signal';
 import { subscribe } from '../subscribe/subscribe';
 import { setActiveConsumer } from '@angular/core/primitives/signals';
-import { CleanupScope } from '../signals';
+import { CleanupScope } from '../cleanup_scope/cleanup_scope';
+import { JoinSignalCreationOptions, NotUndefinedIfPossible, UnwrapSignal, DEFAULT_CLEANUP_STRATEGY, ReusableDestroyRef, NG_DEV_MODE } from '../common';
 
 /**
  * Merges multiple signals into a single signal that emits whenever any of the source signals change. The resulting signal produces

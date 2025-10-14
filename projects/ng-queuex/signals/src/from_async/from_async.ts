@@ -1,8 +1,7 @@
-import { computed, signal, Signal } from "@angular/core";
-import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
-import { CleanupScope } from "../signals";
-import { setActiveConsumer } from "@angular/core/primitives/signals";
-import type { Observable, Subscribable, Unsubscribable } from "rxjs";
+import { computed, signal, Signal } from '@angular/core';
+import { createContextAwareSignal } from '../context_aware_signal/context_aware_signal';
+import { setActiveConsumer } from '@angular/core/primitives/signals';
+import type { Observable, Subscribable, Unsubscribable } from 'rxjs';
 
 /**
  * Options passed to `fromAsync()` creation function.

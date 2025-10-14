@@ -1,7 +1,8 @@
-import { DestroyableInjector, DestroyRef, Injector } from "@angular/core";
-import { timer } from "./timer"
-import { fakeAsync, flush, TestBed } from "@angular/core/testing";
-import { createTestCleanupScope, subscribe } from "../signals";
+import { DestroyableInjector, DestroyRef, Injector } from '@angular/core';
+import { timer } from './timer'
+import { fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { createTestCleanupScope } from '../cleanup_scope/cleanup_scope';
+import { subscribe } from '../subscribe/subscribe'
 
 describe('Testing timer function.', () => {
 

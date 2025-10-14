@@ -1,6 +1,6 @@
-import { assertNotInReactiveContext, computed, DestroyableInjector, DestroyRef, Injector, runInInjectionContext, signal } from "@angular/core";
-import { createTestCleanupScope, TestCleanupScope } from "../cleanup_scope/cleanup_scope";
-import { setPostSignalSetFn } from "@angular/core/primitives/signals";
+import { assertNotInReactiveContext, computed, DestroyableInjector, DestroyRef, Injector, runInInjectionContext, signal } from '@angular/core';
+import { createTestCleanupScope, TestCleanupScope } from '../cleanup_scope/cleanup_scope';
+import { setPostSignalSetFn } from '@angular/core/primitives/signals';
 import { subscribe } from "./subscribe";
 
 
@@ -10,7 +10,7 @@ describe('Testing subscribe() function.', () => {
   let destroyRef: DestroyRef
 
   function runInTestCleanupScope(fn: (scope: TestCleanupScope) => void): TestCleanupScope {
-    const scope = createTestCleanupScope();
+    const scope = createTestCleanupScope({ injector });
     destroyRef.onDestroy(() => scope.cleanup());
     scope.run(() => fn(scope));
     return scope

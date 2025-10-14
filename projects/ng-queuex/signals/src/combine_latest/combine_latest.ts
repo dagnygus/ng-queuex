@@ -1,10 +1,9 @@
-import { assertInInjectionContext, DestroyRef, inject, signal, Signal } from "@angular/core";
-import { DEFAULT_CLEANUP_STRATEGY, JoinSignalCreationOptions, NG_DEV_MODE, ReusableDestroyRef, UnwrapSignal } from "../common";
-import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
-import { setActiveConsumer } from "@angular/core/primitives/signals";
-import { subscribe } from "../subscribe/subscribe";
-import { merge } from "rxjs";
-import { CleanupScope } from "../signals";
+import { assertInInjectionContext, DestroyRef, inject, signal, Signal } from '@angular/core';
+import { createContextAwareSignal } from '../context_aware_signal/context_aware_signal';
+import { setActiveConsumer } from '@angular/core/primitives/signals';
+import { subscribe } from '../subscribe/subscribe';
+import { CleanupScope } from '../cleanup_scope/cleanup_scope';
+import { UnwrapSignal, JoinSignalCreationOptions, DEFAULT_CLEANUP_STRATEGY, ReusableDestroyRef, NG_DEV_MODE } from '../common';
 
 /**
  * Combines a tuple (array) of source signals into a single signal whose value is a tuple of the latest values from each source.
@@ -187,7 +186,7 @@ function combineLatestForReactiveContext(sources: any, debugName?: string | unde
 function combineLatestForInjectionContext(sources: any, options?: JoinSignalCreationOptions): Signal<any> {
   const scope = CleanupScope.current();
 
-  NG_DEV_MODE && !scope && !options?.destroyRef && assertInInjectionContext(merge);
+  NG_DEV_MODE && !scope && !options?.destroyRef && assertInInjectionContext(combineLatest);
 
   const destroyRef = scope ? options?.destroyRef ?? inject(DestroyRef) : null;
   const isArray = Array.isArray(sources);

@@ -1,7 +1,7 @@
-import { assertInInjectionContext, inject, Injector, PendingTasks, Signal } from "@angular/core";
-import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
-import { getDefaultOnErrorHandler, NG_DEV_MODE } from "../common";
-import { CleanupScope } from "../signals";
+import { assertInInjectionContext, inject, Injector, PendingTasks, Signal } from '@angular/core';
+import { createContextAwareSignal } from '../context_aware_signal/context_aware_signal';
+import { CleanupScope } from '../cleanup_scope/cleanup_scope';
+import { NG_DEV_MODE, getDefaultOnErrorHandler } from '../common';
 
 
 /**

@@ -1,6 +1,6 @@
-import { getActiveConsumer } from "@angular/core/primitives/signals";
-import { CleanupScope } from "./cleanup_scope/cleanup_scope";
-import { DestroyRef, isSignal, Signal } from "@angular/core";
+import { DestroyRef, isSignal, Signal } from '@angular/core';
+import { getActiveConsumer } from '@angular/core/primitives/signals'
+import { CleanupScope } from './cleanup_scope/cleanup_scope';
 
 declare const ngDevMode: boolean | undefined;
 
@@ -42,14 +42,14 @@ export const DEFAULT_CLEANUP_STRATEGY: 'reactive' | 'injection' = 'reactive';
 export type UnwrapSignal<T> = T extends Signal<infer V> ? V : never;
 export type NotUndefinedIfPossible<T> = [Exclude<T, undefined>] extends [never] ? undefined : Exclude<T, undefined>;
 
+export function isDestroyRef(obj: any): boolean {
+  return obj != null && !isSignal(obj) && typeof obj === 'object' && typeof obj.onDestroy === 'function';
+}
+
 export function assertInReactiveContextOrInCleanupScope(message: string): void {
   if (!(getActiveConsumer() || CleanupScope.current())) {
     throw new Error(message);
   }
-}
-
-export function isDestroyRef(obj: any): boolean {
-  return obj != null && !isSignal(obj) && typeof obj === 'object' && typeof obj.onDestroy === 'function';
 }
 
 export class ReusableDestroyRef implements DestroyRef {
@@ -93,5 +93,17 @@ export function getDefaultOnErrorHandler(onError: ((err: any) => void) | undefin
     } else {
       console.error(err);
     }
+  }
+}
+
+export interface SignalOperatorFunction<T, V> {
+  (source: Signal<T>): Signal<V>
+}
+
+export interface SignalMonoTypeOperatorFunction<T> extends SignalOperatorFunction<T, T> {}
+
+export function decreaseScopeRefCount(this: { scopeRefCount: number, __consumers__: unknown, deinit(): void }) {
+  if (--this.scopeRefCount === 0 && this.__consumers__ == null) {
+    this.deinit();
   }
 }

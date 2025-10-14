@@ -1,8 +1,8 @@
-import { assertInInjectionContext, inject, Injector, Signal } from "@angular/core";
-import { NG_DEV_MODE } from "../common";
-import { CleanupScope } from "../signals";
-import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
-import { Schedulers } from "../schedulers/schedulers";
+import { assertInInjectionContext, inject, Injector, Signal } from '@angular/core';
+import { createContextAwareSignal } from '../context_aware_signal/context_aware_signal';
+import { CleanupScope } from '../cleanup_scope/cleanup_scope';
+import { NG_DEV_MODE } from '../common';
+import { Schedulers } from '../schedulers/schedulers';
 
 export interface CreateTimerOptions {
   period?: number;

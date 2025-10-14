@@ -1,9 +1,8 @@
-import { value } from '@ng-queuex/core';
-import { DestroyableInjector, DestroyRef, Injector, runInInjectionContext, signal } from "@angular/core";
-import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation } from "@angular/core/primitives/signals";
-import { JoinSignalCreationOptions } from "../common";
-import { combineLatest } from "./combine_latest";
-import { subscribe } from "../signals";
+import { DestroyableInjector, DestroyRef, Injector, runInInjectionContext, signal } from '@angular/core';
+import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation } from '@angular/core/primitives/signals';
+import { combineLatest } from './combine_latest';
+import { subscribe } from '../subscribe/subscribe';
+import { JoinSignalCreationOptions } from '../common';
 
 function runInReactiveContext(fn: VoidFunction): ReactiveNode {
   const consumer = Object.create(REACTIVE_NODE) as ReactiveNode;

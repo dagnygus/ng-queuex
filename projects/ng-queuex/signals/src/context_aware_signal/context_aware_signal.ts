@@ -1,7 +1,7 @@
-import { producerAccessed, runPostProducerCreatedFn, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn } from "@angular/core/primitives/signals";
-import { CleanupScope } from "../cleanup_scope/cleanup_scope";
-import { assertInReactiveContextOrInCleanupScope, NG_DEV_MODE } from "../common";
-import { Signal } from "@angular/core";
+import { producerAccessed, runPostProducerCreatedFn, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn } from '@angular/core/primitives/signals';
+import { Signal } from '@angular/core';
+import { CleanupScope } from '../cleanup_scope/cleanup_scope';
+import { NG_DEV_MODE, assertInReactiveContextOrInCleanupScope, decreaseScopeRefCount } from '../common';
 
 /**
  * Options for creating a context-aware signal via `contextual()`.
@@ -51,18 +51,11 @@ export interface ContextAwareSignalNode<T> extends SignalNode<T> {
   status: ContextAwareSignalStatus
   increaseScopeRefCount: VoidFunction;
   decreaseScopeRefCount: VoidFunction;
-  init: VoidFunction;
-  deinit: VoidFunction;
+  init(): void;
+  deinit(): void;
   onInit: (set: (value: T) => void, update: (updater: (value: T) => T) => void) => void;
   onDeinit: VoidFunction
   __consumers__: unknown
-}
-
-// for node.decreaseScopeRefCount = decreaseScopeRefCount.bind(node)
-function decreaseScopeRefCount(this: ContextAwareSignalNode<any>) {
-  if (--this.scopeRefCount === 0 && this.__consumers__ == null) {
-    this.deinit();
-  }
 }
 
 const CONTEXT_AWARE_SIGNAL_NODE: Partial<ContextAwareSignalNode<any>> = /* @__PURE__ */(() => ({
@@ -135,7 +128,7 @@ Object.defineProperty(CONTEXT_AWARE_SIGNAL_NODE, 'consumers', {
       }
     }
   }
-})
+});
 
 export function createContextAwareSignal<T>(
   initialValue: T,
@@ -148,7 +141,7 @@ export function createContextAwareSignal<T>(
   const node = Object.create(CONTEXT_AWARE_SIGNAL_NODE) as ContextAwareSignalNode<T>;
   node.value = initialValue;
   node.scopeRefCount = 0;
-  node.status = ContextAwareSignalStatus.Unprepared
+  node.status = ContextAwareSignalStatus.Unprepared;
   node.__consumers__ = undefined;
   node.onInit = onInit;
   node.onDeinit = onDeinit;
@@ -176,12 +169,12 @@ export function createContextAwareSignal<T>(
 
   signalFn[SIGNAL] = node;
 
-  runPostProducerCreatedFn(node);
-
   if (NG_DEV_MODE) {
-    signalFn.toString = () => `[Signal: ${signalFn()}]`;
+    signalFn.toString = () => `[Contextual: ${signalFn()}]`;
     node.debugName = debugName
   }
+
+  runPostProducerCreatedFn(node);
 
   return signalFn;
 }

@@ -1,8 +1,8 @@
-import { assertInInjectionContext, inject, Injector, Signal } from "@angular/core";
-import { CleanupScope } from "../signals";
-import { NG_DEV_MODE } from "../common";
-import { Schedulers } from "../schedulers/schedulers";
+import { assertInInjectionContext, inject, Injector, Signal } from '@angular/core';
 import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
+import { CleanupScope } from '../cleanup_scope/cleanup_scope';
+import { NG_DEV_MODE } from '../common';
+import { Schedulers } from '../schedulers/schedulers';
 
 /**
  * Options passed to `interval()` creation function.

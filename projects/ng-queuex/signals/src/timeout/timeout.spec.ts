@@ -1,7 +1,8 @@
-import { fakeAsync, flush, TestBed } from "@angular/core/testing";
-import { timeout } from "./timeout";
-import { DestroyableInjector, DestroyRef, Injector } from "@angular/core";
-import { createTestCleanupScope, subscribe } from "../signals";
+import { fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { timeout } from './timeout';
+import { DestroyableInjector, DestroyRef, Injector } from '@angular/core';
+import { createTestCleanupScope } from '../cleanup_scope/cleanup_scope';
+import { subscribe } from '../subscribe/subscribe'
 
 describe('Testing timeout function.', () => {
 

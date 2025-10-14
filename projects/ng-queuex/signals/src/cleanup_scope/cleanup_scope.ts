@@ -5,6 +5,12 @@ declare const jest: any;
 
 let cleanupScope: CleanupScope | null = null;
 
+export function setCleanupScope(scope: CleanupScope | null): CleanupScope | null {
+  const prev = cleanupScope;
+  cleanupScope = scope;
+  return prev;
+}
+
 /**
  * CleanupScope provides a lifecycle-aware context for managing resources
  * such as subscriptions, effects, or disposable objects.
@@ -208,7 +214,7 @@ export interface CreateTestCleanupOptions {
   /**
    * An injector that provide DestroyRef object to manage root cleanup scope.
    */
-  injector?: Injector;
+  injector: Injector;
 
   /**
    * A callback what will by used for every `CleanupScope#cleanup()` call
@@ -222,7 +228,7 @@ export interface CreateTestCleanupOptions {
  * @param injector The injector that provides object of type DestroyRef.
  * @throws `Error` if this function is used outside supported test runner (jasmine/jest).
  */
-export function createTestCleanupScope(options?: CreateTestCleanupOptions): TestCleanupScope {
+export function createTestCleanupScope(options: CreateTestCleanupOptions): TestCleanupScope {
   if (!(typeof jasmine === 'object' || typeof jest === 'object')) {
     throw new Error('Function createTestCleanupScope() can be only used in supported test runner (jasmine/jest)!');
   }

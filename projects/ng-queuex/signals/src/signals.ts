@@ -1,9 +1,8 @@
 export { contextual } from './context_aware_signal/context_aware_signal'
-export type { CreateContextualSignalOptions } from './context_aware_signal/context_aware_signal'
-export type { JoinSignalCreationOptions } from './common';
+export type { CreateContextualSignalOptions, ContextAwareSignalNode } from './context_aware_signal/context_aware_signal'
+// export type { JoinSignalCreationOptions, TestCleanupScope, CreateTestCleanupOptions } from 'ng-queuex-signals-shared';
+// export { CleanupScope, createTestCleanupScope } from 'ng-queuex-signals-shared';
 export * from './subscribe/subscribe';
-export { CleanupScope, createTestCleanupScope } from './cleanup_scope/cleanup_scope';
-export type * from './cleanup_scope/cleanup_scope';
 export * from './subscribe/subscribe';
 export type * from './subscribe/subscribe';
 export * from './merge/merge';

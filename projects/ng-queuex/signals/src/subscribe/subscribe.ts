@@ -1,7 +1,8 @@
-import { assertInInjectionContext, assertNotInReactiveContext, DestroyRef, inject, Injector, Signal } from "@angular/core";
-import { ReactiveHookFn, ReactiveNode, REACTIVE_NODE, setPostSignalSetFn, consumerDestroy, consumerPollProducersForChange, consumerAfterComputation, consumerBeforeComputation, isInNotificationPhase, consumerMarkDirty, setActiveConsumer } from "@angular/core/primitives/signals";
-import { NG_DEV_MODE } from "../common";
-import { CleanupScope } from "../cleanup_scope/cleanup_scope";
+import { assertInInjectionContext, assertNotInReactiveContext, DestroyRef, inject, Signal } from '@angular/core';
+import { ReactiveHookFn, ReactiveNode, REACTIVE_NODE, setPostSignalSetFn, consumerDestroy, consumerPollProducersForChange, consumerAfterComputation, consumerBeforeComputation, isInNotificationPhase, consumerMarkDirty, setActiveConsumer } from '@angular/core/primitives/signals';
+import { CleanupScope } from '../cleanup_scope/cleanup_scope';
+import { NG_DEV_MODE } from '../common';
+
 
 interface SubscriptionNode extends ReactiveNode {
   hook: ReactiveHookFn;

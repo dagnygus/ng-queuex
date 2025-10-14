@@ -1,6 +1,6 @@
-import { DestroyableInjector, DestroyRef, Injector, ɵglobal } from "@angular/core";
-import { fromSse } from "./from_sse";
-import { subscribe } from "../signals";
+import { DestroyableInjector, DestroyRef, Injector, ɵglobal } from '@angular/core';
+import { fromSse } from './from_sse';
+import { subscribe } from '../subscribe/subscribe';
 
 const OriginalEventSource = ɵglobal.EventSource;
 const TEST_URL = 'https://api.test/data';

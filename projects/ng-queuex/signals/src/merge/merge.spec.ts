@@ -1,8 +1,8 @@
-import { DestroyableInjector, DestroyRef, Injector, runInInjectionContext, signal } from "@angular/core";
-import { subscribe } from "../subscribe/subscribe";
-import { merge } from "./merge";
-import { JoinSignalCreationOptions } from "../common";
-import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation, consumerDestroy } from "@angular/core/primitives/signals";
+import { DestroyableInjector, DestroyRef, Injector, runInInjectionContext, signal } from '@angular/core';
+import { subscribe } from '../subscribe/subscribe';
+import { merge } from './merge';
+import { JoinSignalCreationOptions } from '../common';
+import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation, consumerDestroy } from '@angular/core/primitives/signals';
 
 function runInReactiveContext(fn: VoidFunction): ReactiveNode {
   const consumer = Object.create(REACTIVE_NODE) as ReactiveNode;

@@ -1,7 +1,7 @@
-import { DestroyableInjector, DestroyRef, Injector } from "@angular/core";
-import { fromAsync } from "./from_async";
-import { createTestCleanupScope, subscribe } from "../signals";
-import { Subject } from "rxjs";
+import { DestroyableInjector, DestroyRef, Injector } from '@angular/core';
+import { fromAsync } from './from_async';
+import { subscribe } from '../subscribe/subscribe';
+import { Subject } from 'rxjs';
 
 function isPromiseLike<T>(target: any): target is PromiseLike<T> {
   return target != null && typeof target === 'object' && typeof target.then === 'function';

@@ -2,7 +2,7 @@ import { DestroyableInjector, DestroyRef, Injector, PendingTasks, runInInjection
 import { fromHttp, FromHttpResponse } from './from_http';
 import { subscribe } from '../subscribe/subscribe';
 import { fakeAsync, flush, TestBed } from '@angular/core/testing';
-import { createTestCleanupScope } from '../signals';
+import { createTestCleanupScope } from '../cleanup_scope/cleanup_scope';
 
 const originalFetch = ɵglobal.fetch;
 

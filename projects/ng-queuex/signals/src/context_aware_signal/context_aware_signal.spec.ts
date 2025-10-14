@@ -1,8 +1,9 @@
-import { consumerAfterComputation, consumerBeforeComputation, consumerDestroy, REACTIVE_NODE, ReactiveNode, SIGNAL } from "@angular/core/primitives/signals";
-import { ContextAwareSignalNode, ContextAwareSignalStatus, createContextAwareSignal } from "./context_aware_signal";
-import { CleanupScope, createTestCleanupScope } from "../cleanup_scope/cleanup_scope";
-import { DestroyRef, Injector, isSignal } from "@angular/core";
-import { subscribe } from "../subscribe/subscribe";
+import { consumerAfterComputation, consumerBeforeComputation, consumerDestroy, REACTIVE_NODE, ReactiveNode, SIGNAL } from '@angular/core/primitives/signals';
+import { ContextAwareSignalNode, ContextAwareSignalStatus, createContextAwareSignal } from './context_aware_signal';
+import { DestroyRef, Injector, isSignal } from '@angular/core';
+import { subscribe } from '../subscribe/subscribe';
+import { TestBed } from '@angular/core/testing';
+import { createTestCleanupScope, CleanupScope } from '../cleanup_scope/cleanup_scope';
 
 function runInReactiveContext(fn: VoidFunction): ReactiveNode {
   const consumer = Object.create(REACTIVE_NODE) as ReactiveNode;
@@ -64,7 +65,7 @@ describe('Testing context aware signal', () => {
       () => {},
       () => {},
     );
-    const scope = createTestCleanupScope();
+    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
     scope.run(() => {
       expect(() => log.push(source())).not.toThrowError();
     });
@@ -119,7 +120,7 @@ describe('Testing context aware signal', () => {
       () => {},
     );
 
-    const scope = createTestCleanupScope();
+    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
     scope.run(() => source());
     const node = source[SIGNAL] as ContextAwareSignalNode<any>;
     expect(node.status).toBe(ContextAwareSignalStatus.Prepared);
@@ -137,8 +138,8 @@ describe('Testing context aware signal', () => {
       () => {},
     );
 
-    const scope1 = createTestCleanupScope();
-    const scope2 = createTestCleanupScope();
+    const scope1 = createTestCleanupScope({ injector: TestBed.inject(Injector) });
+    const scope2 = createTestCleanupScope({ injector: TestBed.inject(Injector) });
     scope1.run(() => source());
     scope2.run(() => source());
     const node = source[SIGNAL] as ContextAwareSignalNode<any>;
@@ -162,7 +163,7 @@ describe('Testing context aware signal', () => {
         () => {},
       );
       const consumer = runInReactiveContext(() => source());
-      const scope = createTestCleanupScope();
+      const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
       scope.run(() => source());
       const node = source[SIGNAL] as ContextAwareSignalNode<any>;
       expect(node.status).toBe(ContextAwareSignalStatus.Prepared);
@@ -187,7 +188,7 @@ describe('Testing context aware signal', () => {
         },
         () => {},
       );
-      const scope = createTestCleanupScope();
+      const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
       scope.run(() => source());
       const consumer = runInReactiveContext(() => source());
       const node = source[SIGNAL] as ContextAwareSignalNode<any>;
@@ -235,8 +236,8 @@ describe('Testing context aware signal', () => {
     );
     const node = source[SIGNAL] as ContextAwareSignalNode<any>;
 
-    const scope1 = createTestCleanupScope();
-    const scope2 = createTestCleanupScope();
+    const scope1 = createTestCleanupScope({ injector: TestBed.inject(Injector) });
+    const scope2 = createTestCleanupScope({ injector: TestBed.inject(Injector) });
     scope1.run(() => source());
     scope2.run(() => source());
 
@@ -259,7 +260,7 @@ describe('Testing context aware signal', () => {
       },
     );
     const node = source[SIGNAL] as ContextAwareSignalNode<any>;
-    const scope = createTestCleanupScope();
+    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
 
     scope.run(() => source());
     const consumer = runInReactiveContext(() => source());
@@ -283,7 +284,7 @@ describe('Testing context aware signal', () => {
       },
     );
     const node = source[SIGNAL] as ContextAwareSignalNode<any>;
-    const scope = createTestCleanupScope();
+    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
 
     scope.run(() => source());
     const consumer = runInReactiveContext(() => source());
@@ -354,18 +355,18 @@ describe('Testing context aware signal', () => {
     consumer = runInReactiveContext(() => source());
     consumerDestroy(consumer);
 
-    scope = createTestCleanupScope();
+    scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
     scope.run(() => source());
     scope.cleanup();
 
     consumer = runInReactiveContext(() => source());
     consumerDestroy(consumer);
 
-    scope = createTestCleanupScope();
+    scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
     scope.run(() => source());
     scope.cleanup();
 
-    scope = createTestCleanupScope();
+    scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
     scope.run(() => source());
     scope.cleanup();
 

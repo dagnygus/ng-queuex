@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { interval } from "./interval"
+import { interval } from './interval';
 import { DestroyableInjector, DestroyRef, Injector } from '@angular/core';
-import { createTestCleanupScope, subscribe } from '../signals';
+import { subscribe } from '../subscribe/subscribe';
+import { createTestCleanupScope } from '../cleanup_scope/cleanup_scope';
 
 describe('Testing interval function.', () => {
 

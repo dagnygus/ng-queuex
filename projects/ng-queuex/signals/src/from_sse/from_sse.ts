@@ -1,6 +1,6 @@
-import { Signal } from "@angular/core";
-import { createContextAwareSignal } from "../context_aware_signal/context_aware_signal";
-import { getDefaultOnErrorHandler } from "../common";
+import { Signal } from '@angular/core';
+import { createContextAwareSignal } from '../context_aware_signal/context_aware_signal';
+import { getDefaultOnErrorHandler } from '../common';
 
 
 /**

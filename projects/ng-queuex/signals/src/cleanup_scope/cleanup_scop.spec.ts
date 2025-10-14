@@ -1,5 +1,6 @@
 import { Injector, ɵglobal } from "@angular/core"
 import { CleanupScope, createTestCleanupScope, DefaultCleanupScope } from "./cleanup_scope";
+import { TestBed } from "@angular/core/testing";
 
 describe('Testing DefaultCleanupScope class.', () => {
   it('Should run added teardown logic when CleanupScope#cleanup() runs.', () => {
@@ -104,10 +105,10 @@ describe('Testing DefaultCleanupScope class.', () => {
   })
 });
 
-describe('Testing TestCleanupScopeForTest', () => {
+describe('Testing createTestCleanupScope() function', () => {
   it('Parent scope should clean child scope.', () => {
     const log: string[] = [];
-    const scope = createTestCleanupScope();
+    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
     scope.add(() => log.push('a'));
 
     const childScope = scope.createChild();
@@ -119,7 +120,7 @@ describe('Testing TestCleanupScopeForTest', () => {
 
   it('Child scope should clean parent scope.', () => {
     let log: string[] = [];
-    const scope = createTestCleanupScope();
+    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
 
     scope.add(() => log.push('a'));
 
@@ -134,7 +135,7 @@ describe('Testing TestCleanupScopeForTest', () => {
   });
 
   it('Parent scope should collect child scopes', () => {
-    const scope = createTestCleanupScope();
+    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
     const children = [
       scope.createChild(),
       scope.createChild(),
@@ -145,7 +146,7 @@ describe('Testing TestCleanupScopeForTest', () => {
 
   it('Should root scope run onCleanup listener before teardown logics', () => {
     const log: string[] = [];
-    const scope = createTestCleanupScope({ onCleanup: () => log.push('a') });
+    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector), onCleanup: () => log.push('a') });
     scope.add(() => log.push('b'));
     scope.cleanup();
     expect(log).toEqual(['a', 'b']);
@@ -154,7 +155,7 @@ describe('Testing TestCleanupScopeForTest', () => {
 
   it('Should child scope run onCleanup listener before teardown logics', () => {
     const log: string[] = [];
-    const scope = createTestCleanupScope({ onCleanup: () => log.push('a') });
+    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector), onCleanup: () => log.push('a') });
     const childScope = scope.createChild(() => log.push('b'))
     scope.add(() => log.push('c'));
     scope.cleanup();
@@ -165,7 +166,7 @@ describe('Testing TestCleanupScopeForTest', () => {
     const _jasmine = ɵglobal.jasmine;
     ɵglobal.jasmine = undefined
     expect(() => {
-      createTestCleanupScope();
+      createTestCleanupScope({ injector: TestBed.inject(Injector) });
     }).toThrowError(
       'Function createTestCleanupScope() can be only used in supported test runner (jasmine/jest)!'
     )
