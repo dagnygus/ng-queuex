@@ -30,8 +30,15 @@ type PipeResultValue<In, Ops extends readonly any[]> =
         : never
       : never;
 
+/**
+ * Options passed to the `signalPipe()` creation function.
+ */
 export interface CreateSignalPipeOptions {
+
+  /** Optional debug label for tracing. */
   debugName?: string;
+
+  /** An injector if the signal must to be created outside injection context */
   injector?: Injector;
 }
 
@@ -113,20 +120,21 @@ const SIGNAL_PIPE_NODE: Omit<SignalPipeNode<any>, KeysToOmit> = /* @__PURE__ */ 
     node.version++;
   },
   computation(this: SignalPipeNode<any>) {
-    if (this.inputSource) {
+    const node = this;
+    if (node.inputSource) {
       if (this.outputSource === null) {
-        this.init();
+        node.init();
+        node.cleanupScope.add(function() { node.deinit(); });
       }
-      return this.outputSource!();
-    } else if (this.oldValue === UNSET) {
-      this.error = new Error(`Signal pipe ${this.debugName ? this.debugName + ' ' : ''}was destroyed before the first read! Computation is impossible.`)
+      return node.outputSource!();
+    } else if (node.oldValue === UNSET) {
+      node.error = new Error(`Signal pipe ${this.debugName ? this.debugName + ' ' : ''}was destroyed before the first read! Computation is impossible.`);
       return ERRORED;
     } else {
-      return this.oldValue;
+      return node.oldValue;
     }
   },
   init(this: SignalPipeNode<any>) {
-    this;
     if (this.inputSource) {
       const consumer = setActiveConsumer(null);
       const prevScope = setCleanupScope(this.cleanupScope);
@@ -145,9 +153,7 @@ const SIGNAL_PIPE_NODE: Omit<SignalPipeNode<any>, KeysToOmit> = /* @__PURE__ */ 
   deinit(this: SignalPipeNode<any>) {
     if (this.outputSource) {
       this.outputSource = null;
-      this.cleanupScope._allowCleanup = true;
       this.cleanupScope.cleanup();
-      this.cleanupScope._allowCleanup = false;
     }
   },
   destroy(this: SignalPipeNode<any>) {
@@ -171,6 +177,30 @@ Object.defineProperty(SIGNAL_PIPE_NODE, 'consumers', {
   }
 });
 
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
 export function signalPipe<T, Ops extends readonly SignalOperatorFunction<any, any>[]>(
   source: Signal<T>,
   pipeline: EnsureChainable<T, Ops>,
@@ -184,7 +214,6 @@ export function signalPipe<T, Ops extends readonly SignalOperatorFunction<any, a
   const injector = parentScope?.injector ?? options?.injector ?? inject(Injector);
   const ownScope = new DefaultCleanupScope(injector);
 
-  ownScope._allowCleanup = false;
   pipeline = pipeline.slice() as any;
 
   const node  = Object.create(SIGNAL_PIPE_NODE) as SignalPipeNode<any>;
@@ -238,7 +267,7 @@ export function signalPipe<T, Ops extends readonly SignalOperatorFunction<any, a
 
   if (NG_DEV_MODE) {
     signalFn.toString = () => `[SignalPipe: ${signalFn()}]`;
-    node.debugName = debugName
+    node.debugName = debugName;
   }
 
   runPostProducerCreatedFn(node);

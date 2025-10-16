@@ -97,11 +97,18 @@ describe('Testing DefaultCleanupScope class.', () => {
     expect(log).toEqual(['a']);
   });
 
-  it('Should throw error if cleanup is disallowed.', () => {
+  it('Should handle circular cleanup call without any problem.', () => {
+    const log: string[] = [];
     const scope = new DefaultCleanupScope(Injector.NULL);
-    scope._allowCleanup = false;
-    scope._errorMessage = 'XYZ';
-    expect(() => scope.cleanup()).toThrowError('XYZ');
+
+    scope.add(() => {
+      log.push('a')
+      scope.cleanup();
+      log.push('b');
+    });
+
+    scope.cleanup();
+    expect(log).toEqual([ 'a', 'b' ]);
   })
 });
 

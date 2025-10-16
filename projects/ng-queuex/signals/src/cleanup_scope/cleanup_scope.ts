@@ -99,8 +99,6 @@ export abstract class CleanupScope {
 export class DefaultCleanupScope implements CleanupScope {
   _listeners: VoidFunction[] = [];
   _cleaning = false;
-  _allowCleanup = true;
-  _errorMessage?: string
 
   constructor(public _injector: Injector) {}
 
@@ -131,14 +129,12 @@ export class DefaultCleanupScope implements CleanupScope {
   }
 
   cleanup(): void {
-    if (!this._allowCleanup) {
-      throw new Error(this._errorMessage);
-    }
+    if (this._cleaning) { return; }
     this._cleaning = true;
     try {
       this._cleanup()
     } finally {
-      this._cleaning = true;
+      this._cleaning = false;
     }
   }
 
