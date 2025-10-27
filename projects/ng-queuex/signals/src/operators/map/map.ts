@@ -1,6 +1,6 @@
-import { SignalOperatorFunction } from "../../common";
+import { NG_DEV_MODE, SignalOperatorFunction } from "../../common";
 import { CleanupScope } from '../../cleanup_scope/cleanup_scope';
-import { computed } from "@angular/core";
+import { assertNotInReactiveContext, computed } from "@angular/core";
 
 /**
  * Creates a signal operator that transforms the emitted value of a source signal
@@ -22,6 +22,7 @@ import { computed } from "@angular/core";
  */
 export function map<T, V>(project: (value: T) => V): SignalOperatorFunction<T, V> {
   return function(mainSource) {
+    NG_DEV_MODE && assertNotInReactiveContext(map);
     const scope = CleanupScope.assertCurrent(map).createChild();
     return computed(() => {
       scope.cleanup();

@@ -1,5 +1,5 @@
-import { signal, Signal } from "@angular/core";
-import { SignalOperatorFunction } from "../../common";
+import { assertNotInReactiveContext, signal, Signal } from "@angular/core";
+import { NG_DEV_MODE, SignalOperatorFunction } from "../../common";
 import { CleanupScope } from "../../cleanup_scope/cleanup_scope";
 import { subscribe } from '../../subscribe/subscribe';
 
@@ -35,9 +35,10 @@ import { subscribe } from '../../subscribe/subscribe';
  * - Use this when multiple derived signals should emit concurrently into the same stream.
  * - If you want only the most recent projected signal to be active, consider `switchMap`.
  */
-export function mergeMap<T, V>(project: (value: T) => Signal<V>): SignalOperatorFunction<T, V> {
+export function mergeMap<T, V>(project: (value: Exclude<T, undefined>) => Signal<V>): SignalOperatorFunction<T, V> {
   return function(prevSource) {
-    const scope = CleanupScope.assertCurrent(mergeMap);
+    NG_DEV_MODE && assertNotInReactiveContext(mergeMap);
+    const scope = CleanupScope.assertCurrent(mergeMap)
     const nextSource = signal<any>(undefined);
     const innerSources = new Set<Signal<V>>();
 
@@ -46,9 +47,13 @@ export function mergeMap<T, V>(project: (value: T) => Signal<V>): SignalOperator
     })
 
     subscribe(prevSource, (value) => {
-      const innerSource = project(value);
+      const childScope = scope.createChild();
+      const innerSource = childScope.run(() => project(value));
 
-      if (innerSources.has(innerSource)) { return; }
+      if (innerSources.has(innerSource)) {
+        scope.removeChild(childScope);
+        return;
+      }
       innerSources.add(innerSource);
 
       if (CleanupScope.current()) {

@@ -64,6 +64,13 @@ export abstract class CleanupScope {
   abstract createChild(): CleanupScope;
 
   /**
+   * If a provided scope is a child of this scope, it will be removed from this scope and it
+   * will not participate in the cascading cleaning execution.
+   * @param child A potential child scope of this scope.
+   */
+  abstract removeChild(child: CleanupScope): void
+
+  /**
    * If current stack frame is in cleanup scope then returns a current `CleanupScope` object,
    * otherwise null.
    *
@@ -97,7 +104,7 @@ export abstract class CleanupScope {
 }
 
 export class DefaultCleanupScope implements CleanupScope {
-  _listeners: VoidFunction[] = [];
+  _listeners: (VoidFunction | CleanupScope)[] = [];
   _cleaning = false;
 
   constructor(public _injector: Injector) {}
@@ -132,7 +139,7 @@ export class DefaultCleanupScope implements CleanupScope {
     if (this._cleaning) { return; }
     this._cleaning = true;
     try {
-      this._cleanup()
+      this._cleanup();
     } finally {
       this._cleaning = false;
     }
@@ -141,7 +148,12 @@ export class DefaultCleanupScope implements CleanupScope {
   _cleanup(): void {
     try {
       while (this._listeners.length) {
-        this._listeners.shift()!();
+        const listener = this._listeners.shift()!;
+        if (typeof listener === 'function') {
+          listener()
+        } else {
+          listener.cleanup();
+        }
       }
     } finally {
       if (this._listeners.length) {
@@ -152,10 +164,15 @@ export class DefaultCleanupScope implements CleanupScope {
 
   createChild(): CleanupScope {
     const child = new DefaultCleanupScope(this._injector);
-    this._listeners.push(function() {
-      child.cleanup();
-    });
+    this._listeners.push(child);
     return child;
+  }
+
+  removeChild(child: CleanupScope): void {
+    const index = this._listeners.indexOf(child);
+    if (index > -1) {
+      this._listeners.splice(index, 1);
+    }
   }
 }
 
@@ -195,10 +212,16 @@ class TestCleanupScopeImpl extends DefaultCleanupScope implements TestCleanupSco
   override createChild(onCleanup?: VoidFunction | null | undefined): CleanupScope {
     const child = new TestCleanupScopeImpl(onCleanup);
     this._children.push(child);
-    this._listeners.push(function() {
-      child.cleanup();
-    });
+    this._listeners.push(child);
     return child;
+  }
+
+  override removeChild(child: CleanupScope): void {
+    super.removeChild(child);
+    const index = this._children.indexOf(child as any);
+    if (index > -1) {
+      this._children.splice(index, 1);
+    }
   }
 }
 
@@ -210,7 +233,7 @@ export interface CreateTestCleanupOptions {
   /**
    * An injector that provide DestroyRef object to manage root cleanup scope.
    */
-  injector: Injector;
+  injector?: Injector;
 
   /**
    * A callback what will by used for every `CleanupScope#cleanup()` call
@@ -224,7 +247,7 @@ export interface CreateTestCleanupOptions {
  * @param injector The injector that provides object of type DestroyRef.
  * @throws `Error` if this function is used outside supported test runner (jasmine/jest).
  */
-export function createTestCleanupScope(options: CreateTestCleanupOptions): TestCleanupScope {
+export function createTestCleanupScope(options?: CreateTestCleanupOptions): TestCleanupScope {
   if (!(typeof jasmine === 'object' || typeof jest === 'object')) {
     throw new Error('Function createTestCleanupScope() can be only used in supported test runner (jasmine/jest)!');
   }

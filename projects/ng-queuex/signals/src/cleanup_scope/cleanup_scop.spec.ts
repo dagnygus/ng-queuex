@@ -115,7 +115,7 @@ describe('Testing DefaultCleanupScope class.', () => {
 describe('Testing createTestCleanupScope() function', () => {
   it('Parent scope should clean child scope.', () => {
     const log: string[] = [];
-    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
+    const scope = createTestCleanupScope();
     scope.add(() => log.push('a'));
 
     const childScope = scope.createChild();
@@ -127,7 +127,7 @@ describe('Testing createTestCleanupScope() function', () => {
 
   it('Child scope should clean parent scope.', () => {
     let log: string[] = [];
-    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
+    const scope = createTestCleanupScope();
 
     scope.add(() => log.push('a'));
 
@@ -142,7 +142,7 @@ describe('Testing createTestCleanupScope() function', () => {
   });
 
   it('Parent scope should collect child scopes', () => {
-    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector) });
+    const scope = createTestCleanupScope();
     const children = [
       scope.createChild(),
       scope.createChild(),
@@ -153,7 +153,7 @@ describe('Testing createTestCleanupScope() function', () => {
 
   it('Should root scope run onCleanup listener before teardown logics', () => {
     const log: string[] = [];
-    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector), onCleanup: () => log.push('a') });
+    const scope = createTestCleanupScope({ onCleanup: () => log.push('a') });
     scope.add(() => log.push('b'));
     scope.cleanup();
     expect(log).toEqual(['a', 'b']);
@@ -162,7 +162,7 @@ describe('Testing createTestCleanupScope() function', () => {
 
   it('Should child scope run onCleanup listener before teardown logics', () => {
     const log: string[] = [];
-    const scope = createTestCleanupScope({ injector: TestBed.inject(Injector), onCleanup: () => log.push('a') });
+    const scope = createTestCleanupScope({ onCleanup: () => log.push('a') });
     const childScope = scope.createChild(() => log.push('b'))
     scope.add(() => log.push('c'));
     scope.cleanup();
@@ -178,5 +178,24 @@ describe('Testing createTestCleanupScope() function', () => {
       'Function createTestCleanupScope() can be only used in supported test runner (jasmine/jest)!'
     )
     ɵglobal.jasmine = _jasmine;
+  });
+
+  it('Removed child cleanup scope should not participated in cascade cleaning execution.', () => {
+    const log: string[] = [];
+    const parentScope = createTestCleanupScope({ onCleanup: () => log.push('A') });
+    const childScope1 = parentScope.createChild();
+    const childScope2 = parentScope.createChild();
+    const childScope3 = parentScope.createChild();
+
+    childScope1.add(() => log.push('B'));
+    childScope2.add(() => log.push('C'));
+    childScope3.add(() => log.push('D'));
+
+    parentScope.removeChild(childScope2);
+
+    parentScope.cleanup();
+
+    expect(log).toEqual([ 'A', 'B', 'D' ]);
+    expect(parentScope.children().length).toBe(2);
   })
 })
