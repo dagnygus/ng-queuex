@@ -30,13 +30,14 @@ import { subscribe } from '../../subscribe/subscribe';
  * ```
  *
  * @remarks
- * - Each inner signal is created within a separate child cleanup scope.
+ * -
  * - Only the most recent projected inner signal remains active.
  * - Use this when you want to cancel or replace previous signal computations
  *   whenever the source signal emits a new value.
- * - Values of `undefined` from the source signal are skipped.
+ * - Initial value  `undefined` is skipped.
+ * - All project() function executions have shared cleanup scope, what it gets clean between executions.
  */
-export function switchMap<T, V>(project: (value: Exclude<T, undefined>) => Signal<V>): SignalOperatorFunction<T, V> {
+export function switchMap<T, V>(project: (value: Exclude<T, undefined>) => Signal<V>): SignalOperatorFunction<T, undefined extends T ? V | undefined : V> {
   return function(prevSource) {
     NG_DEV_MODE && assertNotInReactiveContext(switchMap);
     const childScope = CleanupScope.assertCurrent(switchMap).createChild();
@@ -45,10 +46,25 @@ export function switchMap<T, V>(project: (value: Exclude<T, undefined>) => Signa
     subscribe(prevSource, (value) => {
       childScope.cleanup();
       childScope.run(() => {
+        let cleaned = false;
+        childScope.add(() => { cleaned = true; });
         const innerSource = project(value);
+
+        if (cleaned) {
+          if (typeof nextSource() === 'undefined') {
+            nextSource.set(innerSource());
+          }
+          childScope.cleanup();
+          return;
+        }
+
         subscribe(innerSource, (innerValue) => {
           nextSource.set(innerValue);
         });
+
+        if (cleaned) {
+          childScope.cleanup();
+        }
       });
     });
 

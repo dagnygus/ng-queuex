@@ -36,6 +36,12 @@ export interface JoinSignalCreationOptions {
 
 }
 
+export interface SignalOperatorFunction<T, V> {
+  (source: Signal<T>): Signal<V>
+}
+
+export interface SignalMonoTypeOperatorFunction<T> extends SignalOperatorFunction<T, T> {}
+
 export const NG_DEV_MODE = typeof ngDevMode === 'undefined' || !!ngDevMode;
 export const DEFAULT_CLEANUP_STRATEGY: 'reactive' | 'injection' = 'reactive';
 
@@ -96,14 +102,16 @@ export function getDefaultOnErrorHandler(onError: ((err: any) => void) | undefin
   }
 }
 
-export interface SignalOperatorFunction<T, V> {
-  (source: Signal<T>): Signal<V>
-}
 
-export interface SignalMonoTypeOperatorFunction<T> extends SignalOperatorFunction<T, T> {}
 
-export function decreaseScopeRefCount(this: { scopeRefCount: number, __consumers__: unknown, deinit(): void }) {
-  if (--this.scopeRefCount === 0 && this.__consumers__ == null) {
-    this.deinit();
+export function arrayEquals(a: any[], b: any[]) {
+  if (a.length != b.length) {
+    return false;
   }
+
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) { return false; }
+  }
+
+  return true;
 }

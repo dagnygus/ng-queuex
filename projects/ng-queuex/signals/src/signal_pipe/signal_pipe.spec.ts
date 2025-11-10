@@ -1,6 +1,6 @@
 import { assertNotInReactiveContext, computed, DestroyableInjector, DestroyRef, Injector, isSignal, runInInjectionContext, Signal, signal } from '@angular/core';
-import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation, consumerDestroy } from '@angular/core/primitives/signals';
-import { signalPipe } from './signal_pipe';
+import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation, consumerDestroy, createWatch, SIGNAL } from '@angular/core/primitives/signals';
+import { signalPipe, SignalPipeNode } from './signal_pipe';
 import { CleanupScope, createTestCleanupScope } from '../cleanup_scope/cleanup_scope';
 import { subscribe } from '../subscribe/subscribe'
 
@@ -38,14 +38,14 @@ describe('Testing signalPipe() function', () => {
     runInInjectionContext(injector, fn);
   }
 
-  it('isSignal() should return true', () => {
+  it('isSignal() should return true.', () => {
     runInTestInjectionContext(() => {
       const source = signalPipe(signal('A'), []);
       expect(isSignal(source)).toBeTrue();
     });
   });
 
-  it('Should throw error when signal is created outside injection context', () => {
+  it('Should throw error when signal is created outside injection context.', () => {
     expect(() => signalPipe(signal('A'), [])).toThrowError();
   });
 
@@ -60,7 +60,7 @@ describe('Testing signalPipe() function', () => {
     });
   });
 
-  it('Should throw error when signal is read outside reactive context (or cleanup scope)', () => {
+  it('Should throw error when signal is read outside reactive context (or cleanup scope).', () => {
     let source: Signal<string> = null!
     runInTestInjectionContext(() => {
       source = signalPipe(signal('A'), []);
@@ -73,7 +73,7 @@ describe('Testing signalPipe() function', () => {
     );
   });
 
-  it('Should not throw error when is read inside reactive context', () => {
+  it('Should not throw error when is read inside reactive context.', () => {
     let source: Signal<string> = null!
     runInTestInjectionContext(() => {
       source = signalPipe(signal('A'), []);
@@ -84,7 +84,7 @@ describe('Testing signalPipe() function', () => {
     consumerDestroy(consumer);
   });
 
-  it('Should not throw error when is read inside cleanup scope', () => {
+  it('Should not throw error when is read inside cleanup scope.', () => {
     let source: Signal<string> = null!
     runInTestInjectionContext(() => {
       source = signalPipe(signal('A'), []);
@@ -97,7 +97,7 @@ describe('Testing signalPipe() function', () => {
     scope.cleanup();
   });
 
-  it('Should run operator functions when it is read in first reactive context', () => {
+  it('Should run operator functions when it is read in first reactive context.', () => {
     const log: string[] = [];
 
     let source: Signal<string> = null!
@@ -124,7 +124,7 @@ describe('Testing signalPipe() function', () => {
     expect(log).toEqual([ 'A', 'B' ]);
   });
 
-  it('Should run operator functions when its read in first cleanup scope', () => {
+  it('Should run operator functions when its read in first cleanup scope.', () => {
     const log: string[] = [];
 
     let source: Signal<string> = null!
@@ -163,7 +163,7 @@ describe('Testing signalPipe() function', () => {
         signal('A'),
         [
           (s: Signal<string>) => {
-            log.push(s())
+            log.push(s());
             return signal('B');
           },
           (s: Signal<string>) => {
@@ -192,7 +192,7 @@ describe('Testing signalPipe() function', () => {
         signal('A'),
         [
           (s: Signal<string>) => {
-            log.push(s())
+            log.push(s());
             return signal('B');
           },
           (s: Signal<string>) => {
@@ -221,8 +221,8 @@ describe('Testing signalPipe() function', () => {
         signal('A'),
         [
           (s: Signal<string>) => {
-            assertNotInReactiveContext(signalPipe)
-            log.push(s())
+            assertNotInReactiveContext(signalPipe);
+            log.push(s());
             return signal('B');
           },
         ]
@@ -265,7 +265,7 @@ describe('Testing signalPipe() function', () => {
         signal(''),
         [
           (s: Signal<string>) => {
-            CleanupScope.assertCurrent().add(() => log.push('A'))
+            CleanupScope.assertCurrent().add(() => log.push('A'));
             return s;
           }
         ]
@@ -454,7 +454,7 @@ describe('Testing signalPipe() function', () => {
       source = signalPipe(
         innerSource,
         [
-          (s: Signal<number>) => {
+          (s) => {
             return computed(() => 2 * s());
           }
         ]
@@ -469,7 +469,7 @@ describe('Testing signalPipe() function', () => {
     expect(log).toEqual([ 0, 2, 4, 6 ]);
   });
 
-  it('Should work correctly with multiple operators', () => {
+  it('Should work correctly with multiple operators.', () => {
     const log: string[] = [];
     const innerSource = signal(0);
 
@@ -478,10 +478,10 @@ describe('Testing signalPipe() function', () => {
       source = signalPipe(
         innerSource,
         [
-          (s: Signal<number>) => {
+          (s) => {
             return computed(() => 2 * s());
           },
-          (s: Signal<number>) => {
+          (s) => {
             return computed(() => String(s()));
           }
         ]
@@ -495,4 +495,126 @@ describe('Testing signalPipe() function', () => {
 
     expect(log).toEqual([ '0', '2', '4', '6' ]);
   });
+
+  it('Should not be reinitialized until all consumers are removed.', () => {
+    const controlSource = signal(0);
+    const innerSource = signal('');
+    let rootCleanupScope: CleanupScope = null!;
+    let source: Signal<string> = null!;
+    runInTestInjectionContext(() => {
+      source = signalPipe(
+        innerSource,
+        [
+          (s) => {
+            rootCleanupScope = CleanupScope.assertCurrent();
+            return s
+          }
+        ]
+      )
+    });
+
+    const node = source[SIGNAL] as SignalPipeNode<any>
+
+    let watch1RunCount = 0
+
+    const watch1 = createWatch(
+      () => {
+        controlSource();
+        expect(source()).toBe('');
+        watch1RunCount++
+      },
+      () => {},
+      true
+    );
+
+    watch1.notify();
+    watch1.run();
+
+    expect(watch1RunCount).toBe(1);
+    expect(node.outputSource).not.toBeNull();
+    rootCleanupScope.cleanup();
+    expect(node.outputSource).toBeNull();
+    expect(node.allowInit).toBeFalse();
+    controlSource.update((value) => ++value);
+    watch1.run();
+    expect(watch1RunCount).toBe(2);
+    expect(node.outputSource).toBeNull();
+    expect(node.allowInit).toBeFalse();
+
+    watch1.destroy();
+    expect(node.outputSource).toBeNull();
+    expect(node.allowInit).toBeTrue();
+
+
+    let watch2RunCount = 0
+
+    const watch2 = createWatch(
+      () => {
+        controlSource();
+        source();
+        watch2RunCount++
+      },
+      () => {},
+      true
+    );
+
+    watch2.notify();
+    watch2.run();
+
+    expect(watch2RunCount).toBe(1);
+    expect(node.outputSource).not.toBeNull();
+
+    watch2.destroy();
+    expect(node.outputSource).toBeNull();
+
+    const testScope = createTestCleanupScope();
+
+    testScope.run(() => source());
+    expect(node.outputSource).not.toBeNull();
+    rootCleanupScope.cleanup();
+    expect(node.outputSource).toBeNull();
+    expect(node.allowInit).toBeFalse();
+    testScope.run(() => source());
+    expect(node.outputSource).toBeNull();
+    expect(node.allowInit).toBeFalse();
+    testScope.cleanup();
+    expect(node.outputSource).toBeNull();
+    expect(node.allowInit).toBeTrue();
+
+    testScope.run(() => source());
+    expect(node.outputSource).not.toBeNull();
+    testScope.cleanup();
+  });
+
+  it('Should deinitialize after initialization if cleanup scope gest clean during initialization.', () => {
+    const log: string[] = [];
+    const innerSource = signal('');
+    let source: Signal<string> = null!;
+    runInTestInjectionContext(() => {
+      source = signalPipe(innerSource, [
+        (s) => {
+          CleanupScope.assertCurrent().cleanup();
+          CleanupScope.assertCurrent().add(() => log.push('A'));
+          return s;
+        },
+        (s) => {
+          CleanupScope.assertCurrent().add(() => log.push('B'));
+          return s;
+        },
+        (s) => {
+          CleanupScope.assertCurrent().add(() => log.push('C'));
+          return s;
+        },
+      ])
+    });
+    const watch = createWatch(
+      () => source(),
+      () => {},
+      true
+    );
+    watch.notify();
+    watch.run();
+    expect(log).toEqual([ 'A', 'B', 'C' ]);
+    expect((source[SIGNAL] as SignalPipeNode<any>).outputSource).toBeNull();
+  })
 });

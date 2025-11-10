@@ -64,13 +64,6 @@ export abstract class CleanupScope {
   abstract createChild(): CleanupScope;
 
   /**
-   * If a provided scope is a child of this scope, it will be removed from this scope and it
-   * will not participate in the cascading cleaning execution.
-   * @param child A potential child scope of this scope.
-   */
-  abstract removeChild(child: CleanupScope): void
-
-  /**
    * If current stack frame is in cleanup scope then returns a current `CleanupScope` object,
    * otherwise null.
    *
@@ -104,7 +97,7 @@ export abstract class CleanupScope {
 }
 
 export class DefaultCleanupScope implements CleanupScope {
-  _listeners: (VoidFunction | CleanupScope)[] = [];
+  _listeners: VoidFunction[] = [];
   _cleaning = false;
 
   constructor(public _injector: Injector) {}
@@ -148,12 +141,7 @@ export class DefaultCleanupScope implements CleanupScope {
   _cleanup(): void {
     try {
       while (this._listeners.length) {
-        const listener = this._listeners.shift()!;
-        if (typeof listener === 'function') {
-          listener()
-        } else {
-          listener.cleanup();
-        }
+        this._listeners.shift()!();
       }
     } finally {
       if (this._listeners.length) {
@@ -164,15 +152,8 @@ export class DefaultCleanupScope implements CleanupScope {
 
   createChild(): CleanupScope {
     const child = new DefaultCleanupScope(this._injector);
-    this._listeners.push(child);
+    this._listeners.push(function() { child.cleanup() });
     return child;
-  }
-
-  removeChild(child: CleanupScope): void {
-    const index = this._listeners.indexOf(child);
-    if (index > -1) {
-      this._listeners.splice(index, 1);
-    }
   }
 }
 
@@ -212,16 +193,8 @@ class TestCleanupScopeImpl extends DefaultCleanupScope implements TestCleanupSco
   override createChild(onCleanup?: VoidFunction | null | undefined): CleanupScope {
     const child = new TestCleanupScopeImpl(onCleanup);
     this._children.push(child);
-    this._listeners.push(child);
+    this._listeners.push(function() { child.cleanup(); });
     return child;
-  }
-
-  override removeChild(child: CleanupScope): void {
-    super.removeChild(child);
-    const index = this._children.indexOf(child as any);
-    if (index > -1) {
-      this._children.splice(index, 1);
-    }
   }
 }
 

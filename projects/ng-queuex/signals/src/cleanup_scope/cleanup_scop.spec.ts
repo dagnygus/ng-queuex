@@ -179,23 +179,4 @@ describe('Testing createTestCleanupScope() function', () => {
     )
     ɵglobal.jasmine = _jasmine;
   });
-
-  it('Removed child cleanup scope should not participated in cascade cleaning execution.', () => {
-    const log: string[] = [];
-    const parentScope = createTestCleanupScope({ onCleanup: () => log.push('A') });
-    const childScope1 = parentScope.createChild();
-    const childScope2 = parentScope.createChild();
-    const childScope3 = parentScope.createChild();
-
-    childScope1.add(() => log.push('B'));
-    childScope2.add(() => log.push('C'));
-    childScope3.add(() => log.push('D'));
-
-    parentScope.removeChild(childScope2);
-
-    parentScope.cleanup();
-
-    expect(log).toEqual([ 'A', 'B', 'D' ]);
-    expect(parentScope.children().length).toBe(2);
-  })
 })

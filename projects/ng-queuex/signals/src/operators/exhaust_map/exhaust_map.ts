@@ -40,7 +40,7 @@ import { CleanupScope } from "../../cleanup_scope/cleanup_scope";
  * - Use this when you want to prevent overlapping signal computations.
  * - Values of `undefined` from the source signal are skipped.
  */
-export function exhaustMap<T, V>(project: (value: Exclude<T, undefined>) => Signal<V>): SignalOperatorFunction<T, V> {
+export function exhaustMap<T, V>(project: (value: Exclude<T, undefined>) => Signal<V>): SignalOperatorFunction<T, undefined extends T ? V | undefined : V> {
   return function(prevSource) {
     NG_DEV_MODE && assertNotInReactiveContext(exhaustMap);
     const childScope = CleanupScope.assertCurrent(exhaustMap).createChild();
@@ -58,11 +58,26 @@ export function exhaustMap<T, V>(project: (value: Exclude<T, undefined>) => Sign
       });
 
       childScope.run(() => {
+        let cleaned = false;
+        childScope.add(() => { cleaned = true; });
         innerSource = project(value);
+
+        if (cleaned) {
+          if (typeof nextSource() === 'undefined') {
+            nextSource.set(innerSource());
+          }
+          childScope.cleanup();
+          return;
+        }
+
         subscribe(innerSource, (v) => {
           innerSource = null;
           nextSource.set(v);
         });
+
+        if (cleaned) {
+          childScope.cleanup();
+        }
       });
     });
 

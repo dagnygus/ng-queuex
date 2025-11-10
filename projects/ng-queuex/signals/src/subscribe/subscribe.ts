@@ -11,7 +11,8 @@ interface SubscriptionNode extends ReactiveNode {
   destroyed: boolean
   source: Signal<any>
   teardownLogics: VoidFunction[],
-  fn: Function | null
+  runningFn: boolean;
+  fn: Function | null;
   run(): void;
   destroy(): void;
   cleanup(): void;
@@ -48,6 +49,7 @@ const SUBSCRIPTION_NODE: Partial<SubscriptionNode> = /* @__PURE__ */ (() => {
     consumerIsAlwaysLive: true,
     consumerAllowSignalWrites: true,
     consumerMarkedDirty: (node: SubscriptionNode) => {
+      node.runningFn = true
       node.prevHook = setPostSignalSetFn(node.hook)
     },
     run(this: SubscriptionNode) {
@@ -60,6 +62,7 @@ const SUBSCRIPTION_NODE: Partial<SubscriptionNode> = /* @__PURE__ */ (() => {
       } finally {
         if (this.fn === null) {
           // trying to run a destroyed watch is noop
+          this.runningFn = false;
           return;
         }
 
@@ -94,6 +97,10 @@ const SUBSCRIPTION_NODE: Partial<SubscriptionNode> = /* @__PURE__ */ (() => {
             try {
               fn(value);
             } finally {
+              this.runningFn = false;
+              if (this.destroyed) {
+                this.fn = null;
+              }
               setActiveConsumer(prevConsumer);
             }
           }
@@ -104,8 +111,10 @@ const SUBSCRIPTION_NODE: Partial<SubscriptionNode> = /* @__PURE__ */ (() => {
     },
     destroy(this: SubscriptionNode) {
       this.destroyed = true;
+      if (!this.runningFn) {
+        this.fn = null;
+      }
       consumerDestroy(this);
-      this.fn = null;
       this.cleanup();
     },
     cleanup(this: SubscriptionNode) {
@@ -157,6 +166,8 @@ export function subscribe<T>(source: Signal<T>, next: (value: Exclude<T, undefin
   node.fn = next;
   node.source = source;
   node.teardownLogics = [];
+  node.destroyed = false;
+  node.runningFn = false;
 
   const unsubscribe = function() {
     node.destroy();

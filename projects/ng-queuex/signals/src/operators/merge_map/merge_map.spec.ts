@@ -1,5 +1,5 @@
 import { value } from '@ng-queuex/core';
-import { DestroyableInjector, DestroyRef, Injector, signal } from "@angular/core";
+import { computed, DestroyableInjector, DestroyRef, Injector, signal } from "@angular/core";
 import { mergeMap } from "./merge_map";
 import { CleanupScope, createTestCleanupScope } from "../../cleanup_scope/cleanup_scope";
 import { subscribe } from "../../signals";
@@ -34,7 +34,7 @@ describe('Testing mergeMap() function', () => {
     }
     injector = null!;
     destroyRef = null!;
-  })
+  });
 
   it('Should throw an error if it is used outside of a cleanup scope.', () => {
     const inputSource = signal(undefined);
@@ -84,7 +84,6 @@ describe('Testing mergeMap() function', () => {
     externalSource.set('C');
     expect(log).not.toEqual([ 'C', 'C' ]);
     expect(log).toEqual([ 'C' ]);
-    expect(scope.children().length).toEqual(1);
 
     scope.cleanup();
   });
@@ -169,4 +168,82 @@ describe('Testing mergeMap() function', () => {
 
     expect(scope.children() as CleanupScope[]).toEqual(childScopes);
   });
+
+  it('Should disconnect external source if its cleanup scope gets cleaned.', () => {
+    const log: string[] = [];
+    const childScopes: CleanupScope[] = [];
+    const scope = createTestCleanupScope();
+    const inputSource = signal<number | undefined>(undefined);
+    const externalSource1 = signal<string | undefined>(undefined);
+    const externalSource2 = signal<string | undefined>(undefined);
+
+    let externalSource = externalSource1;
+
+    const outputSource = scope.run(() => mergeMap(() => {
+      childScopes.push(CleanupScope.assertCurrent());
+      return externalSource;
+    })(inputSource));
+
+    subscribe(outputSource, (value) => log.push(value), destroyRef);
+
+    inputSource.set(0);
+    externalSource = externalSource2;
+    inputSource.set(1);
+
+    expect(childScopes.length).toBe(2);
+    externalSource1.set('A1');
+    externalSource2.set('B1');
+    childScopes[0].cleanup();
+    externalSource1.set('A2');
+    externalSource2.set('B2');
+    expect(log).toEqual([ 'A1', 'B1', 'B2' ]);
+  });
+
+  it('Should not merge signal if its cleanup scope gets immediate cleaned.', () => {
+    const log: string[] = [];
+    const scope = createTestCleanupScope();
+    const inputSource = signal<number | undefined>(undefined);
+    const externalSource = signal<string | undefined>(undefined);
+
+    const outputSource = scope.run(() => mergeMap(() => {
+      CleanupScope.assertCurrent().cleanup();
+      CleanupScope.assertCurrent().add(() => log.push('C'));
+      return externalSource;
+    })(inputSource));
+
+    subscribe(outputSource, (value) => log.push(value), destroyRef);
+
+    inputSource.set(0);
+    externalSource.set('A');
+    externalSource.set('B');
+    expect(log).toEqual([ 'C' ]);
+  });
+
+  it('Should run cleanup logic after user immediate cleanup during signal read.', () => {
+    const log: string[] = [];
+    const scope = createTestCleanupScope();
+    const inputSource = signal(0);
+    const externalSource = computed(() => {
+      CleanupScope.assertCurrent().cleanup();
+      CleanupScope.assertCurrent().add(() => log.push('A'));
+      return 0
+    })
+
+    scope.run(() => mergeMap<number, number>(() => externalSource)(inputSource));
+
+    expect(log).toEqual([ 'A' ]);
+  });
+
+  it('Output value should not be undefined if cleanup scope gest cleaned in project() function and external source has defined value and where input source has defined value.', () => {
+      const inputSource = signal(0);
+      const externalSource = signal('ABC');
+      const scope = createTestCleanupScope();
+      const outputSource = scope.run(() => mergeMap(() => {
+        CleanupScope.assertCurrent().cleanup();
+        return externalSource
+      })(inputSource));
+
+
+      expect(outputSource()).toEqual(externalSource());
+    });
 })

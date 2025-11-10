@@ -31,16 +31,18 @@ import { subscribe } from '../../subscribe/subscribe';
  * ```
  *
  * @remarks
+ * - Each project() function execution has its own cleanup scope.
  * - All projected inner signals remain active and contribute to the merged output.
  * - Use this when multiple derived signals should emit concurrently into the same stream.
  * - If you want only the most recent projected signal to be active, consider `switchMap`.
+ * - Initial value  `undefined` is skipped.
  */
-export function mergeMap<T, V>(project: (value: Exclude<T, undefined>) => Signal<V>): SignalOperatorFunction<T, V> {
+export function mergeMap<T, V>(project: (value: Exclude<T, undefined>) => Signal<V>): SignalOperatorFunction<T, undefined extends T ? V | undefined : V> {
   return function(prevSource) {
     NG_DEV_MODE && assertNotInReactiveContext(mergeMap);
-    const scope = CleanupScope.assertCurrent(mergeMap)
+    const scope = CleanupScope.assertCurrent(mergeMap);
     const nextSource = signal<any>(undefined);
-    const innerSources = new Set<Signal<V>>();
+    const innerSources = new Map<Signal<V>, CleanupScope>();
 
     scope.add(() => {
       innerSources.clear();
@@ -48,25 +50,40 @@ export function mergeMap<T, V>(project: (value: Exclude<T, undefined>) => Signal
 
     subscribe(prevSource, (value) => {
       const childScope = scope.createChild();
-      const innerSource = childScope.run(() => project(value));
+      childScope.run(() => {
+        let cleaned = false;
+        childScope.add(() => { cleaned = true; });
+        const innerSource = project(value);
 
-      if (innerSources.has(innerSource)) {
-        scope.removeChild(childScope);
-        return;
-      }
-      innerSources.add(innerSource);
+        if (cleaned) {
+          if (typeof nextSource() === 'undefined') {
+            nextSource.set(innerSource());
+          }
+          childScope.cleanup();
+          return;
+        }
 
-      if (CleanupScope.current()) {
+        const prevChildScope = innerSources.get(innerSource)
+        if (prevChildScope) {
+          prevChildScope.add(() => { childScope.cleanup(); });
+          childScope.add(() => { prevChildScope.cleanup(); });
+          return;
+        }
+
+        innerSources.set(innerSource, childScope);
+
+        childScope.add(() => {
+          innerSources.delete(innerSource);
+        });
+
         subscribe(innerSource, (v) => {
           nextSource.set(v);
         });
-      } else {
-        scope.run(() => {
-            subscribe(innerSource, (v) => {
-            nextSource.set(v);
-          });
-        });
-      }
+
+        if (cleaned) {
+          childScope.cleanup();
+        }
+      })
     });
 
 

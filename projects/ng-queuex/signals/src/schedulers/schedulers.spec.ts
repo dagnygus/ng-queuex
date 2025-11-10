@@ -52,7 +52,7 @@ describe('Scheduler service.', () => {
       });
     });
 
-    it('Should register pending task is delay is bigger then 0 but not greater or equal 1.', (done) => {
+    it('Should register pending task if delay is bigger then 0 but not greater or equal 1.', (done) => {
        const log: string[] = [];
       const injector = Injector.create({ providers: [{ provide: PendingTasks, useValue: new FakePendingTask(log) }] });
       runInInjectionContext(injector, () => {
@@ -64,7 +64,33 @@ describe('Scheduler service.', () => {
       });
     });
 
-    it('Should not register pending task is delay is much bigger then 0.', (done) => {
+    it('Should not register pending task if delay is less then 0 and if allowTaskRegistration is set to false.', (done) => {
+      const log: string[] = [];
+      const injector = Injector.create({ providers: [{ provide: PendingTasks, useValue: new FakePendingTask(log) }] });
+      runInInjectionContext(injector, () => {
+        const schedulers = new Schedulers();
+        schedulers.allowTaskRegistration = false;
+        schedulers.setTimeout(() => queueMicrotask(() => {
+          expect(log).toEqual([ ]);
+          done();
+        }), -1);
+      });
+    });
+
+    it('Should not register pending task if delay is bigger then 0 but not greater or equal 1 and allowTaskRegistration is set to false.', (done) => {
+      const log: string[] = [];
+      const injector = Injector.create({ providers: [{ provide: PendingTasks, useValue: new FakePendingTask(log) }] });
+      runInInjectionContext(injector, () => {
+        const schedulers = new Schedulers();
+        schedulers.allowTaskRegistration = false;
+        schedulers.setTimeout(() => queueMicrotask(() => {
+          expect(log).toEqual([]);
+          done();
+        }), 0.9999999);
+      });
+    });
+
+    it('Should not register pending task if delay is much bigger then 0.', (done) => {
       const log: string[] = [];
       const injector = Injector.create({ providers: [{ provide: PendingTasks, useValue: new FakePendingTask(log) }] });
       runInInjectionContext(injector, () => {
@@ -107,7 +133,7 @@ describe('Scheduler service.', () => {
       })
     });
 
-    it('Should register pending task if timeout is 0', (done) => {
+    it('Should register pending task if timeout is 0.', (done) => {
       const log: string[] = [];
       const injector = Injector.create({ providers: [{ provide: PendingTasks, useValue: new FakePendingTask(log) }] });
       runInInjectionContext(injector, () => {
@@ -133,6 +159,57 @@ describe('Scheduler service.', () => {
           expect(['A']);
           queueMicrotask(() => {
             expect(log).toEqual([ 'A', 'B' ]);
+            done();
+          });
+        }, 0.999999);
+      });
+    });
+
+    it('Should not register pending task if timeout is undefined and allowTaskRegistration is set to false.', (done) => {
+      const log: string[] = [];
+      const injector = Injector.create({ providers: [{ provide: PendingTasks, useValue: new FakePendingTask(log) }] });
+      runInInjectionContext(injector, () => {
+        const schedulers = new Schedulers();
+        schedulers.allowTaskRegistration = false;
+        const clearInterval = schedulers.setInterval(() => {
+          clearInterval();
+          expect(['A']);
+          queueMicrotask(() => {
+            expect(log).toEqual([]);
+            done();
+          });
+        })
+      })
+    });
+
+    it('Should not register pending task if timeout is 0 and allowTaskRegistration is set to false.', (done) => {
+      const log: string[] = [];
+      const injector = Injector.create({ providers: [{ provide: PendingTasks, useValue: new FakePendingTask(log) }] });
+      runInInjectionContext(injector, () => {
+        const schedulers = new Schedulers();
+        schedulers.allowTaskRegistration = false;
+        const clearInterval = schedulers.setInterval(() => {
+          clearInterval();
+          expect(['A']);
+          queueMicrotask(() => {
+            expect(log).toEqual([]);
+            done();
+          });
+        }, 0);
+      });
+    });
+
+    it('Should not register pending task if timeout is bigger then 0 but no greater or equal 1 and allowTaskRegistration is set to false.', (done) => {
+      const log: string[] = [];
+      const injector = Injector.create({ providers: [{ provide: PendingTasks, useValue: new FakePendingTask(log) }] });
+      runInInjectionContext(injector, () => {
+        const schedulers = new Schedulers();
+        schedulers.allowTaskRegistration = false;
+        const clearInterval = schedulers.setInterval(() => {
+          clearInterval();
+          expect(['A']);
+          queueMicrotask(() => {
+            expect(log).toEqual([]);
             done();
           });
         }, 0.999999);

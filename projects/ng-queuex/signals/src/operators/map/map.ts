@@ -19,14 +19,25 @@ import { assertNotInReactiveContext, computed } from "@angular/core";
  * const doubledSignal = doubled(count);
  *
  * console.log(doubledSignal()); // 2
+ *
+ * @remarks
+ * - All project() function executions have shared cleanup scope, what it gets clean between executions.
  */
 export function map<T, V>(project: (value: T) => V): SignalOperatorFunction<T, V> {
   return function(mainSource) {
     NG_DEV_MODE && assertNotInReactiveContext(map);
-    const scope = CleanupScope.assertCurrent(map).createChild();
+    const childScope = CleanupScope.assertCurrent(map).createChild();
+
     return computed(() => {
-      scope.cleanup();
-      return scope.run(() => project(mainSource()));
+      childScope.cleanup();
+      let cleaned = false;
+      childScope.add(() => { cleaned = true; });
+
+      const result = childScope.run(() => project(mainSource()));
+
+      if (cleaned) { childScope.cleanup(); }
+
+      return result;
     });
   }
 }

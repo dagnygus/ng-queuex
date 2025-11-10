@@ -1,4 +1,4 @@
-import { signal } from '@angular/core';
+import { computed, signal } from '@angular/core';
 import { CleanupScope, createTestCleanupScope } from '../../cleanup_scope/cleanup_scope';
 import { map } from './map';
 import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation } from '@angular/core/primitives/signals';
@@ -84,5 +84,19 @@ describe('Testing map() function', () => {
     inputSource.set(2);
     outputSource();
     expect(log).toEqual([ 'A', 'A' ]);
+  });
+
+  it('Should run cleanup logic after user immediate cleanup call.', () => {
+    const log: string[] = [];
+    const scope = createTestCleanupScope();
+    const inputSource = computed(() => {
+      CleanupScope.assertCurrent().cleanup();
+      CleanupScope.assertCurrent().add(() => log.push('A'));
+      return 0;
+    });
+    const outputSource = scope.run(() => map<number, number>((value) => value)(inputSource));
+    outputSource();
+
+    expect(log).toEqual([ 'A' ]);
   });
 });

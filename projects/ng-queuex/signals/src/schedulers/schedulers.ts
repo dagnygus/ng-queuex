@@ -5,9 +5,11 @@ export class Schedulers {
 
   private readonly _pendingTasks = inject(PendingTasks);
 
+  allowTaskRegistration = true
+
   setTimeout(cb: VoidFunction, delay?: number): VoidFunction {
     delay = Math.floor(delay && delay < 0 ? 0 : delay ?? 0);
-    const taskCleanup = delay === 0  ? this._pendingTasks.add() : null;
+    const taskCleanup = this.allowTaskRegistration &&  delay === 0  ? this._pendingTasks.add() : null;
 
     let timeoutId: any = setTimeout(() => {
       cb();
@@ -23,7 +25,7 @@ export class Schedulers {
 
   setInterval(cb: VoidFunction, timeout?: number) {
     timeout = Math.floor(timeout && timeout < 0 ? 0 : timeout ?? 0);
-    let taskCleanup = timeout === 0 ? this._pendingTasks.add() : null;
+    let taskCleanup = this.allowTaskRegistration && timeout === 0 ? this._pendingTasks.add() : null;
 
     let intervalId: any = setInterval(() => {
       cb();
@@ -39,19 +41,19 @@ export class Schedulers {
   }
 
   scheduleMicrotask(cb: VoidFunction): VoidFunction {
-    const taskCleanup = this._pendingTasks.add();
+    const taskCleanup = this.allowTaskRegistration ? this._pendingTasks.add() : null;
     let canceled = false
 
     queueMicrotask(() => {
       if (canceled) { return; }
       cb();
       canceled = true;
-      taskCleanup();
+      taskCleanup?.();
     })
 
     return function() {
       if (canceled) { return; }
-      taskCleanup();
+      taskCleanup?.();
       canceled = true;
     }
   }

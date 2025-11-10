@@ -1,4 +1,4 @@
-import { DestroyableInjector, DestroyRef, Injector, signal } from "@angular/core";
+import { computed, DestroyableInjector, DestroyRef, Injector, signal } from "@angular/core";
 import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation } from "@angular/core/primitives/signals";
 import { switchMap } from "./switch_map";
 import { CleanupScope, createTestCleanupScope, subscribe } from "../../signals";
@@ -118,7 +118,7 @@ describe('Testing switchMap() function.', () => {
     expect(log).toEqual([ 'A', 'B', 'C' ]);
   });
 
-  it('Should run cleanup logic if cleanup scope gets clean.', () => {
+  it('Should run cleanup logic if cleanup scope gets cleaned.', () => {
     const log: string[] = [];
     const inputSource = signal<string | undefined>(undefined);
     const scope = createTestCleanupScope();
@@ -132,6 +132,51 @@ describe('Testing switchMap() function.', () => {
     expect(log).toEqual([ 'A' ]);
     scope.cleanup();
     expect(log).toEqual([ 'A', 'B' ]);
+  });
+
+  it('Should not connect to signal if cleanup scope gets immediate cleaned.', () => {
+    const log: string[] = [];
+    const inputSource = signal<number | undefined>(undefined);
+    const externalSource = signal<string | undefined>(undefined);
+    const scope = createTestCleanupScope();
+    const outputSource = scope.run(() => switchMap<number | undefined, string | undefined>(() => {
+      CleanupScope.assertCurrent().cleanup();
+      CleanupScope.assertCurrent().add(() => log.push('C'));
+      return externalSource;
+    })(inputSource));
+
+    subscribe(outputSource, (value) => log.push(value), destroyRef);
+    inputSource.set(0);
+    externalSource.set('A');
+    externalSource.set('B');
+    expect(log).toEqual([ 'C' ]);
+  });
+
+  it('Should run cleanup logic after user cleanup during signal read.', () => {
+    const log: string[] = [];
+    const inputSource = signal<number>(0);
+    const externalSource = computed(() => {
+      CleanupScope.assertCurrent().cleanup();
+      CleanupScope.assertCurrent().add(() => log.push('A'));
+      return 0;
+    });
+    const scope = createTestCleanupScope();
+    scope.run(() => switchMap(() => externalSource)(inputSource))
+    expect(log).toEqual([ 'A' ]);
+    expect()
+  });
+
+  it('Output value should not be undefined if cleanup scope gest cleaned in project() function and external source has defined value and where input source has defined value.', () => {
+    const inputSource = signal(0);
+    const externalSource = signal('ABC');
+    const scope = createTestCleanupScope();
+    const outputSource = scope.run(() => switchMap(() => {
+      CleanupScope.assertCurrent().cleanup();
+      return externalSource
+    })(inputSource));
+
+
+    expect(outputSource()).toEqual(externalSource());
   });
 
 });

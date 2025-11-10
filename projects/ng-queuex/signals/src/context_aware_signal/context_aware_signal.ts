@@ -1,7 +1,7 @@
 import { producerAccessed, runPostProducerCreatedFn, SIGNAL, SIGNAL_NODE, SignalNode, signalSetFn } from '@angular/core/primitives/signals';
 import { Signal } from '@angular/core';
 import { CleanupScope } from '../cleanup_scope/cleanup_scope';
-import { NG_DEV_MODE, assertInReactiveContextOrInCleanupScope, decreaseScopeRefCount } from '../common';
+import { NG_DEV_MODE, assertInReactiveContextOrInCleanupScope } from '../common';
 
 /**
  * Options for creating a context-aware signal via `contextual()`.
@@ -56,6 +56,12 @@ export interface ContextAwareSignalNode<T> extends SignalNode<T> {
   onInit: (set: (value: T) => void, update: (updater: (value: T) => T) => void) => void;
   onDeinit: VoidFunction
   __consumers__: unknown
+}
+
+function decreaseScopeRefCount(this: ContextAwareSignalNode<any>) {
+  if (--this.scopeRefCount === 0 && this.__consumers__ == null) {
+    this.deinit();
+  }
 }
 
 const CONTEXT_AWARE_SIGNAL_NODE: Partial<ContextAwareSignalNode<any>> = /* @__PURE__ */(() => ({
