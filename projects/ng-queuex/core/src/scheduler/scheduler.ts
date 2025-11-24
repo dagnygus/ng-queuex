@@ -23,6 +23,7 @@ interface FlushWorkFn {
 declare const Zone: ZoneType | undefined
 declare const jasmine: object | undefined;
 declare const jest: object | undefined;
+declare const vi: object | undefined
 
 const global = ɵglobal as typeof globalThis & { Zone?: ZoneType, setImmediate(cb: Function): number };
 
@@ -294,7 +295,7 @@ export function scheduleCallback(
  *
  * @param attempts - The number of times to check for queue emptiness. Minimum is 5.
  * @returns A Promise that resolves when the system appears to be idle.
- * @throws `Error` if supported test runner was not detected (jasmine/jest).
+ * @throws `Error` if supported test runner was not detected (jasmine/jest/vi).
  *
  * @example
  * ```ts
@@ -306,8 +307,8 @@ export function scheduleCallback(
  */
 export function whenIdle(attempts: number = 5): Promise<void> {
 
-  if (typeof jasmine === 'undefined' && typeof jest === 'undefined') {
-    throw new Error('whenIdle(): Supported test runner not detected! This function can by used in supported test frameworks (jasmine/jest).')
+  if (typeof jasmine === 'undefined' && typeof jest === 'undefined' && typeof vi === 'undefined') {
+    throw new Error('whenIdle(): Supported test runner not detected! This function can by used in supported test frameworks (jasmine/jest/vi).')
   }
 
   return new Promise((resolve) => {
@@ -419,11 +420,11 @@ export function getCurrentTask(): SchedulerTask | null {
 
 /**
  * Determines that there is any tasks object in queue. If there is at least one task of any status (executed, executing, pending, aborted) it returns false.
- * Otherwise return true. This functions can be used in supported test runners (jest/jasmine). If any of mentioned test runners will be not detected, it will
+ * Otherwise return true. This functions can be used in supported test runners (jest/jasmine/vi). If any of mentioned test runners will be not detected, it will
  * throw an error.
  */
 export function isTaskQueueEmpty(): boolean {
-  if (typeof jasmine === 'undefined' && typeof jest === 'undefined') {
+  if (typeof jasmine === 'undefined' && typeof jest === 'undefined' && typeof vi === 'undefined') {
     throw new Error('isTaskQueueEmpty(): Supported test runner not detected! This function can by used in supported test frameworks (jasmine/jest).')
   }
   return taskQueue.length === 0;

@@ -25,6 +25,7 @@ import { TestBed } from "@angular/core/testing";
 declare const ngDevMode: boolean | undefined;
 declare const jest: any;
 declare const jasmine: any;
+declare const vi: any;
 
 export const USAGE_EXAMPLE_IN_UNIT_TESTS =
   'beforeEach(() => {\n' +
@@ -188,7 +189,7 @@ export function provideNgQueuexIntegration(): EnvironmentProviders {
     provideEnvironmentInitializer(() => {
       const integrator = inject(Integrator);
       integrator.assertInRoot();
-      if ((typeof jasmine === 'object' && jasmine !== null) || (typeof jest === 'object' && jest !== null)) { return; }
+      if ((typeof jasmine === 'object' && jasmine !== null) || (typeof jest === 'object' && jest !== null) || (typeof vi === 'object' && vi !== null)) { return; }
       integrator.assertProject();
       integrator.integrateWithAngular();
     }),
@@ -207,7 +208,7 @@ export function provideNgQueuexIntegration(): EnvironmentProviders {
  *
  * This function must be called when using `provideNgQueuexIntegration()`
  * within Angular's testing utilities, to ensure all test-related hooks
- * (Jasmine/Jest detection, schedulers, etc.) are correctly initialized.
+ * (Jasmine/Jest/Vi detection, schedulers, etc.) are correctly initialized.
  *
  * Usage example:
  * ```ts
@@ -225,7 +226,7 @@ export function provideNgQueuexIntegration(): EnvironmentProviders {
  * @see {@link provideNgQueuexIntegration}
  */
 export function completeIntegrationForTest(): void {
-  assertInInjectionContext(() => 'completeIntegrationForTest(): This function was not used in injection context!');
+  assertInInjectionContext(completeIntegrationForTest);
 
   if (Integrator.instance === null) {
     throw new Error(
@@ -248,7 +249,7 @@ export function completeIntegrationForTest(): void {
     Integrator.instance.testEnv = true;
   } else {
     if (Integrator.instance.testEnv) { return; }
-    throw new Error('completeIntegrationForTest(): This function must be called within a test runner (Jasmine/Jest). No test framework detected.')
+    throw new Error('completeIntegrationForTest(): This function must be called within a test runner (Jasmine/Jest/Vi). No test framework detected.')
   }
 }
 

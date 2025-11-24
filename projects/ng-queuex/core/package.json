@@ -1,6 +1,6 @@
 {
   "name": "@ng-queuex/core",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Core utilities for the Queuex ecosystem, providing a React-like concurrent scheduler, task scheduling APIs, and fine-grained change detection helpers for Angular components. Includes utilities for local change detection management, component creation, build in advance coalescing, and async unit testing support.",
   "publishConfig": {
     "access": "public"
