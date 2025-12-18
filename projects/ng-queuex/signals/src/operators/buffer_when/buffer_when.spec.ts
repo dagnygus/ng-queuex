@@ -61,17 +61,32 @@ describe('Testing bufferWhen() function.', () => {
   });
 
   it('Should open buffer if source emits first defined value.', () => {
-    const log: string[] = [];
+    const log: string[][] = [];
     const inputSource = signal<string | undefined>(undefined);
     const closingNotifier = signal(0);
     const scope = createTestCleanupScope();
-    scope.run(() => bufferWhen(() => {
-      log.push('A')
+
+    let isOpen = false
+
+    const outputSource = scope.run(() => bufferWhen<string | undefined>(() => {
+      if (isOpen) {
+        throw new Error('Buffer already open!')
+      }
+      isOpen = true;
       return closingNotifier
     })(inputSource));
 
-    inputSource.set('X');
-    expect(log).toEqual([ 'A' ]);
+    subscribe(outputSource, (buf) => log.push(buf), destroyRef)
+
+    expect(isOpen).toBeFalse()
+    closingNotifier.update((v) => ++v);
+    expect(log).toEqual([ [] ]);
+    expect(isOpen).toBeFalse()
+    inputSource.set('A');
+    expect(isOpen).toBeTrue();
+    closingNotifier.update((v) => ++v);
+    expect(isOpen).toBeTrue();
+    expect(log).toEqual([ [], [ 'A' ] ]);
   });
 
   it('Should close and flush buffer if closing notifier change value, and after that should open new buffer when main source emits value.', () => {

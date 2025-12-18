@@ -96,6 +96,28 @@ describe('Testing mergeWith() function.', () => {
     const outputSource = scope.run(() => mergeWith(externalSource)(inputSource));
 
     expect(log).toEqual(['A']);
-  })
+  });
+
+  it('Parent scope should be cleaned if all childe scope gets cleaned.', () => {
+    const log: string[] = [];
+    const inputSource = signal(0);
+    const scope = createTestCleanupScope({ onCleanup: () => log.push('A') });
+    scope.run(() => mergeWith(signal(0), signal(0))(inputSource))
+    const childScopes = scope.children();
+    for (const childScope of childScopes) {
+      childScope.cleanup();
+    }
+    expect(log).toEqual([ 'A' ]);
+  });
+
+  it('Should child cleanup scope be destroyed after cleanup.', () => {
+    const scope = createTestCleanupScope();
+    scope.run(() => mergeWith(signal(0))(signal(0)));
+    const [ childScope1, childScope2 ] = scope.children();
+    childScope1.cleanup();
+    childScope2.cleanup();
+    expect(childScope1.destroyed).toBeTrue();
+    expect(childScope2.destroyed).toBeTrue();
+  });
 
 });

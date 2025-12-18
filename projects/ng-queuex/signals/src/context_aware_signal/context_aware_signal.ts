@@ -66,7 +66,7 @@ function decreaseScopeRefCount(this: ContextAwareSignalNode<any>) {
 
 const CONTEXT_AWARE_SIGNAL_NODE: Partial<ContextAwareSignalNode<any>> = /* @__PURE__ */(() => ({
   ...SIGNAL_NODE,
-
+  kind: '@ng-queuex/contextual',
   increaseScopeRefCount(this: ContextAwareSignalNode<any>) {
     if (++this.scopeRefCount === 1 && this.__consumers__ == null) {
       this.init();

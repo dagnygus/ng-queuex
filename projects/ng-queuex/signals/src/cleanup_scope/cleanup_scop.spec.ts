@@ -1,5 +1,5 @@
 import { Injector, ɵglobal } from "@angular/core"
-import { CleanupScope, createTestCleanupScope, DefaultCleanupScope } from "./cleanup_scope";
+import { CleanupScope, createTestCleanupScope, DefaultCleanupScope, TestCleanupScope } from "./cleanup_scope";
 import { TestBed } from "@angular/core/testing";
 
 describe('Testing DefaultCleanupScope class.', () => {
@@ -49,7 +49,7 @@ describe('Testing DefaultCleanupScope class.', () => {
     expect(() => CleanupScope.assertCurrent(someCallerFn)).toThrowError(
       'someCallerFn(): Current stack frame is not within cleanup scope.'
     );
-  })
+  });
 
   it('Method CleanupScope.current() should return scope object if is used in function body provided to CleanupScope#run() method.', () => {
     let returnedScope: CleanupScope | null = null;
@@ -69,6 +69,11 @@ describe('Testing DefaultCleanupScope class.', () => {
     expect(returnedScope).toBe(scope as any);
   });
 
+  it('Should throw error if there is attempt to destroy root cleanup scope (scope without parent).', () => {
+    const scope = new DefaultCleanupScope(Injector.NULL);
+    expect(() => scope.destroy()).toThrowError('CleanupScope#destroy(): It is disallowed to destroy root cleanup scope!');
+  });
+
   it('Parent scope should clean child scope.', () => {
     const log: string[] = [];
     const scope = new DefaultCleanupScope(Injector.NULL);
@@ -81,7 +86,7 @@ describe('Testing DefaultCleanupScope class.', () => {
     expect(log).toEqual(['a', 'b']);
   });
 
-  it('Child scope should clean parent scope.', () => {
+  it('Child scope should not clean parent scope.', () => {
     let log: string[] = [];
     const scope = new DefaultCleanupScope(Injector.NULL);
 
@@ -95,6 +100,53 @@ describe('Testing DefaultCleanupScope class.', () => {
     log = [];
     scope.cleanup();
     expect(log).toEqual(['a']);
+  });
+
+  it('Child scope should be in parent listeners list.', () => {
+    const scope = new DefaultCleanupScope(Injector.NULL);
+    const childScope = scope.createChild();
+    expect(scope._listeners.includes(childScope as DefaultCleanupScope)).toBeTrue();
+  });
+
+  it('Child scope should have reference to parent scope.', () => {
+    const scope = new DefaultCleanupScope(Injector.NULL);
+    const childScope = scope.createChild();
+    //@ts-expect-error
+    expect(childScope._parent).toBe(scope);
+  });
+
+  it('Destroyed scope should be cleaned.', () => {
+    let log: string[] = [];
+    const scope = new DefaultCleanupScope(Injector.NULL);
+    const childScope = scope.createChild();
+    childScope.add(() => log.push('A'));
+    childScope.destroy();
+    expect(log).toEqual(['A']);
+  });
+
+  it('Should throw an error if there is attempt to add teardown logic to destroyed scope.', () => {
+    const scope = new DefaultCleanupScope(Injector.NULL);
+    const childScope = scope.createChild();
+    childScope.destroy();
+    expect(() => childScope.add(() => {})).toThrowError('CleanupScope#add(): This cleanup scope is already destroyed!')
+  });
+
+  it('Should throw error if there is attempt to use destroyed scope.', () => {
+    const scope = new DefaultCleanupScope(Injector.NULL);
+    const childScope = scope.createChild();
+    expect(childScope.destroyed).toBeFalse();
+    childScope.destroy();
+    expect(childScope.destroyed).toBeTrue();
+    expect(() => childScope.run(() => {})).toThrowError('CleanupScope#run(): Destroyed cleanup scope can not be reused!');
+  });
+
+  it('Should be destroyed in teardown logic without any problem', () => {
+    const scope = new DefaultCleanupScope(Injector.NULL);
+    const childScope = scope.createChild();
+    childScope.add(() => childScope.destroy());
+    childScope.cleanup();
+    //@ts-expect-error
+    expect(childScope._destroyed).toBeTrue();
   });
 
   it('Should handle circular cleanup call without any problem.', () => {
@@ -113,6 +165,11 @@ describe('Testing DefaultCleanupScope class.', () => {
 });
 
 describe('Testing createTestCleanupScope() function', () => {
+  it('Should throw error if there is attempt to destroy root cleanup scope (scope without parent).', () => {
+    const scope = createTestCleanupScope();
+    expect(() => scope.destroy()).toThrowError('CleanupScope#destroy(): It is disallowed to destroy root cleanup scope!');
+  });
+
   it('Parent scope should clean child scope.', () => {
     const log: string[] = [];
     const scope = createTestCleanupScope();
@@ -125,7 +182,55 @@ describe('Testing createTestCleanupScope() function', () => {
     expect(log).toEqual(['a', 'b']);
   });
 
-  it('Child scope should clean parent scope.', () => {
+  it('Child scope should be in parent listeners list.', () => {
+    const scope = createTestCleanupScope();
+    const childScope = scope.createChild();
+    //@ts-expect-error
+    expect(scope._listeners.includes(childScope as DefaultCleanupScope)).toBeTrue();
+  });
+
+  it('Child scope should have reference to parent scope!', () => {
+    const scope = createTestCleanupScope();
+    const childScope = scope.createChild();
+    //@ts-expect-error
+    expect(childScope._parent).toBe(scope);
+  });
+
+  it('Destroyed scope should be cleaned.', () => {
+    let log: string[] = [];
+    const scope = createTestCleanupScope();
+    const childScope = scope.createChild();
+    childScope.add(() => log.push('A'));
+    childScope.destroy();
+    expect(log).toEqual(['A']);
+  });
+
+  it('Should throw an error if there is attempt to add teardown logic to destroyed scope.', () => {
+    const scope = createTestCleanupScope();
+    const childScope = scope.createChild();
+    childScope.destroy();
+    expect(() => childScope.add(() => {})).toThrowError('CleanupScope#add(): This cleanup scope is already destroyed!')
+  });
+
+  it('Should throw error if there is attempt to use destroyed scope.', () => {
+    const scope = createTestCleanupScope();
+    const childScope = scope.createChild();
+    expect(childScope.destroyed).toBeFalse();
+    childScope.destroy();
+    expect(childScope.destroyed).toBeTrue();
+    expect(() => childScope.run(() => {})).toThrowError('CleanupScope#run(): Destroyed cleanup scope can not be reused!');
+  });
+
+  it('Should be destroyed in teardown logic without any problem', () => {
+    const scope = createTestCleanupScope();
+    const childScope = scope.createChild();
+    childScope.add(() => childScope.destroy());
+    childScope.cleanup();
+    //@ts-expect-error
+    expect(childScope._destroyed).toBeTrue();
+  });
+
+  it('Child scope should not clean parent scope.', () => {
     let log: string[] = [];
     const scope = createTestCleanupScope();
 
@@ -149,6 +254,13 @@ describe('Testing createTestCleanupScope() function', () => {
       scope.createChild(),
     ]
     expect(children).toEqual(scope.children());
+  });
+
+  it('Destroyed child scope should not be included in children array.', () => {
+    const scope = createTestCleanupScope();
+    const childScope = scope.createChild();
+    childScope.destroy();
+    expect(!scope.children().includes(childScope as TestCleanupScope));
   })
 
   it('Should root scope run onCleanup listener before teardown logics', () => {
@@ -175,7 +287,7 @@ describe('Testing createTestCleanupScope() function', () => {
     expect(() => {
       createTestCleanupScope({ injector: TestBed.inject(Injector) });
     }).toThrowError(
-      'Function createTestCleanupScope() can be only used in supported test runner (jasmine/jest)!'
+      'Function createTestCleanupScope() can be only used in supported test runner (jasmine/jest/vi)!'
     )
     ɵglobal.jasmine = _jasmine;
   });

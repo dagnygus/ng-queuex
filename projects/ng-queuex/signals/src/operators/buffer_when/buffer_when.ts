@@ -78,9 +78,10 @@ export function bufferWhen<T>(closingSelector: () => Signal<any>): SignalOperato
         }
 
         let sync = true;
-        subscribe(closingNotifier!, () => {
+        subscribe(closingNotifier, () => {
           if (sync) { return; }
           nextSource.set(buffer);
+          closingNotifier = null;
           childScope.cleanup();
         });
         sync = false;

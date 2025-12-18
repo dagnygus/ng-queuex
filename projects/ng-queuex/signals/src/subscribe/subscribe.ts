@@ -1,5 +1,5 @@
 import { assertInInjectionContext, assertNotInReactiveContext, DestroyRef, inject, Signal } from '@angular/core';
-import { ReactiveHookFn, ReactiveNode, REACTIVE_NODE, setPostSignalSetFn, consumerDestroy, consumerPollProducersForChange, consumerAfterComputation, consumerBeforeComputation, isInNotificationPhase, consumerMarkDirty, setActiveConsumer } from '@angular/core/primitives/signals';
+import { ReactiveHookFn, ReactiveNode, REACTIVE_NODE, setPostSignalSetFn, consumerDestroy, consumerPollProducersForChange, consumerAfterComputation, consumerBeforeComputation, isInNotificationPhase, consumerMarkDirty, setActiveConsumer, SIGNAL } from '@angular/core/primitives/signals';
 import { CleanupScope } from '../cleanup_scope/cleanup_scope';
 import { NG_DEV_MODE } from '../common';
 
@@ -46,19 +46,20 @@ function hook(this: SubscriptionNode, node: ReactiveNode) {
 const SUBSCRIPTION_NODE: Partial<SubscriptionNode> = /* @__PURE__ */ (() => {
   return {
     ...REACTIVE_NODE,
+    kind: '@ng-queuex/subscription',
     consumerIsAlwaysLive: true,
     consumerAllowSignalWrites: true,
     consumerMarkedDirty: (node: SubscriptionNode) => {
-      node.runningFn = true
-      node.prevHook = setPostSignalSetFn(node.hook)
+      node.runningFn = true;
+      node.prevHook = setPostSignalSetFn(node.hook);
     },
     run(this: SubscriptionNode) {
       try {
         setPostSignalSetFn(this.prevHook);
         if (this.prevHook) {
-            const prevHook = this.prevHook;
-            prevHook(this.node!);
-          }
+          const prevHook = this.prevHook;
+          prevHook(this.node!);
+        }
       } finally {
         if (this.fn === null) {
           // trying to run a destroyed watch is noop
@@ -171,7 +172,7 @@ export function subscribe<T>(source: Signal<T>, next: (value: Exclude<T, undefin
 
   const unsubscribe = function() {
     node.destroy();
-  } as unknown as UnsubscribeFunction
+  } as unknown as UnsubscribeFunction;
 
   unsubscribe.add = function(teardownLogic) {
     if (node.destroyed) { return; }
@@ -187,15 +188,37 @@ export function subscribe<T>(source: Signal<T>, next: (value: Exclude<T, undefin
 
   if (cleanupScope) {
     cleanupScope.add(unsubscribe);
+    unsubscribe.add(function() { cleanupScope.remove(unsubscribe); });
   } else {
     if (!destroyRef) {
       destroyRef = inject(DestroyRef);
     }
-    destroyRef.onDestroy(unsubscribe);
+    unsubscribe.add(destroyRef.onDestroy(unsubscribe));
   }
 
   consumerMarkDirty(node);
   node.run();
 
   return unsubscribe;
+}
+
+/**
+ * Removes all subscriptions from provided signal.
+ *
+ * @note
+ * Signal and derived readonly signal (from signal.asReadonly() method) shares
+ * the same reactive node, which mins that removing subscriptions from one
+ * signal will remove from both.
+ *
+ * @param target The signal from where all subscriptions will be removed.
+ */
+export function removeSubscriptions(target: Signal<any>): void {
+  let consumerLink = (target[SIGNAL] as ReactiveNode).consumers;
+  while (consumerLink) {
+    const consumer = consumerLink.consumer;
+    consumerLink = consumerLink.nextConsumer;
+    if (consumer.kind === '@ng-queuex/subscription') {
+      (consumer as SubscriptionNode).destroy();
+    }
+  }
 }

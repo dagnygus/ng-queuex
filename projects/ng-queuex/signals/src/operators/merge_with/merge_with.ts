@@ -41,13 +41,12 @@ export function mergeWith<T, S extends readonly Signal<any>[]>(...sources: [...S
     const scope = CleanupScope.assertCurrent(mergeWith);
     const outputSource = signal<any>(undefined)
     const innerSources = new Set<Signal<T>>();
+    let sourcesCount = sources.length + 1;
 
     scope.add(() => innerSources.clear());
 
-    subscribe(prevSource, (value) => { outputSource.set(value); })
-
-    for (let i = 0; i < sources.length; i++) {
-      const innerSource = sources[i]
+    for (let i = -1; i < sources.length; i++) {
+      const innerSource = i > -1 ? sources[i] : prevSource
 
       if (innerSources.has(innerSource)) { continue; }
 
@@ -57,6 +56,9 @@ export function mergeWith<T, S extends readonly Signal<any>[]>(...sources: [...S
       childScope.add(() => {
         innerSources.delete(innerSource);
         cleaned = true;
+        if (--sourcesCount === 0) {
+          scope.cleanup();
+        }
       })
 
       childScope.run(() => {
@@ -64,7 +66,9 @@ export function mergeWith<T, S extends readonly Signal<any>[]>(...sources: [...S
       });
 
       if (cleaned) {
-        childScope.cleanup();
+        childScope.destroy();
+      } else {
+        childScope.add(() => childScope.destroy());
       }
     }
 

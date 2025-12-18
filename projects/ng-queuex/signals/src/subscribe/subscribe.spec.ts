@@ -1,7 +1,7 @@
 import { assertNotInReactiveContext, computed, DestroyableInjector, DestroyRef, Injector, runInInjectionContext, signal } from '@angular/core';
 import { createTestCleanupScope, TestCleanupScope } from '../cleanup_scope/cleanup_scope';
 import { setPostSignalSetFn } from '@angular/core/primitives/signals';
-import { subscribe } from "./subscribe";
+import { removeSubscriptions, subscribe } from "./subscribe";
 
 
 describe('Testing subscribe() function.', () => {
@@ -322,5 +322,47 @@ describe('Testing subscribe() function.', () => {
     unsubscribe.remove(teardown);
     unsubscribe();
     expect(log).toEqual(['A', 'C']);
+  });
+});
+
+describe('Testing removeSubscriptions() function', () => {
+  let injector: DestroyableInjector;
+  let destroyRef: DestroyRef
+
+  beforeEach(() => {
+    injector = Injector.create({ providers: [] });
+    destroyRef = injector.get(DestroyRef)
+  });
+
+  afterEach(() => {
+    if (!destroyRef.destroyed) {
+      injector.destroy();
+    }
+    injector = null!;
+    destroyRef = null!
+  });
+
+  it('Should remove subscription without any problem.', () => {
+    const log: string[] = [];
+    const source = signal<string | undefined>(undefined);
+    subscribe(source, (value) => log.push(value), destroyRef);
+    source.set('A');
+    source.set('B');
+    removeSubscriptions(source);
+    source.set('C');
+    expect(log).toEqual(['A', 'B']);
+  });
+
+  it('Should remove multiple subscriptions without any problem.', () => {
+    const log: string[] = [];
+    const source = signal<string | undefined>(undefined);
+    subscribe(source, (value) => log.push(value), destroyRef);
+    subscribe(source, (value) => log.push(value), destroyRef);
+    subscribe(source, (value) => log.push(value), destroyRef);
+    source.set('A');
+    source.set('B');
+    removeSubscriptions(source);
+    source.set('C');
+    expect(log).toEqual([ 'A', 'A', 'A', 'B', 'B', 'B']);
   });
 });

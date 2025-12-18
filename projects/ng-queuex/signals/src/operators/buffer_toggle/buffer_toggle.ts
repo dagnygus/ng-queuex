@@ -52,7 +52,7 @@ import { subscribe } from "../../subscribe/subscribe";
  * - Useful for batching values according to externally controlled open/close cycles.
  * - Buffer with same items set as previous will not be emitted.
  */
-export function bufferToggle<T>(openings: Signal<any>, closingSelector: () => Signal<any>): SignalOperatorFunction<T, Exclude<T, undefined>[]> {
+export function bufferToggle<T, O>(openings: Signal<any>, closingSelector: (openValue: Exclude<O, undefined>) => Signal<any>): SignalOperatorFunction<T, Exclude<T, undefined>[]> {
   return function(prevSource) {
     NG_DEV_MODE && assertNotInReactiveContext(bufferToggle);
     const scope = CleanupScope.assertCurrent(bufferToggle);
@@ -66,7 +66,7 @@ export function bufferToggle<T>(openings: Signal<any>, closingSelector: () => Si
     });
 
     let sync = true;
-    subscribe(openings, () => {
+    subscribe(openings, (openValue) => {
       if (sync) { return; }
       const childScope = scope.createChild();
       let buf: Exclude<T, undefined>[] = [];
@@ -81,10 +81,10 @@ export function bufferToggle<T>(openings: Signal<any>, closingSelector: () => Si
       });
 
       childScope.run(() => {
-        const closingNotifier = closingSelector();
+        const closingNotifier = closingSelector(openValue);
 
         if (cleaned) {
-          childScope.cleanup();
+          childScope.destroy();
           return;
         }
 
@@ -92,14 +92,16 @@ export function bufferToggle<T>(openings: Signal<any>, closingSelector: () => Si
         subscribe(closingNotifier, () => {
           if (sync) { return; }
           nextSource.set(buf);
-          childScope.cleanup();
+          childScope.destroy();
         });
         sync = false;
 
         if (cleaned) {
-          childScope.cleanup();
+          childScope.destroy();
+          return;
         }
-      })
+        childScope.add(() => childScope.destroy());
+      });
     });
     sync = false;
 

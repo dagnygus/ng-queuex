@@ -64,7 +64,7 @@ function decreaseScopeRefCount(this: SignalPipeNode<any>) {
 const SIGNAL_PIPE_NODE: Omit<SignalPipeNode<any>, KeysToOmit> = /* @__PURE__ */ (() => ({
   ...REACTIVE_NODE,
   equal: defaultEquals,
-  kind: 'computed',
+  kind: '@ng-queuex/signalPipe',
   producerMustRecompute(node: SignalPipeNode<any>) {
     return node.value === UNSET || node.value === COMPUTING || node.allowInit;
   },

@@ -235,15 +235,24 @@ describe('Testing mergeMap() function', () => {
   });
 
   it('Output value should not be undefined if cleanup scope gest cleaned in project() function and external source has defined value and where input source has defined value.', () => {
-      const inputSource = signal(0);
-      const externalSource = signal('ABC');
-      const scope = createTestCleanupScope();
-      const outputSource = scope.run(() => mergeMap(() => {
-        CleanupScope.assertCurrent().cleanup();
-        return externalSource
-      })(inputSource));
+    const inputSource = signal(0);
+    const externalSource = signal('ABC');
+    const scope = createTestCleanupScope();
+    const outputSource = scope.run(() => mergeMap(() => {
+      CleanupScope.assertCurrent().cleanup();
+      return externalSource
+    })(inputSource));
 
+    expect(outputSource()).toEqual(externalSource());
+  });
 
-      expect(outputSource()).toEqual(externalSource());
-    });
+  it('Should child cleanup scope be destroyed after cleanup.', () => {
+    const inputSource = signal(0);
+    const externalSource = signal(0);
+    const scope = createTestCleanupScope();
+    const outputSource = scope.run(() => mergeMap(() => externalSource)(inputSource));
+    const childScope = scope.children()[0];
+    childScope.cleanup();
+    expect(childScope.destroyed).toBeTrue();
+  })
 })

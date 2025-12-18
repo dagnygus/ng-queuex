@@ -2,6 +2,7 @@ import { DestroyRef, Injector } from "@angular/core";
 
 declare const jasmine: any;
 declare const jest: any;
+declare const vi: any;
 
 let cleanupScope: CleanupScope | null = null;
 
@@ -30,12 +31,17 @@ export function setCleanupScope(scope: CleanupScope | null): CleanupScope | null
 export abstract class CleanupScope {
 
   /**
-   * An injector related to root cleanup scope.
+   * Indicates that current scope is destroyed or not.
    */
-  abstract readonly injector: Injector
+  abstract readonly destroyed: boolean;
 
   /**
-   * runs provided callback in cleanup scope.
+   * An injector related to root cleanup scope.
+   */
+  abstract readonly injector: Injector;
+
+  /**
+   * Runs provided callback in cleanup scope.
    * @param callback A callback to run in scope.
    */
   abstract run<T>(callback: () => T): T;
@@ -57,6 +63,13 @@ export abstract class CleanupScope {
    */
   abstract cleanup(): void;
 
+  /**
+   * Runs all teardown logics added to this scope and removes them.
+   * Then removes this scope from its parent if exist.
+   *
+   * @throws Error if this scope is root cleanup scope (without parent).
+   */
+  abstract destroy(): void;
 
   /**
    * Creates child cleanup scope. Parent scope can cleanup child scope but not reverse.
@@ -97,14 +110,22 @@ export abstract class CleanupScope {
 }
 
 export class DefaultCleanupScope implements CleanupScope {
-  _listeners: VoidFunction[] = [];
+  _listeners: (VoidFunction | DefaultCleanupScope)[] = [];
   _cleaning = false;
+  _destroyed = false;
+  _parent: DefaultCleanupScope | null = null;
 
   constructor(public _injector: Injector) {}
+
+  get destroyed(): boolean { return this._destroyed; }
 
   get injector(): Injector { return this._injector; }
 
   run<T>(callback: () => T): T {
+    if (this._destroyed) {
+      throw new Error('CleanupScope#run(): Destroyed cleanup scope can not be reused!');
+    }
+
     const prevScope = cleanupScope;
     cleanupScope = this
     try {
@@ -115,6 +136,9 @@ export class DefaultCleanupScope implements CleanupScope {
   }
 
   add(teardownLogic: VoidFunction): void {
+    if (this._destroyed) {
+      throw new Error('CleanupScope#add(): This cleanup scope is already destroyed!');
+    }
     if (this._cleaning) {
       throw new Error('CleanupScope#add(): Adding teardown logic during cleanup is not allowed!');
     }
@@ -122,6 +146,7 @@ export class DefaultCleanupScope implements CleanupScope {
   }
 
   remove(teardownLogic: VoidFunction): void {
+    if (this._destroyed) { return; }
     const index = this._listeners.indexOf(teardownLogic);
     if (index > -1) {
       this._listeners.splice(index, 1);
@@ -129,7 +154,7 @@ export class DefaultCleanupScope implements CleanupScope {
   }
 
   cleanup(): void {
-    if (this._cleaning) { return; }
+    if (this._destroyed || this._cleaning) { return; }
     this._cleaning = true;
     try {
       this._cleanup();
@@ -141,7 +166,12 @@ export class DefaultCleanupScope implements CleanupScope {
   _cleanup(): void {
     try {
       while (this._listeners.length) {
-        this._listeners.shift()!();
+        const listener = this._listeners.shift()!
+        if (typeof listener === 'function') {
+          listener();
+        } else {
+          listener.cleanup();
+        }
       }
     } finally {
       if (this._listeners.length) {
@@ -152,8 +182,26 @@ export class DefaultCleanupScope implements CleanupScope {
 
   createChild(): CleanupScope {
     const child = new DefaultCleanupScope(this._injector);
-    this._listeners.push(function() { child.cleanup() });
+    child._parent = this;
+    this._listeners.push(child);
     return child;
+  }
+
+  destroy(): void {
+    if (this._parent == null) {
+      throw new Error('CleanupScope#destroy(): It is disallowed to destroy root cleanup scope!');
+    }
+    this.cleanup();
+    this._parent._removeChild(this);
+
+    this._destroyed = true;
+  }
+
+  _removeChild(child: DefaultCleanupScope): void {
+    const index = this._listeners.indexOf(child);
+    if (index > -1) {
+      this._listeners.splice(index, 1);
+    }
   }
 }
 
@@ -192,9 +240,18 @@ class TestCleanupScopeImpl extends DefaultCleanupScope implements TestCleanupSco
 
   override createChild(onCleanup?: VoidFunction | null | undefined): CleanupScope {
     const child = new TestCleanupScopeImpl(onCleanup);
+    child._parent = this;
     this._children.push(child);
-    this._listeners.push(function() { child.cleanup(); });
+    this._listeners.push(child);
     return child;
+  }
+
+  override _removeChild(child: TestCleanupScopeImpl): void {
+    super._removeChild(child);
+    const index = this._children.indexOf(child);
+    if (index > -1) {
+      this._children.splice(index, 1);
+    }
   }
 }
 
@@ -221,8 +278,8 @@ export interface CreateTestCleanupOptions {
  * @throws `Error` if this function is used outside supported test runner (jasmine/jest).
  */
 export function createTestCleanupScope(options?: CreateTestCleanupOptions): TestCleanupScope {
-  if (!(typeof jasmine === 'object' || typeof jest === 'object')) {
-    throw new Error('Function createTestCleanupScope() can be only used in supported test runner (jasmine/jest)!');
+  if (!((typeof jasmine === 'object' && jasmine !== null) || (typeof jest === 'object' && jest !== null) || (typeof vi === 'object' && vi !== null))) {
+    throw new Error('Function createTestCleanupScope() can be only used in supported test runner (jasmine/jest/vi)!');
   }
   const injector = options?.injector;
   const onCleanup = options?.onCleanup;

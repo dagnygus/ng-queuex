@@ -100,4 +100,13 @@ describe('Testing mergeAll() function.', () => {
     expect(log).toEqual([ 'A' ]);
   });
 
+  it('Should child cleanup scope be destroyed after cleanup.', () => {
+    const inputSource = signal(signal('A'));
+    const scope = createTestCleanupScope();
+    scope.run(() => mergeAll()(inputSource));
+    const childScope = scope.children()[0];
+    childScope.cleanup();
+    expect(childScope.destroyed).toBeTrue();
+  });
+
 });

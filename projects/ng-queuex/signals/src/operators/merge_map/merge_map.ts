@@ -59,7 +59,7 @@ export function mergeMap<T, V>(project: (value: Exclude<T, undefined>) => Signal
           if (typeof nextSource() === 'undefined') {
             nextSource.set(innerSource());
           }
-          childScope.cleanup();
+          childScope.destroy();
           return;
         }
 
@@ -81,8 +81,11 @@ export function mergeMap<T, V>(project: (value: Exclude<T, undefined>) => Signal
         });
 
         if (cleaned) {
-          childScope.cleanup();
+          childScope.destroy();
+          return;
         }
+
+        childScope.add(() => childScope.destroy())
       })
     });
 
