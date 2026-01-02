@@ -1,4 +1,4 @@
-import { computed, DestroyableInjector, DestroyRef, Injector, signal } from "@angular/core";
+import { computed, DestroyableInjector, DestroyRef, Injector, Signal, signal } from "@angular/core";
 import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation } from "@angular/core/primitives/signals";
 import { exhaustMap } from "./exhaust_map";
 import { CleanupScope, createTestCleanupScope, subscribe } from "../../signals";
@@ -139,6 +139,25 @@ describe('Testing exhaustMap() function.', () => {
     expect(log).toEqual([ 'C' ]);
   });
 
+  it('Should always update output source even if child cleanup scope gets cleaned in project() function body.', () => {
+    const log: string[] = [];
+    const scope = createTestCleanupScope();
+    const inputSource = signal<number>(0);
+    const externalSource1 = signal('A');
+    const externalSource2 = signal('B');
+
+    let externalSource = externalSource1;
+    const outputSource = scope.run(() => exhaustMap<number, string>(() => {
+      CleanupScope.assertCurrent().cleanup();
+      return externalSource;
+    })(inputSource));
+
+    subscribe(outputSource, (value) => log.push(value), destroyRef);
+    externalSource = externalSource2;
+    inputSource.set(1);
+    expect(log).toEqual([ 'A', 'B' ]);
+  });
+
   it('Should run cleanup logic after user cleanup during signal read.', () => {
     const log: string[] = [];
     const scope = createTestCleanupScope();
@@ -154,15 +173,30 @@ describe('Testing exhaustMap() function.', () => {
   });
 
   it('Output value should not be undefined if cleanup scope gest cleaned in project() function and external source has defined value and where input source has defined value.', () => {
-      const inputSource = signal(0);
-      const externalSource = signal('ABC');
-      const scope = createTestCleanupScope();
-      const outputSource = scope.run(() => exhaustMap(() => {
-        CleanupScope.assertCurrent().cleanup();
-        return externalSource
-      })(inputSource));
+    const inputSource = signal(0);
+    const externalSource = signal('ABC');
+    const scope = createTestCleanupScope();
+    const outputSource = scope.run(() => exhaustMap(() => {
+      CleanupScope.assertCurrent().cleanup();
+      return externalSource
+    })(inputSource));
 
+    expect(outputSource()).toEqual(externalSource());
+  });
 
-      expect(outputSource()).toEqual(externalSource());
-    });
+  it('Output value should not be changed form defined value to undefined even if cleanup scope gets cleaned in project() function and external undefined.', () => {
+    const inputSource = signal(0);
+    const externalSource1 = signal('ABC');
+    const externalSource2 = signal(undefined);
+    const scope = createTestCleanupScope();
+
+    let externalSource: Signal<any> = externalSource1
+    const outputSource = scope.run(() => exhaustMap(() => {
+      CleanupScope.assertCurrent().cleanup();
+      return externalSource;
+    })(inputSource));
+    externalSource = externalSource2;
+    inputSource.set(1);
+    expect(outputSource()).toBe(externalSource1());
+  });
 });

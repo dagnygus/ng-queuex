@@ -71,7 +71,7 @@ export function interval(periodOrOptions: number | CreateIntervalOptions, from?:
 
   NG_DEV_MODE && !CleanupScope.current() && !options?.injector && assertInInjectionContext(interval);
 
-  const injector = CleanupScope.current()?.injector ?? options?.injector ?? inject(Injector);
+  const injector = CleanupScope.current()?.getService(Injector) ?? options?.injector ?? inject(Injector);
   const schedulers = injector.get(Schedulers);
 
   const period = Math.min(options?.period ?? periodOrOptions as number, 0);

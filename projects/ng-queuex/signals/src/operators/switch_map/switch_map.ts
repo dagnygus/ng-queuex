@@ -51,7 +51,8 @@ export function switchMap<T, V>(project: (value: Exclude<T, undefined>) => Signa
         const innerSource = project(value);
 
         if (cleaned) {
-          if (typeof nextSource() === 'undefined') {
+          const value = innerSource();
+          if (typeof value !== 'undefined') {
             nextSource.set(innerSource());
           }
           childScope.cleanup();

@@ -162,6 +162,7 @@ const SIGNAL_PIPE_NODE: Omit<SignalPipeNode<any>, KeysToOmit> = /* @__PURE__ */ 
   destroy(this: SignalPipeNode<any>) {
     this.inputSource = null;
     this.deinit();
+    this.cleanupScope._destroyed = true;
   },
 
 }))();
@@ -3121,10 +3122,10 @@ export function signalPipe<T>(
 ): Signal<any> {
   const parentScope = CleanupScope.current();
 
-  NG_DEV_MODE && !parentScope?.injector && !options?.injector && assertInInjectionContext(signalPipe);
+  NG_DEV_MODE && !parentScope && !options?.injector && assertInInjectionContext(signalPipe);
 
   const debugName = options?.debugName;
-  const injector = parentScope?.injector ?? options?.injector ?? inject(Injector);
+  const injector = parentScope?.getService(Injector) ?? options?.injector ?? inject(Injector);
   const ownScope = new DefaultCleanupScope(injector);
 
   pipeline = pipeline.slice() as any;

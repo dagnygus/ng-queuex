@@ -63,10 +63,12 @@ export function exhaustMap<T, V>(project: (value: Exclude<T, undefined>) => Sign
         innerSource = project(value);
 
         if (cleaned) {
-          if (typeof nextSource() === 'undefined') {
+          const value = innerSource();
+          if (typeof value !== 'undefined') {
             nextSource.set(innerSource());
           }
           childScope.cleanup();
+          innerSource = null;
           return;
         }
 

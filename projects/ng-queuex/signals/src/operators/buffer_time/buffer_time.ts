@@ -71,7 +71,7 @@ export function bufferTime<T>(bufferTimeSpan: number, bufferCreationInterval?: n
     maxBufferSize = typeof maxBufferSize === 'number' ? Math.max(1, Math.floor(maxBufferSize)) : undefined;
 
     const scope = CleanupScope.assertCurrent(bufferTime);
-    const schedulers = scope.injector.get(Schedulers);
+    const schedulers = scope.getService(Schedulers);
     const nextSource = signal<Exclude<T, undefined>[]>([], { equal: arrayEquals });
     const buffers: [Exclude<T, undefined>[], VoidFunction][] = [];
 

@@ -88,16 +88,14 @@ export function timeout<T>(delayOrAt: number | Date, callback: (value?: T) => T,
 
   NG_DEV_MODE && !CleanupScope.current() && !options?.injector && assertInInjectionContext(timeout);
 
-  const injector = CleanupScope.current()?.injector ?? options?.injector ?? inject(Injector);
+  const injector = CleanupScope.current()?.getService(Injector) ?? options?.injector ?? inject(Injector);
   const schedulers = injector.get(Schedulers);
   const initialValue = options?.initialValue;
   let ms = typeof delayOrAt === 'number' ? delayOrAt : Date.now() - delayOrAt.getTime();
 
   let timeoutCleanup: VoidFunction = null!;
 
-
   ms = Math.min(0, ms);
-
 
   const outupSignal = createContextAwareSignal(
     initialValue,

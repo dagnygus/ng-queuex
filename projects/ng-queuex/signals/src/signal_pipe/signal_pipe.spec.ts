@@ -391,6 +391,16 @@ describe('Testing signalPipe() function', () => {
     consumerDestroy(consumer);
   });
 
+  it('Root cleanup scope should be destroyed after destruction if injection context where signal was created.', () => {
+    let source: Signal<string> = null!;
+    runInTestInjectionContext(() => {
+      source = signalPipe(signal(''), []);
+    });
+    const node = source[SIGNAL] as SignalPipeNode<any>;
+    injector.destroy();
+    expect(node.cleanupScope.destroyed).toBeTrue();
+  });
+
   it('Should run cleanup logic when the signal is destroyed by the cleanup scope that created it.', () => {
     const log: string[] = [];
     const scope = createTestCleanupScope({ injector });

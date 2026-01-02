@@ -48,7 +48,7 @@ export function windowTime<T>(windowTimeSpan: number, windowCreationTime?: numbe
   return function(prevSource) {
     NG_DEV_MODE && assertNotInReactiveContext(windowTime);
     const scope = CleanupScope.assertCurrent(windowTime);
-    const schedulers = scope.injector.get(Schedulers);
+    const schedulers = scope.getService(Schedulers);
     windowTimeSpan = Math.max(0, windowTimeSpan);
     windowCreationTime = typeof windowCreationTime === 'number' ? Math.max(0, windowCreationTime) : windowTimeSpan;
     maxWindowSize = typeof maxWindowSize === 'number' ? Math.max(1, Math.floor(maxWindowSize)) : undefined;
@@ -86,7 +86,6 @@ export function windowTime<T>(windowTimeSpan: number, windowCreationTime?: numbe
         const [win, cleanup] = window;
 
         if (maxWindowSize == null) {
-          console.log(win);
           win.set(value)
         } else {
           win.set(value);

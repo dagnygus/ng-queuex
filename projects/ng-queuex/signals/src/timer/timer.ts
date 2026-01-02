@@ -86,7 +86,7 @@ export function timer(delayOrStartAt: number | Date, periodOrOptions?: number | 
 
   NG_DEV_MODE && !CleanupScope.current() && !options?.injector && assertInInjectionContext(timer);
 
-  const injector = CleanupScope.current()?.injector ?? options?.injector ?? inject(Injector);
+  const injector = CleanupScope.current()?.getService(Injector) ?? options?.injector ?? inject(Injector);
   const schedulers = injector.get(Schedulers);
   const ms = typeof delayOrStartAt === 'number' ? delayOrStartAt : Date.now() - delayOrStartAt.getTime();
 

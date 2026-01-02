@@ -743,7 +743,7 @@ export function fromHttp(url: string | URL, options?: CreateFromHttpOptions): Si
 
   NG_DEV_MODE && !CleanupScope.current() && !options?.injector && assertInInjectionContext(fromHttp);
 
-  const injector = CleanupScope.current()?.injector ?? options?.injector ?? inject(Injector);
+  const injector = CleanupScope.current()?.getService(Injector) ?? options?.injector ?? inject(Injector);
   const pendingTasks = injector.get(PendingTasks);
   const method = options?.method ?? 'GET'
   const credentials = options?.credentials;

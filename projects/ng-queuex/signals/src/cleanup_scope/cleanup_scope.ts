@@ -1,4 +1,4 @@
-import { DestroyRef, Injector } from "@angular/core";
+import { DestroyRef, InjectOptions, Injector, ProviderToken } from "@angular/core";
 
 declare const jasmine: any;
 declare const jest: any;
@@ -35,10 +35,10 @@ export abstract class CleanupScope {
    */
   abstract readonly destroyed: boolean;
 
-  /**
-   * An injector related to root cleanup scope.
-   */
-  abstract readonly injector: Injector;
+  // /**
+  //  * An injector related to root cleanup scope.
+  //  */
+  // abstract readonly injector: Injector;
 
   /**
    * Runs provided callback in cleanup scope.
@@ -49,6 +49,8 @@ export abstract class CleanupScope {
   /**
    * Adds teardown logic to this scope.
    * @param teardownLogic The teardown logic to run.
+   * @throws Error during cleanup faze.
+   * @throws Error if scope is destroyed.
    */
   abstract add(teardownLogic: VoidFunction): void;
 
@@ -60,8 +62,30 @@ export abstract class CleanupScope {
 
   /**
    * Runs all teardown logics added to this scope and removes them.
+   * With it runs all teardown logics of child scopes and destroys them.
    */
   abstract cleanup(): void;
+
+  /**
+   * Retrieves an instance from the injector based on the provided token.
+   * @returns The instance from the injector if defined, otherwise the `notFoundValue`.
+   * @throws When the `notFoundValue` is `undefined` or `Injector.THROW_IF_NOT_FOUND`.
+   */
+  abstract getService<T>(token: ProviderToken<T>, notFoundValue: undefined, options: InjectOptions & {
+      optional?: false;
+  }): T;
+  /**
+   * Retrieves an instance from the injector based on the provided token.
+   * @returns The instance from the injector if defined, otherwise the `notFoundValue`.
+   * @throws When the `notFoundValue` is `undefined` or `Injector.THROW_IF_NOT_FOUND`.
+   */
+  abstract getService<T>(token: ProviderToken<T>, notFoundValue: null | undefined, options: InjectOptions): T | null;
+  /**
+   * Retrieves an instance from the injector based on the provided token.
+   * @returns The instance from the injector if defined, otherwise the `notFoundValue`.
+   * @throws When the `notFoundValue` is `undefined` or `Injector.THROW_IF_NOT_FOUND`.
+   */
+  abstract getService<T>(token: ProviderToken<T>, notFoundValue?: T, options?: InjectOptions): T;
 
   /**
    * Runs all teardown logics added to this scope and removes them.
@@ -117,9 +141,10 @@ export class DefaultCleanupScope implements CleanupScope {
 
   constructor(public _injector: Injector) {}
 
+
   get destroyed(): boolean { return this._destroyed; }
 
-  get injector(): Injector { return this._injector; }
+  // get injector(): Injector { return this._injector; }
 
   run<T>(callback: () => T): T {
     if (this._destroyed) {
@@ -170,7 +195,7 @@ export class DefaultCleanupScope implements CleanupScope {
         if (typeof listener === 'function') {
           listener();
         } else {
-          listener.cleanup();
+          listener.destroy();
         }
       }
     } finally {
@@ -178,6 +203,21 @@ export class DefaultCleanupScope implements CleanupScope {
         this._cleanup();
       }
     }
+  }
+
+  getService<T>(token: ProviderToken<T>, notFoundValue: undefined, options: InjectOptions & {
+    optional?: false;
+  }): T;
+  getService<T>(token: ProviderToken<T>, notFoundValue: null | undefined, options: InjectOptions): T | null;
+  getService<T>(token: ProviderToken<T>, notFoundValue?: T, options?: InjectOptions): T;
+  getService<T>(token: ProviderToken<T>, notFoundValue?: T | null | undefined, options?: InjectOptions): T | null {
+    if (this._destroyed) {
+      throw new Error('CleanupScope#getService(): This cleanup scope is already destroyed!');
+    }
+    if (token === Injector as any) {
+      return this._injector as any;
+    }
+    return this._injector.get(token, notFoundValue, options);
   }
 
   createChild(): CleanupScope {

@@ -74,7 +74,7 @@ describe('Testing DefaultCleanupScope class.', () => {
     expect(() => scope.destroy()).toThrowError('CleanupScope#destroy(): It is disallowed to destroy root cleanup scope!');
   });
 
-  it('Parent scope should clean child scope.', () => {
+  it('Parent scope should clean child scope and destroys it.', () => {
     const log: string[] = [];
     const scope = new DefaultCleanupScope(Injector.NULL);
     scope.add(() => log.push('a'));
@@ -84,6 +84,7 @@ describe('Testing DefaultCleanupScope class.', () => {
 
     scope.cleanup();
     expect(log).toEqual(['a', 'b']);
+    expect(childScope.destroyed).toBeTrue();
   });
 
   it('Child scope should not clean parent scope.', () => {
@@ -154,7 +155,7 @@ describe('Testing DefaultCleanupScope class.', () => {
     const scope = new DefaultCleanupScope(Injector.NULL);
 
     scope.add(() => {
-      log.push('a')
+      log.push('a');
       scope.cleanup();
       log.push('b');
     });
@@ -170,7 +171,7 @@ describe('Testing createTestCleanupScope() function', () => {
     expect(() => scope.destroy()).toThrowError('CleanupScope#destroy(): It is disallowed to destroy root cleanup scope!');
   });
 
-  it('Parent scope should clean child scope.', () => {
+  it('Parent scope should clean child scope and destroys it.', () => {
     const log: string[] = [];
     const scope = createTestCleanupScope();
     scope.add(() => log.push('a'));
@@ -180,6 +181,7 @@ describe('Testing createTestCleanupScope() function', () => {
 
     scope.cleanup();
     expect(log).toEqual(['a', 'b']);
+    expect(childScope.destroyed).toBeTrue();
   });
 
   it('Child scope should be in parent listeners list.', () => {
@@ -260,7 +262,7 @@ describe('Testing createTestCleanupScope() function', () => {
     const scope = createTestCleanupScope();
     const childScope = scope.createChild();
     childScope.destroy();
-    expect(!scope.children().includes(childScope as TestCleanupScope));
+    expect(scope.children().includes(childScope as TestCleanupScope)).toBeFalse();
   })
 
   it('Should root scope run onCleanup listener before teardown logics', () => {
