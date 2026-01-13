@@ -42,12 +42,17 @@ export function switchMap<T, V>(project: (value: Exclude<T, undefined>) => Signa
     NG_DEV_MODE && assertNotInReactiveContext(switchMap);
     const childScope = CleanupScope.assertCurrent(switchMap).createChild();
     const nextSource = signal<any>(undefined);
+    let cleaned = false;
+
+    function onCleanup(): void {
+      cleaned = true;
+    }
 
     subscribe(prevSource, (value) => {
       childScope.cleanup();
       childScope.run(() => {
-        let cleaned = false;
-        childScope.add(() => { cleaned = true; });
+        cleaned = false;
+        childScope.add(onCleanup);
         const innerSource = project(value);
 
         if (cleaned) {

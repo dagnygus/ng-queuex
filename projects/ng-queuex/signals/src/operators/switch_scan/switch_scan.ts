@@ -30,7 +30,7 @@ import { CleanupScope } from "../../cleanup_scope/cleanup_scope";
  *
  * const result = signalPipe(
  *   source,
- *   switchScan((acc, value) => createAccumulationSignal(acc, value), 0)
+ *   [switchScan((acc, value) => createAccumulationSignal(acc, value), 0)]
  * );
  * ```
  *
@@ -48,12 +48,17 @@ export function switchScan<R, T>(accumulator: (acc: R, value: Exclude<T, undefin
     const childScope = CleanupScope.assertCurrent(switchScan).createChild();
     const nextSource = signal<R>(seed);
     let acc = seed;
+    let cleaned = false;
+
+    function onCleanup(): void {
+      cleaned = true;
+    }
 
     subscribe(prevSource, (value) => {
       childScope.cleanup();
       childScope.run(() => {
-        let cleaned = false;
-        childScope.add(() => { cleaned = true; });
+        cleaned = false;
+        childScope.add(onCleanup);
         const innerSource = accumulator(acc, value);
 
         if (cleaned) {

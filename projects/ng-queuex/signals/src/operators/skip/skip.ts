@@ -65,8 +65,7 @@ export function skip<T>(count: 0): SignalMonoTypeOperatorFunction<T>;
 export function skip<T>(count: number): SignalOperatorFunction<T, T | undefined>;
 export function skip<T>(count: number): SignalOperatorFunction<T, T | undefined> {
   return function(prevSource) {
-    NG_DEV_MODE && assertNotInReactiveContext(skip);
-    CleanupScope.assertCurrent(skip);
+    NG_DEV_MODE && CleanupScope.assertCurrent(skip) && assertNotInReactiveContext(skip);
     const nextSource = signal<T | undefined>(undefined);
     count = Math.max(1, count);
 

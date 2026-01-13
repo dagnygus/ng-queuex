@@ -98,6 +98,18 @@ describe('Testing combineLatestWith() function', () => {
     scope.run(() => combineLatestWith(externalSource)(inputSource));
 
     expect(log).toEqual([ 'A' ]);
-  })
+  });
+
+  it('Child scope should be destroyed after cleanup', () => {
+    const scope = createTestCleanupScope();
+    const inputSource = signal(0);
+    const externalSource = signal(0);
+    scope.run(() => combineLatestWith(externalSource)(inputSource));
+
+    const childScope =  scope.children()[0];
+    childScope.cleanup();
+
+    expect(childScope.destroyed).toBeTrue();
+  });
 
 });

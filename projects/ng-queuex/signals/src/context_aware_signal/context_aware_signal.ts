@@ -99,7 +99,7 @@ const CONTEXT_AWARE_SIGNAL_NODE: Partial<ContextAwareSignalNode<any>> = /* @__PU
 
       if (node.status === ContextAwareSignalStatus.Preparing) {
         const newValue = updater(node.value);
-        node.value = newValue
+        node.value = newValue;
         return
       }
 

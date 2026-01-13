@@ -41,12 +41,17 @@ export function switchAll<T, U extends Signal<T> | undefined = Signal<T> | undef
     NG_DEV_MODE && assertNotInReactiveContext(switchMap);
     const childScope = CleanupScope.assertCurrent(switchAll).createChild();
     const nextSource = signal<any>(undefined);
+    let cleaned = false;
+
+    function onCleanup(): void {
+      cleaned = true;
+    }
 
     subscribe(prevSource, (innerSource) => {
       childScope.cleanup();
       childScope.run(() => {
-        let cleaned = false;
-        childScope.add(() => { cleaned = true; });
+        cleaned = false;
+        childScope.add(onCleanup);
 
         subscribe(innerSource, (innerValue) => {
           nextSource.set(innerValue);

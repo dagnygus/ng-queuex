@@ -1,6 +1,7 @@
 import { NG_DEV_MODE, SignalOperatorFunction } from "../../common";
 import { CleanupScope } from '../../cleanup_scope/cleanup_scope';
-import { assertNotInReactiveContext, computed } from "@angular/core";
+import { assertNotInReactiveContext, computed, signal } from "@angular/core";
+import { subscribe } from "../../subscribe/subscribe";
 
 /**
  * Creates a signal operator that transforms the emitted value of a source signal
@@ -15,29 +16,38 @@ import { assertNotInReactiveContext, computed } from "@angular/core";
  *
  * @example
  * const count = signal(1);
- * const doubled = map(x => x * 2);
- * const doubledSignal = doubled(count);
+ * const doubled = signalPipe(
+ *  count,
+ *  [ map((x) => x * 2) ]
+ * );
  *
- * console.log(doubledSignal()); // 2
+ * count.set(2) // doubled - 4;
+ * count.set(4) // doubled - 8;
  *
  * @remarks
  * - All project() function executions have shared cleanup scope, what it gets clean between executions.
  */
-export function map<T, V>(project: (value: T) => V): SignalOperatorFunction<T, V> {
-  return function(mainSource) {
+export function map<T, V>(project: (value: Exclude<T, undefined>) => V): SignalOperatorFunction<T, T extends undefined ? V | undefined : V> {
+  return function(prevSource) {
     NG_DEV_MODE && assertNotInReactiveContext(map);
     const childScope = CleanupScope.assertCurrent(map).createChild();
+    const nextSource = signal<any>(undefined);
+    let cleaned = false;
 
-    return computed(() => {
+    function onCleanup() {
+      cleaned = true;
+    }
+
+    subscribe(prevSource, (value) => {
       childScope.cleanup();
-      let cleaned = false;
-      childScope.add(() => { cleaned = true; });
+      cleaned = false;
+      childScope.add(onCleanup);
 
-      const result = childScope.run(() => project(mainSource()));
+      nextSource.set(childScope.run(() => project(value)));
 
       if (cleaned) { childScope.cleanup(); }
-
-      return result;
     });
+
+    return nextSource.asReadonly();
   }
 }

@@ -54,14 +54,13 @@ describe('Testing map() function', () => {
     const log: string[] = []
     const scope = createTestCleanupScope();
     const inputSource = signal(0);
-    const outputSource = scope.run(() => map<number, number>((value) => {
+    scope.run(() => map<number, number>((value) => {
       expect(scope.children().length).toBe(1)
       expect(CleanupScope.current()).toBe(scope.children()[0] as any)
       log.push('A')
       return value
     })(inputSource));
-
-    outputSource();
+;
     expect(log).toEqual([ 'A' ]);
   });
 
@@ -69,33 +68,30 @@ describe('Testing map() function', () => {
     const log: string[] = []
     const scope = createTestCleanupScope();
     const inputSource = signal(0);
-    const outputSource = scope.run(() => map<number, number>((value) => {
+    scope.run(() => map<number, number>((value) => {
       CleanupScope.assertCurrent().add(() => log.push('A'))
       return value
     })(inputSource));
 
-    outputSource();
     expect(log).toEqual([]);
 
     inputSource.set(1);
-    outputSource();
     expect(log).toEqual([ 'A' ]);
 
     inputSource.set(2);
-    outputSource();
     expect(log).toEqual([ 'A', 'A' ]);
   });
 
   it('Should run cleanup logic after user immediate cleanup call.', () => {
     const log: string[] = [];
     const scope = createTestCleanupScope();
-    const inputSource = computed(() => {
-      CleanupScope.assertCurrent().cleanup();
+    const inputSource = signal(0);
+    scope.run(() => map<number, number>((value) => {
       CleanupScope.assertCurrent().add(() => log.push('A'));
-      return 0;
-    });
-    const outputSource = scope.run(() => map<number, number>((value) => value)(inputSource));
-    outputSource();
+      CleanupScope.assertCurrent().cleanup();
+      return value;
+    })(inputSource));
+
 
     expect(log).toEqual([ 'A' ]);
   });

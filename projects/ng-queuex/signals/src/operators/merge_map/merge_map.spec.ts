@@ -52,7 +52,7 @@ describe('Testing mergeMap() function', () => {
     })).toThrowError());
   })
 
-  it('Should project output signal correctly', () => {
+  it('Should project output signal correctly.', () => {
     const log: string[] = [];
     const scope = createTestCleanupScope();
     const inputSource = signal<string | undefined>(undefined);

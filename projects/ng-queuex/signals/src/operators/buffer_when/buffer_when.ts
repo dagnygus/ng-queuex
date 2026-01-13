@@ -51,23 +51,26 @@ export function bufferWhen<T>(closingSelector: () => Signal<any>): SignalOperato
     NG_DEV_MODE && assertNotInReactiveContext(bufferWhen);
     const childScope = CleanupScope.assertCurrent(bufferWhen).createChild();
     const nextSource = signal<Exclude<T, undefined>[]>([], { equal: arrayEquals });
+    let cleaned = false;
 
     let closingNotifier: Signal<any> | null = null;
     let buffer: Exclude<T, undefined>[] = [];
+
+    function onCleanup(): void {
+      cleaned = true;
+      if (buffer.length) {
+        buffer = [];
+        closingNotifier = null;
+      }
+    }
 
     subscribe(prevSource, (value) => {
       buffer.push(value);
 
       if (closingNotifier) { return; }
 
-      let cleaned = false;
-      childScope.add(() => {
-        cleaned = true;
-        if (buffer.length) {
-          buffer = [];
-          closingNotifier = null;
-        }
-      });
+      cleaned = false;
+      childScope.add(onCleanup);
 
       childScope.run(() => {
         closingNotifier = closingSelector();

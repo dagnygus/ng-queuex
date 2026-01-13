@@ -27,7 +27,7 @@ import { subscribe } from "../../subscribe/subscribe";
  *
  * const combined = signalPipe(
  *   a,
- *   combineLatestWith(b, c)
+ *   [ combineLatestWith(b, c) ]
  * );
  * // Emits: [1, 'x', true]
  * ```
@@ -76,6 +76,8 @@ export function combineLatestWith<T, S extends readonly Signal<any>[]>(...source
 
       if (cleaned) {
         childScope.cleanup();
+      } else {
+        childScope.add(() => { childScope.destroy(); })
       }
     }
 

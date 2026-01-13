@@ -48,6 +48,12 @@ export function debounce<T>(durationSelector: () => Signal<any>): SignalOperator
     const nextSource = signal<T | undefined>(undefined);
     let durationNotifier: Signal<any> | null = null;
     let latestValue: any;
+    let cleaned = false;
+
+    function onCleanup(): void {
+      cleaned = true;
+      durationNotifier = null;
+    }
 
     subscribe(prevSource, (value) => {
       latestValue = value;
@@ -55,11 +61,8 @@ export function debounce<T>(durationSelector: () => Signal<any>): SignalOperator
         childScope.cleanup();
       }
 
-      let cleaned = false
-      childScope.add(() => {
-        cleaned = true;
-        durationNotifier = null;
-      });
+      cleaned = false;
+      childScope.add(onCleanup);
 
       childScope.run(() => {
         durationNotifier = durationSelector();

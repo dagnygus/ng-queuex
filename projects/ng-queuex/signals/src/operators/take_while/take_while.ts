@@ -125,6 +125,7 @@ export function takeWhile<T>(predicate: (value: Exclude<T, undefined>, index: nu
 
     let index = 0
     subscribe(prevSource, (value) => {
+      childScope.cleanup();
       const prediction = childScope.run(() => predicate(value, index++));
       if (prediction) {
         nextSource.set(value);

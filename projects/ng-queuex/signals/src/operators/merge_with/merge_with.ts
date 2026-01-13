@@ -24,7 +24,7 @@ import { subscribe } from "../../subscribe/subscribe";
  *
  * const merged = signalPipe(
  *   a,
- *   mergeWith(b)
+ *   [ mergeWith(b) ]
  * );
  * // Emits: 1, 2, whenever either signal updates
  * ```
@@ -68,7 +68,7 @@ export function mergeWith<T, S extends readonly Signal<any>[]>(...sources: [...S
       if (cleaned) {
         childScope.destroy();
       } else {
-        childScope.add(() => childScope.destroy());
+        childScope.add(() => { childScope.destroy(); });
       }
     }
 

@@ -3,7 +3,6 @@ import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterCo
 import { debounce } from "./debounce";
 import { CleanupScope, createTestCleanupScope } from "../../cleanup_scope/cleanup_scope";
 import { subscribe } from "../../subscribe/subscribe";
-import { audit } from "rxjs";
 
 function runInReactiveContext(fn: VoidFunction): ReactiveNode {
   const consumer = Object.create(REACTIVE_NODE) as ReactiveNode;

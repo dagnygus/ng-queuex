@@ -70,7 +70,7 @@ export function mergeAll<T, U extends Signal<T> | undefined = Signal<T> | undefi
         childScope.destroy();
         return;
       }
-      childScope.add(() => childScope.destroy());
+      childScope.add(() => { childScope.destroy(); });
     });
 
     return nextSource.asReadonly();

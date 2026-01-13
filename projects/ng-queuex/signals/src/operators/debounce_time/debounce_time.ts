@@ -14,8 +14,6 @@ import { CleanupScope } from "../../cleanup_scope/cleanup_scope";
  * the timer completes. If a new value is produced while waiting, the
  * pending timer is cancelled and restarted for the latest value.
  *
- * @template T The type of values emitted by the source signal.
- *
  * @param duration
  * The debounce duration in milliseconds.
  *
@@ -29,7 +27,7 @@ import { CleanupScope } from "../../cleanup_scope/cleanup_scope";
  *
  * const debouncedQuery = signalPipe(
  *   query,
- *   [debounceTime(300)]
+ *   [ debounceTime(300) ]
  * );
  * ```
  *

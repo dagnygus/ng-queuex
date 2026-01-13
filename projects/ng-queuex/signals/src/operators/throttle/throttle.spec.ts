@@ -1,4 +1,4 @@
-import { computed, DestroyableInjector, DestroyRef, Injector, signal } from "@angular/core";
+import { computed, DestroyableInjector, DestroyRef, Injector, input, signal } from "@angular/core";
 import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation } from "@angular/core/primitives/signals";
 import { throttle } from "./throttle";
 import { CleanupScope, createTestCleanupScope } from "../../cleanup_scope/cleanup_scope";
@@ -56,9 +56,8 @@ describe('Testing throttle() function.', () => {
 
     subscribe(outputSignal, (value) => log.push(value), destroyRef);
 
-    expect(log).toEqual([]);
+    expect(log).toEqual(['A']);
 
-    durationNotifier.update((v) => ++v);
     inputSource.set('B');
     inputSource.set('C');
     durationNotifier.update((v) => ++v);
@@ -66,8 +65,9 @@ describe('Testing throttle() function.', () => {
     inputSource.set('E');
     inputSource.set('F');
     durationNotifier.update((v) => ++v);
+    inputSource.set('G');
 
-    expect(log).toEqual([ 'A', 'B', 'D' ]);
+    expect(log).toEqual([ 'A', 'D', 'G' ]);
   });
 
   it('Duration notifier should be omitted until current active duration notifier will change its own value', () => {
@@ -83,15 +83,20 @@ describe('Testing throttle() function.', () => {
       subscribe(outputSignal, (value) => log.push(value), destroyRef);
 
       inputSource.set('A');
-      durationNotifier = durationNotifier2
       inputSource.set('B');
+      durationNotifier = durationNotifier2
+      expect(log).toEqual(['A']);
       durationNotifier2.update((v) => ++v);
-      expect(log).toEqual([]);
-      durationNotifier1.update((v) => ++v);
-      expect(log).toEqual([ 'A' ]);
       inputSource.set('C');
+      expect(log).toEqual(['A']);
+      durationNotifier1.update((v) => ++v);
+      inputSource.set('D');
+      expect(log).toEqual([ 'A', 'D' ]);
+      inputSource.set('E');
+      expect(log).toEqual([ 'A', 'D' ]);
       durationNotifier2.update((v) => ++v);
-      expect(log).toEqual([ 'A', 'C' ]);
+      inputSource.set('F');
+      expect(log).toEqual([ 'A', 'D', 'F']);
     });
 
   it('Should run durationSelector() function in child cleanup scope.', () => {
@@ -143,8 +148,11 @@ describe('Testing throttle() function.', () => {
       return durationNotifier;
     })(inputSource));
     subscribe(outputSource, (value) => log.push(value), destroyRef);
-    durationNotifier.update((v) => ++v);
-    expect(log).toEqual([]);
+
+    expect(log).toEqual([ 'A' ]);
+    inputSource.set('B');
+    inputSource.set('C');
+    expect(log).toEqual([ 'A', 'B', 'C' ]);
   });
 
 });

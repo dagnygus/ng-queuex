@@ -29,7 +29,7 @@ import { CleanupScope } from "../../cleanup_scope/cleanup_scope";
  *
  * const result = signalPipe(
  *   trigger,
- *   exhaustMap(() => createAsyncSignal())
+ *   [exhaustMap(() => createAsyncSignal())]
  * );
  * ```
  *
@@ -47,19 +47,22 @@ export function exhaustMap<T, V>(project: (value: Exclude<T, undefined>) => Sign
     const nextSource = signal<any>(undefined);
 
     let innerSource: Signal<any> | null = null;
+    let cleaned = false;
+
+    function onCleanup(): void {
+      innerSource = null;
+      cleaned = true;
+    }
 
     subscribe(prevSource, (value) => {
       if (innerSource) { return; }
 
       childScope.cleanup();
 
-      childScope.add(() => {
-        innerSource = null;
-      });
+      childScope.add(onCleanup);
 
       childScope.run(() => {
-        let cleaned = false;
-        childScope.add(() => { cleaned = true; });
+        cleaned = false;
         innerSource = project(value);
 
         if (cleaned) {
