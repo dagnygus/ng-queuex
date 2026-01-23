@@ -1,7 +1,14 @@
 {
     "cSpell.words": [
+        "accumalator",
         "Ajciu",
         "criss",
+        "deinit",
+        "deinitialization",
+        "deinitialize",
+        "deinitialized",
+        "deinitializes",
+        "deinitializing",
         "Deoptimized",
         "entrancy",
         "falsefalsetrue",
@@ -9,6 +16,7 @@
         "falsetruefalse",
         "faslefalsetrue",
         "Kruchol",
+        "Macrotask",
         "misko",
         "noops",
         "ɵglobal",
@@ -20,6 +28,7 @@
         "truefalse",
         "truefalsefalse",
         "truefalsetrue",
+        "Unsubscribable",
         "vicb",
         "vsync"
     ]

@@ -7,6 +7,9 @@
       "@ng-queuex/core": [
         "./dist/ng-queuex/core"
       ],
+      "@ng-queuex/signals": [
+        "./dist/ng-queuex/signals"
+      ],
       "@ng-queuex/template": [
         "./dist/ng-queuex/template"
       ]
@@ -55,6 +58,12 @@
     },
     {
       "path": "./projects/sample-app/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/ng-queuex/signals/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ng-queuex/signals/tsconfig.spec.json"
     }
   ],
 }

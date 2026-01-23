@@ -1,0 +1,143 @@
+import { assertInInjectionContext, inject, Injector, Signal } from '@angular/core';
+import { createContextAwareSignal } from '../context_aware_signal/context_aware_signal';
+import { CleanupScope } from '../cleanup_scope/cleanup_scope';
+import { NG_DEV_MODE } from '../common';
+import { Schedulers } from '../schedulers/schedulers';
+
+/**
+ * Configuration options used when creating a timer signal.
+ *
+ * These options control how often the timer ticks, which dependency
+ * injection context is used, and how the timer is identified for
+ * debugging purposes.
+ */
+export interface CreateTimerOptions {
+  /**
+  * The timer period in milliseconds.
+  *
+  * When provided, the timer emits repeatedly at the specified interval.
+  * If omitted, the timer emits only once.
+  */
+  period?: number;
+
+  /**
+  * An optional injector used to resolve scheduler-related dependencies.
+  *
+  * If not provided, the current injection context is used.
+  */
+  injector?: Injector;
+
+  /**
+  * An optional human-readable name used for debugging purposes.
+  *
+  * This name may be used to label the timer in debug tools or error
+  * messages.
+  */
+  debugName?: string;
+}
+
+/**
+ * Creates a signal that will wait for a specific time period before changing its value to 0. This signal
+ * can be created only in injection context unless injector is provided to options and it can only be read
+ * in reactive context like effect() or component template.
+ * @param delay time in milliseconds after which the signal will change.
+ */
+export function timer(delay: number): Signal<undefined | 0>;
+/**
+ * Creates a signal that will wait for a specific time period before changing its value incrementally from 0 with provided interval period.
+ * This signal can be created only in injection context unless injector is provided to options and it can only be read
+ * in reactive context like effect() or component template.
+ * @param delay time in milliseconds after which the signal will change.
+ * @param period The interval size in milliseconds.
+ */
+export function timer(delay: number, period: number): Signal<undefined | number>;
+/**
+ * Creates a signal that will wait for a specific time period before changing its value. If a period is provided to options, then the timer will change
+ * its value incrementally from 0, otherwise will change to zero. This signal can be created only in injection context unless injector is provided to options
+ * and it can only be read in reactive context like effect() or component template.
+ * @param delay time in milliseconds after which the signal will change.
+ * @param options A timer creation options.
+ *
+ * @see {@link CreateTimerOptions}
+ */
+export function timer(delay: number, options: { period: number } & CreateTimerOptions | undefined): Signal<undefined | number>;
+/**
+ * Creates a signal that will wait for a specific time period before changing its value. If a period is provided to options, then the timer will change
+ * its value incrementally from 0, otherwise will change to zero. This signal can be created only in injection context unless injector is provided to options
+ * and it can only be read in reactive context like effect() or component template.
+ * @param delay time in milliseconds after which the signal will change.
+ * @param options A timer creation options.
+ *
+ * @see {@link CreateTimerOptions}
+ */
+export function timer(delay: number, options: CreateTimerOptions | undefined): Signal<undefined | 0>;
+/**
+ * Creates a signal that will wait for exact date before changing its value to 0. This signal
+ * can be created only in injection context unless injector is provided to options  and it can only be read
+ * in reactive context like effect() or component template.
+ * @param delay time in milliseconds after which the signal will change.
+ */
+export function timer(startAt: Date): Signal<undefined | 0>;
+/**
+ * Creates a signal that will wait for exact date before changing its value incrementally from 0 with provided interval period.
+ * This signal can be created only in injection context unless injector is provided to options and it can only be read
+ * in reactive context like effect() or component template.
+ * @param delay time in milliseconds after which the signal will change.
+ * @param period The interval size in milliseconds.
+ */
+export function timer(startAt: Date, period: number): Signal<undefined | 0>;
+/**
+ * Creates a signal that will wait for exact date before changing its value. If a period is provided to options, then the timer will change
+ * its value incrementally from 0, otherwise will change to zero. This signal can be created only in injection context unless injector is provided to options
+ * and it can only be read in reactive context like effect() or component template.
+ * @param delay time in milliseconds after which the signal will change.
+ * @param options A timer creation options.
+ *
+ * @see {@link CreateTimerOptions}
+ */
+export function timer(startAt: Date, options: { period: number } & CreateTimerOptions | undefined): Signal<undefined | number>;
+/**
+ * Creates a signal that will wait for exact date before changing its value. If a period is provided to options, then the timer will change
+ * its value incrementally from 0, otherwise will change to zero. This signal can be created only in injection context unless injector is provided to options
+ * and it can only be read in reactive context like effect() or component template.
+ * @param delay time in milliseconds after which the signal will change.
+ * @param options A timer creation options.
+ *
+ * @see {@link CreateTimerOptions}
+ */
+export function timer(startAt: Date, options: CreateTimerOptions | undefined): Signal<undefined | 0>;
+export function timer(delayOrStartAt: number | Date, periodOrOptions?: number | CreateTimerOptions | undefined): Signal<undefined | number> {
+  const options = periodOrOptions != null && typeof periodOrOptions === 'object' ? periodOrOptions : undefined;
+  const period = typeof periodOrOptions === 'number' ? periodOrOptions : options?.period;
+
+  NG_DEV_MODE && !CleanupScope.current() && !options?.injector && assertInInjectionContext(timer);
+
+  const injector = CleanupScope.current()?.getService(Injector) ?? options?.injector ?? inject(Injector);
+  const schedulers = injector.get(Schedulers);
+  const ms = typeof delayOrStartAt === 'number' ? delayOrStartAt : Date.now() - delayOrStartAt.getTime();
+
+  let timeoutCleanup: VoidFunction = null!;
+  let intervalCleanup: VoidFunction | null = null;
+
+  const outputSignal = createContextAwareSignal<undefined | number>(
+    undefined,
+    function(set, update) {
+      timeoutCleanup = schedulers.setTimeout(() => {
+        set(0);
+        if (typeof period === 'number') {
+          intervalCleanup = schedulers.setInterval(() => {
+            update((value) => ++value!);
+          }, period);
+        }
+      }, ms)
+    },
+    function() {
+      timeoutCleanup();
+      intervalCleanup?.();
+    },
+    timer,
+    options?.debugName
+  )
+
+  return outputSignal;
+}

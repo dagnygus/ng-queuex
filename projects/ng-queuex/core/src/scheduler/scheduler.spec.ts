@@ -1709,7 +1709,7 @@ describe('testing whenIdle() function.', () => {
   it('Should throw error if test runner was not detected.', () => {
     const _jasmine = ɵglobal.jasmine;
     ɵglobal.jasmine = undefined;
-    expect(() => whenIdle()).toThrowError('whenIdle(): Supported test runner not detected! This function can by used in supported test frameworks (jasmine/jest).');
+    expect(() => whenIdle()).toThrowError('whenIdle(): Supported test runner not detected! This function can by used in supported test frameworks (jasmine/jest/vi).');
     ɵglobal.jasmine = _jasmine;
   })
 });
