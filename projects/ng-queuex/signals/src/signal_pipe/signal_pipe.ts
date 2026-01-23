@@ -1766,6 +1766,7 @@ T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, TOut>,
   ],
@@ -1829,6 +1830,7 @@ T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, TOut>,
@@ -1893,6 +1895,7 @@ T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -1958,6 +1961,7 @@ T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, TOut>
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2024,6 +2028,7 @@ T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, 
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2091,6 +2096,7 @@ T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, 
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2159,6 +2165,7 @@ T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, 
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2228,6 +2235,7 @@ T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, 
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2298,6 +2306,7 @@ T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, 
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2370,6 +2379,7 @@ T41, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2443,6 +2453,7 @@ T41, T42, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2517,6 +2528,7 @@ T41, T42, T43, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2592,6 +2604,7 @@ T41, T42, T43, T44, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2668,6 +2681,7 @@ T41, T42, T43, T44, T45, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2745,6 +2759,7 @@ T41, T42, T43, T44, T45, T46, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2823,6 +2838,7 @@ T41, T42, T43, T44, T45, T46, T47, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2902,6 +2918,7 @@ T41, T42, T43, T44, T45, T46, T47, T48, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -2982,6 +2999,7 @@ T41, T42, T43, T44, T45, T46, T47, T48, T49, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -3063,6 +3081,7 @@ T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, TOut>(
     SignalOperatorFunction<T27, T28>,
     SignalOperatorFunction<T28, T29>,
     SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
     SignalOperatorFunction<T31, T32>,
     SignalOperatorFunction<T32, T33>,
     SignalOperatorFunction<T33, T34>,
@@ -3083,6 +3102,4920 @@ T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, TOut>(
     SignalOperatorFunction<T48, T49>,
     SignalOperatorFunction<T49, T50>,
     SignalOperatorFunction<T50, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, T87, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, T87>,
+    SignalOperatorFunction<T87, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, T87, T88, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, T87>,
+    SignalOperatorFunction<T87, T88>,
+    SignalOperatorFunction<T88, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, T87, T88, T89, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, T87>,
+    SignalOperatorFunction<T87, T88>,
+    SignalOperatorFunction<T88, T89>,
+    SignalOperatorFunction<T89, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, T87, T88, T89, T90, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, T87>,
+    SignalOperatorFunction<T87, T88>,
+    SignalOperatorFunction<T88, T89>,
+    SignalOperatorFunction<T89, T90>,
+    SignalOperatorFunction<T90, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, T87, T88, T89, T90, T91, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, T87>,
+    SignalOperatorFunction<T87, T88>,
+    SignalOperatorFunction<T88, T89>,
+    SignalOperatorFunction<T89, T90>,
+    SignalOperatorFunction<T90, T91>,
+    SignalOperatorFunction<T91, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, T87, T88, T89, T90, T91, T92, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, T87>,
+    SignalOperatorFunction<T87, T88>,
+    SignalOperatorFunction<T88, T89>,
+    SignalOperatorFunction<T89, T90>,
+    SignalOperatorFunction<T90, T91>,
+    SignalOperatorFunction<T91, T92>,
+    SignalOperatorFunction<T92, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, T87, T88, T89, T90, T91, T92, T93, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, T87>,
+    SignalOperatorFunction<T87, T88>,
+    SignalOperatorFunction<T88, T89>,
+    SignalOperatorFunction<T89, T90>,
+    SignalOperatorFunction<T90, T91>,
+    SignalOperatorFunction<T91, T92>,
+    SignalOperatorFunction<T92, T93>,
+    SignalOperatorFunction<T93, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, T87, T88, T89, T90, T91, T92, T93, T94, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, T87>,
+    SignalOperatorFunction<T87, T88>,
+    SignalOperatorFunction<T88, T89>,
+    SignalOperatorFunction<T89, T90>,
+    SignalOperatorFunction<T90, T91>,
+    SignalOperatorFunction<T91, T92>,
+    SignalOperatorFunction<T92, T93>,
+    SignalOperatorFunction<T93, T94>,
+    SignalOperatorFunction<T94, TOut>,
+  ],
+  options?: CreateSignalPipeOptions
+): Signal<TOut>;
+/**
+ * Creates a new signal by sequentially applying a series of operator functions
+ * to a given source signal. This signal can be created in an injection context
+ * or a {@link CleanupScope} context provided by another `signalPipe()` pipeline.
+ * This signal can only be read in a reactive context like `effect()` or a component
+ * template (also within another `signalPipe()` pipeline). When this signal is read
+ * for the first time in a reactive context, it will be initialized with the provided pipeline.
+ *
+ * Each operator receives a signal and returns a new derived signal.
+ * Operators are applied in the order they are provided. Operators
+ * always run in a {@link CleanupScope} context. Each time the last reactive
+ * consumer of this signal gets destroyed, the {@link CleanupScope} will run teardown
+ * logic. After that, when a new reactive consumer appears, the signal will be
+ * reinitialized with the provided pipeline. However, if the host injector is destroyed,
+ * this signal will also be destroyed and reinitialization will be disabled.
+ *
+ * @param source The source signal that provides the initial value.
+ * @param pipeline A tuple of signal operators.
+ * @param options An optional parameter for signal creation options.
+ *
+ * @throws Error when the signal is read for the first time after it has been destroyed.
+ *
+ * @see {@link CleanupScope}
+ */
+export function signalPipe<TIn, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20,
+T21, T22, T23, T24, T25, T26, T27, T28, T29, T30, T31, T32, T33, T34, T35, T36, T37, T38, T39, T40,
+T41, T42, T43, T44, T45, T46, T47, T48, T49, T50, T51, T52, T53, T54, T55, T56, T57, T58, T59, T60,
+T61, T62, T63, T64, T65, T66, T67, T68, T69, T70, T71, T72, T73, T74, T75, T76, T77, T78, T79, T80,
+T81, T82, T83, T84, T85, T86, T87, T88, T89, T90, T91, T92, T93, T94, T95, T96, T97, T98, T99, TOut>(
+  source: Signal<TIn>,
+  pipeline: [
+    SignalOperatorFunction<TIn, T1>,
+    SignalOperatorFunction<T1, T2>,
+    SignalOperatorFunction<T2, T3>,
+    SignalOperatorFunction<T3, T4>,
+    SignalOperatorFunction<T4, T5>,
+    SignalOperatorFunction<T5, T6>,
+    SignalOperatorFunction<T6, T7>,
+    SignalOperatorFunction<T7, T8>,
+    SignalOperatorFunction<T8, T9>,
+    SignalOperatorFunction<T9, T10>,
+    SignalOperatorFunction<T10, T11>,
+    SignalOperatorFunction<T11, T12>,
+    SignalOperatorFunction<T12, T13>,
+    SignalOperatorFunction<T13, T14>,
+    SignalOperatorFunction<T14, T15>,
+    SignalOperatorFunction<T15, T16>,
+    SignalOperatorFunction<T16, T17>,
+    SignalOperatorFunction<T17, T18>,
+    SignalOperatorFunction<T18, T19>,
+    SignalOperatorFunction<T19, T20>,
+    SignalOperatorFunction<T20, T21>,
+    SignalOperatorFunction<T21, T22>,
+    SignalOperatorFunction<T22, T23>,
+    SignalOperatorFunction<T23, T24>,
+    SignalOperatorFunction<T24, T25>,
+    SignalOperatorFunction<T25, T26>,
+    SignalOperatorFunction<T26, T27>,
+    SignalOperatorFunction<T27, T28>,
+    SignalOperatorFunction<T28, T29>,
+    SignalOperatorFunction<T29, T30>,
+    SignalOperatorFunction<T30, T31>,
+    SignalOperatorFunction<T31, T32>,
+    SignalOperatorFunction<T32, T33>,
+    SignalOperatorFunction<T33, T34>,
+    SignalOperatorFunction<T34, T35>,
+    SignalOperatorFunction<T35, T36>,
+    SignalOperatorFunction<T36, T37>,
+    SignalOperatorFunction<T37, T38>,
+    SignalOperatorFunction<T38, T39>,
+    SignalOperatorFunction<T39, T40>,
+    SignalOperatorFunction<T40, T41>,
+    SignalOperatorFunction<T41, T42>,
+    SignalOperatorFunction<T42, T43>,
+    SignalOperatorFunction<T43, T44>,
+    SignalOperatorFunction<T44, T45>,
+    SignalOperatorFunction<T45, T46>,
+    SignalOperatorFunction<T46, T47>,
+    SignalOperatorFunction<T47, T48>,
+    SignalOperatorFunction<T48, T49>,
+    SignalOperatorFunction<T49, T50>,
+    SignalOperatorFunction<T50, T51>,
+    SignalOperatorFunction<T51, T52>,
+    SignalOperatorFunction<T52, T53>,
+    SignalOperatorFunction<T53, T54>,
+    SignalOperatorFunction<T54, T55>,
+    SignalOperatorFunction<T55, T56>,
+    SignalOperatorFunction<T56, T57>,
+    SignalOperatorFunction<T57, T58>,
+    SignalOperatorFunction<T58, T59>,
+    SignalOperatorFunction<T59, T60>,
+    SignalOperatorFunction<T60, T61>,
+    SignalOperatorFunction<T61, T62>,
+    SignalOperatorFunction<T62, T63>,
+    SignalOperatorFunction<T63, T64>,
+    SignalOperatorFunction<T64, T65>,
+    SignalOperatorFunction<T65, T66>,
+    SignalOperatorFunction<T66, T67>,
+    SignalOperatorFunction<T67, T68>,
+    SignalOperatorFunction<T68, T69>,
+    SignalOperatorFunction<T69, T70>,
+    SignalOperatorFunction<T70, T71>,
+    SignalOperatorFunction<T71, T72>,
+    SignalOperatorFunction<T72, T73>,
+    SignalOperatorFunction<T73, T74>,
+    SignalOperatorFunction<T74, T75>,
+    SignalOperatorFunction<T75, T76>,
+    SignalOperatorFunction<T76, T77>,
+    SignalOperatorFunction<T77, T78>,
+    SignalOperatorFunction<T78, T79>,
+    SignalOperatorFunction<T79, T80>,
+    SignalOperatorFunction<T80, T81>,
+    SignalOperatorFunction<T81, T82>,
+    SignalOperatorFunction<T82, T83>,
+    SignalOperatorFunction<T83, T84>,
+    SignalOperatorFunction<T84, T85>,
+    SignalOperatorFunction<T85, T86>,
+    SignalOperatorFunction<T86, T87>,
+    SignalOperatorFunction<T87, T88>,
+    SignalOperatorFunction<T88, T89>,
+    SignalOperatorFunction<T89, T90>,
+    SignalOperatorFunction<T90, T91>,
+    SignalOperatorFunction<T91, T92>,
+    SignalOperatorFunction<T92, T93>,
+    SignalOperatorFunction<T93, T94>,
+    SignalOperatorFunction<T94, T95>,
+    SignalOperatorFunction<T95, T96>,
+    SignalOperatorFunction<T96, T97>,
+    SignalOperatorFunction<T97, T98>,
+    SignalOperatorFunction<T98, T99>,
+    SignalOperatorFunction<T99, TOut>,
   ],
   options?: CreateSignalPipeOptions
 ): Signal<TOut>;
