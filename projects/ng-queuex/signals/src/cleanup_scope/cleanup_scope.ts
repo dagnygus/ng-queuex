@@ -137,14 +137,13 @@ export class DefaultCleanupScope implements CleanupScope {
   _listeners: (VoidFunction | DefaultCleanupScope)[] = [];
   _cleaning = false;
   _destroyed = false;
+  _destroying = false;
   _parent: DefaultCleanupScope | null = null;
 
   constructor(public _injector: Injector) {}
 
 
   get destroyed(): boolean { return this._destroyed; }
-
-  // get injector(): Injector { return this._injector; }
 
   run<T>(callback: () => T): T {
     if (this._destroyed) {
@@ -228,14 +227,19 @@ export class DefaultCleanupScope implements CleanupScope {
   }
 
   destroy(): void {
+    if (this._destroying) { return; }
     if (this._parent == null) {
       throw new Error('CleanupScope#destroy(): It is disallowed to destroy root cleanup scope!');
     }
+    this._destroying = true;
     this.cleanup();
     this._parent._removeChild(this);
 
     this._destroyed = true;
+    this._parent = null;
   }
+
+
 
   _removeChild(child: DefaultCleanupScope): void {
     const index = this._listeners.indexOf(child);
@@ -329,7 +333,10 @@ export function createTestCleanupScope(options?: CreateTestCleanupOptions): Test
   }
 
   if (injector) {
-    injector.get(DestroyRef).onDestroy(() => scope.cleanup());
+    injector.get(DestroyRef).onDestroy(() => {
+      scope.cleanup();
+      scope._destroyed = true;
+    });
   }
 
   return scope;

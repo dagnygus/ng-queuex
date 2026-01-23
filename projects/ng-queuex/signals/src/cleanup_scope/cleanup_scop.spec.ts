@@ -283,6 +283,14 @@ describe('Testing createTestCleanupScope() function', () => {
     expect(log).toEqual(['a', 'b', 'c']);
   });
 
+  it('Should root scope be destroyed after injector gets destroyed.', () => {
+    const injector = Injector.create({ providers: [] });
+    const scope = createTestCleanupScope({ injector });
+
+    injector.destroy();
+    expect(scope.destroyed).toBeTrue();
+  });
+
   it('createTestCleanupScope() function should throw error if supported test runner is not detected', () => {
     const _jasmine = ɵglobal.jasmine;
     ɵglobal.jasmine = undefined

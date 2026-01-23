@@ -26,7 +26,7 @@ export interface CreateTimeoutOptions<T> {
 
 /**
  * Creates a signal whose value will change after a given delay to the value provided by callback.
- * This signal can be only created in injection context (unless injector is provided to options)
+ * This signal can only be created in injection context (unless injector is provided to options)
  * and can be only read in reactive context (effect(), component template etc.)
  * @param delay time in milliseconds after which the signal will change.
  * @param callback A callback what will be use to update signal.
@@ -34,7 +34,7 @@ export interface CreateTimeoutOptions<T> {
 export function timeout<T>(delay: number, callback: () => T): Signal<T | undefined>;
 /**
  * Creates a signal whose value will change in the given date to the value provided by callback.
- * This signal can be only created in injection context (unless injector is provided to options)
+ * This signal can only be created in injection context (unless injector is provided to options)
  * and can be only read in reactive context (effect(), component template etc.)
  * @param at Date on which the value will be changed.
  * @param callback A callback what will be use to update signal.
@@ -42,7 +42,7 @@ export function timeout<T>(delay: number, callback: () => T): Signal<T | undefin
 export function timeout<T>(at: Date, callback: () => T): Signal<T | undefined>;
 /**
  * Creates a signal whose value will change after a given delay to the value provided by callback.
- * This signal can be only created in injection context (unless injector is provided to options)
+ * This signal can only be created in injection context (unless injector is provided to options)
  * and can be only read in reactive context (effect(), component template etc.)
  * @param delay time in milliseconds after which the signal will change.
  * @param callback A callback what will be use to update signal.
@@ -53,7 +53,7 @@ export function timeout<T>(at: Date, callback: () => T): Signal<T | undefined>;
 export function timeout<T>(delay: number, callback: (value: T) => T, options: ({ initialValue: T } & CreateTimeoutOptions<T>) | undefined ): Signal<T>;
 /**
  * Creates a signal whose value will change after a given delay to the value provided by callback.
- * This signal can be only created in injection context (unless injector is provided to options)
+ * This signal can only be created in injection context (unless injector is provided to options)
  * and can be only read in reactive context (effect(), component template etc.)
  * @param delay time in milliseconds after which the signal will change.
  * @param callback A callback what will be use to update signal.
@@ -64,7 +64,7 @@ export function timeout<T>(delay: number, callback: (value: T) => T, options: ({
 export function timeout<T>(delay: number, callback: () => T, options: CreateTimeoutOptions<T>): Signal<T | undefined>;
 /**
  * Creates a signal whose value will change in the given date to the value provided by callback.
- * This signal can be only created in injection context (unless injector is provided to options)
+ * This signal can only be created in injection context (unless injector is provided to options)
  * and can be only read in reactive context (effect(), component template etc.)
  * @param at Date on which the value will be changed.
  * @param callback A callback what will be use to update signal.
@@ -75,7 +75,7 @@ export function timeout<T>(delay: number, callback: () => T, options: CreateTime
 export function timeout<T>(at: Date, callback: (value: T) => T, options: ({ initialValue: T } & CreateTimeoutOptions<T>) | undefined ): Signal<T>;
 /**
  * Creates a signal whose value will change in the given date to the value provided by callback.
- * This signal can be only created in injection context (unless injector is provided to options)
+ * This signal can only be created in injection context (unless injector is provided to options)
  * and can be only read in reactive context (effect(), component template etc.)
  * @param at Date on which the value will be changed.
  * @param callback A callback what will be use to update signal.

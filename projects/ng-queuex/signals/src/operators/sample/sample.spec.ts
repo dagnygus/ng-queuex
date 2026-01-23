@@ -1,7 +1,7 @@
-import { Injector, DestroyRef, DestroyableInjector, signal, computed } from "@angular/core";
+import { DestroyableInjector, DestroyRef, Injector, signal } from "@angular/core";
 import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation } from "@angular/core/primitives/signals";
-import { buffer } from "./buffer";
-import { CleanupScope, createTestCleanupScope } from "../../cleanup_scope/cleanup_scope";
+import { sample } from "./sample";
+import { createTestCleanupScope } from "../../cleanup_scope/cleanup_scope";
 import { subscribe } from "../../subscribe/subscribe";
 
 function runInReactiveContext(fn: VoidFunction): ReactiveNode {
@@ -17,8 +17,7 @@ function runInReactiveContext(fn: VoidFunction): ReactiveNode {
   return consumer;
 }
 
-describe('Testing buffer() function.', () => {
-
+describe('Testing sample() function.', () => {
   let injector: DestroyableInjector = null!;
   let destroyRef: DestroyRef = null!;
 
@@ -35,28 +34,24 @@ describe('Testing buffer() function.', () => {
     destroyRef = null!;
   });
 
+
   it('Should throw error if it is used outside cleanup scope.', () => {
-    const inputSource = signal(undefined);
-    const notifier = signal(0);
-    expect(() => buffer(notifier)(inputSource)).toThrowError(
-      'buffer(): Current stack frame is not within cleanup scope.'
+    expect(() => sample(signal(undefined))(signal(undefined))).toThrowError(
+      'sample(): Current stack frame is not within cleanup scope.'
     );
   });
 
   it('Should throw error if it is used inside reactive context.', () => {
-    const inputSource = signal(undefined);
-    const notifier = signal(0);
     const scope = createTestCleanupScope();
-
-    scope.run(() => expect(() => runInReactiveContext(() => buffer(notifier)(inputSource))).toThrowError());
+    scope.run(() => expect(() => runInReactiveContext(() => sample(signal(undefined))(signal(undefined)))).toThrowError());
   });
 
-  it('Should project output signal correctly.', () => {
-    const log: (string[])[] = [];
+  it('Should emit the most recent value.', () => {
+    const log: string[] = [];
+    const scope = createTestCleanupScope();
     const inputSource = signal<string | undefined>(undefined);
     const notifier = signal(0);
-    const scope = createTestCleanupScope();
-    const outputSource = scope.run(() => buffer<string | undefined>(notifier)(inputSource));
+    const outputSource = scope.run(() => sample<string | undefined>(notifier)(inputSource));
 
     subscribe(outputSource, (value) => log.push(value), destroyRef);
 
@@ -70,41 +65,22 @@ describe('Testing buffer() function.', () => {
     inputSource.set('F');
     notifier.update((v) => ++v);
 
-    expect(log).toEqual([
-      [],
-      [ 'A' ],
-      [ 'B', 'C' ],
-      [ 'D', 'E', 'F' ]
-    ]);
+    expect(log).toEqual([ 'A', 'C', 'F' ]);
   });
 
-  it('Buffer with same items set as previous should not be emitted.', () => {
-    const log: (string[])[] = [];
+  it('Should not emit latest value more then one time.', () => {
+    const log: string[] = [];
+    const scope = createTestCleanupScope();
     const inputSource = signal<string | undefined>(undefined);
     const notifier = signal(0);
-    const scope = createTestCleanupScope();
-    const outputSource = scope.run(() => buffer<string | undefined>(notifier)(inputSource));
+    const outputSource = scope.run(() => sample<string | undefined>(notifier)(inputSource));
 
     subscribe(outputSource, (value) => log.push(value), destroyRef);
 
     inputSource.set('A');
-    inputSource.set('B');
-    inputSource.set('C');
+    notifier.update((v) => ++v);
+    notifier.update((v) => ++v);
 
-    notifier.update((value) => ++value);
-    expect(log).toEqual([
-      [],
-      [ 'A', 'B', 'C' ]
-    ]);
-
-    inputSource.set('A');
-    inputSource.set('B');
-    inputSource.set('C');
-
-    notifier.update((value) => ++value);
-    expect(log).toEqual([
-      [],
-      [ 'A', 'B', 'C' ]
-    ]);
+    expect(log).toEqual([ 'A' ]);
   });
-})
+});

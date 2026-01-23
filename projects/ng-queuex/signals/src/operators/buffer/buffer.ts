@@ -47,27 +47,19 @@ import { subscribe } from '../../subscribe/subscribe'
  */
 export function buffer<T>(closingNotifier: Signal<any>): SignalOperatorFunction<T, Exclude<T, undefined>[]> {
   return function(prevSource) {
-    NG_DEV_MODE && assertNotInReactiveContext(buffer);
-    const childScope = CleanupScope.assertCurrent(buffer).createChild();
+    NG_DEV_MODE && CleanupScope.assertCurrent(buffer) && assertNotInReactiveContext(buffer);
 
     let output: Exclude<T, undefined>[] = [];
     const outputSource = signal<Exclude<T, undefined>[]>([], { equal: arrayEquals });
     subscribe(prevSource, (value) => { output.push(value); });
 
-    let cleaned = false;
-    childScope.add(() => { cleaned = true; });
-
-    childScope.run(() => {
-      let sync = true;
-      subscribe(closingNotifier, () => {
-        if (sync) { return; }
-        outputSource.set(output);
-        output = [];
-      });
-      sync = false;
+    let sync = true;
+    subscribe(closingNotifier, () => {
+      if (sync) { return; }
+      outputSource.set(output);
+      output = [];
     });
-
-    if (cleaned) { childScope.cleanup(); }
+    sync = false;
 
     return outputSource.asReadonly();
   }

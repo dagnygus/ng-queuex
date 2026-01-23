@@ -1,7 +1,8 @@
 import { computed, DestroyableInjector, DestroyRef, Injector, Signal, signal } from "@angular/core";
 import { ReactiveNode, REACTIVE_NODE, consumerBeforeComputation, consumerAfterComputation } from "@angular/core/primitives/signals";
 import { switchMap } from "./switch_map";
-import { CleanupScope, createTestCleanupScope, subscribe } from "../../signals";
+import { CleanupScope, createTestCleanupScope } from "../../cleanup_scope/cleanup_scope";
+import { subscribe } from "../../subscribe/subscribe"
 
 function runInReactiveContext(fn: VoidFunction): ReactiveNode {
   const consumer = Object.create(REACTIVE_NODE) as ReactiveNode;

@@ -50,7 +50,7 @@ export function audit<T>(durationSelector: () => Signal<any>): SignalOperatorFun
     const nextSource = signal<T | undefined>(undefined);
     let durationNotifier: Signal<any> | null = null;
     let latestValue: any;
-    let cleaned = false
+    let cleaned = false;
 
     function onCleanup(): void {
       cleaned = true;

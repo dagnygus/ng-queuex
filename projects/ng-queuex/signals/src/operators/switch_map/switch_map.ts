@@ -1,6 +1,6 @@
 import { assertNotInReactiveContext, signal, Signal } from "@angular/core";
 import { NG_DEV_MODE, SignalOperatorFunction } from "../../common";
-import { CleanupScope } from "../../signals";
+import { CleanupScope } from "../../cleanup_scope/cleanup_scope";
 import { subscribe } from '../../subscribe/subscribe';
 
 /**

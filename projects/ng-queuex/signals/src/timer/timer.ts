@@ -4,9 +4,35 @@ import { CleanupScope } from '../cleanup_scope/cleanup_scope';
 import { NG_DEV_MODE } from '../common';
 import { Schedulers } from '../schedulers/schedulers';
 
+/**
+ * Configuration options used when creating a timer signal.
+ *
+ * These options control how often the timer ticks, which dependency
+ * injection context is used, and how the timer is identified for
+ * debugging purposes.
+ */
 export interface CreateTimerOptions {
+  /**
+  * The timer period in milliseconds.
+  *
+  * When provided, the timer emits repeatedly at the specified interval.
+  * If omitted, the timer emits only once.
+  */
   period?: number;
+
+  /**
+  * An optional injector used to resolve scheduler-related dependencies.
+  *
+  * If not provided, the current injection context is used.
+  */
   injector?: Injector;
+
+  /**
+  * An optional human-readable name used for debugging purposes.
+  *
+  * This name may be used to label the timer in debug tools or error
+  * messages.
+  */
   debugName?: string;
 }
 

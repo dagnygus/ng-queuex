@@ -2,6 +2,7 @@ import { assertNotInReactiveContext, signal, Signal } from "@angular/core";
 import { NG_DEV_MODE, SignalOperatorFunction } from "../../common";
 import { subscribe } from "../../subscribe/subscribe";
 import { CleanupScope } from "../../cleanup_scope/cleanup_scope";
+import { exhaustMapBase } from "../exhaust_map_base/exhaust_map_base";
 
 /**
  * Transforms each emitted value from the source `Signal<T>` into an inner `Signal<V>`
@@ -41,51 +42,5 @@ import { CleanupScope } from "../../cleanup_scope/cleanup_scope";
  * - Values of `undefined` from the source signal are skipped.
  */
 export function exhaustMap<T, V>(project: (value: Exclude<T, undefined>) => Signal<V>): SignalOperatorFunction<T, undefined extends T ? V | undefined : V> {
-  return function(prevSource) {
-    NG_DEV_MODE && assertNotInReactiveContext(exhaustMap);
-    const childScope = CleanupScope.assertCurrent(exhaustMap).createChild();
-    const nextSource = signal<any>(undefined);
-
-    let innerSource: Signal<any> | null = null;
-    let cleaned = false;
-
-    function onCleanup(): void {
-      innerSource = null;
-      cleaned = true;
-    }
-
-    subscribe(prevSource, (value) => {
-      if (innerSource) { return; }
-
-      childScope.cleanup();
-
-      childScope.add(onCleanup);
-
-      childScope.run(() => {
-        cleaned = false;
-        innerSource = project(value);
-
-        if (cleaned) {
-          const value = innerSource();
-          if (typeof value !== 'undefined') {
-            nextSource.set(innerSource());
-          }
-          childScope.cleanup();
-          innerSource = null;
-          return;
-        }
-
-        subscribe(innerSource, (v) => {
-          innerSource = null;
-          nextSource.set(v);
-        });
-
-        if (cleaned) {
-          childScope.cleanup();
-        }
-      });
-    });
-
-    return nextSource.asReadonly();
-  }
+  return exhaustMapBase(project, exhaustMap);
 }
